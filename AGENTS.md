@@ -409,7 +409,7 @@ automatic gate.
 4. Spawn the exploration subagent required by the skill. Explore organically,
    apply YAGNI and the deletion test, and classify dependencies as in-process,
    local-substitutable, remote-owned ports and adapters, or true external/mock.
-5. Write one timestamped, self-contained report to the OS temp directory,
+5. Write one timestamped, self-contained HTML report to the OS temp directory,
    falling back to `/tmp` when needed. Keep it out of the repository, open it
    for the user, and report its absolute path. Tailwind and Mermaid CDN use is
    allowed only for this disposable report, never for shipped Compfi UI.
