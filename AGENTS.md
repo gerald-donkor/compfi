@@ -252,10 +252,14 @@ For every implementation request:
    and state it.
 8. Write exactly one detailed prompt in `prompts/` before implementation,
    following section 4. The user may explicitly instruct you to skip the prompt;
-   absent that instruction, no implementation begins before approval.
+   absent that instruction, no implementation begins before approval or the
+   narrowly defined automatic architecture authorization in section 3.5.
 9. Ask exactly: `I prepared the implementation prompt at
-   prompts/<file-name>.md. Is this good to execute?` Then stop.
-10. On approval, re-read this file, the approved prompt, its owning
+   prompts/<file-name>.md. Is this good to execute?` Then stop. The only standing
+   exception is an architecture prompt that satisfies every automatic-execution
+   gate in section 3.5 and contains `AUTO-APPROVED: architecture workflow`.
+10. On approval or valid automatic architecture authorization, re-read this file,
+    the approved or auto-approved prompt, its owning
     documentation, every reference it names, relevant installed framework docs,
     and every skill in `## SKILLS USED`.
 11. Capture the review base before changing implementation files with
@@ -282,7 +286,8 @@ For every implementation request:
 
 Explicit instructions such as `start`, `execute`, or `skip approval` authorize
 execution only when they clearly identify a scope or prepared prompt. They do
-not authorize unrelated work or a push.
+not authorize unrelated work or a push. Automatic architecture authorization is
+equally narrow and never authorizes a push.
 
 ## 3.3 Phase-control commands
 
@@ -374,12 +379,23 @@ skill's required setup instead of inventing issue content.
 
 ## 3.5 Evidence-gated architecture discovery
 
-Use `.agents/skills/improve-codebase-architecture/SKILL.md` only when the user
-explicitly requests an architecture audit or repository evidence reveals a
-meaningful hotspot after implementation exists. Evidence includes repeated Git
-churn in the same area, commerce rules scattered across callers, tests that
-must reach past a module's interface, or an approved provider that creates a
-real multi-adapter seam.
+During build-state resolution for every meaningful implementation and
+resumption, perform a lightweight architecture-signal check without waiting for
+the user to request it. Inspect code, tests, and Git history for repeated churn
+in the same area, commerce rules scattered across callers, callers that must
+know internal sequencing, tests that reach past a module's interface, repeated
+adapters, or an approved provider that creates a real multi-adapter seam. This
+check is detection, not a full audit.
+
+Automatically load and run
+`.agents/skills/improve-codebase-architecture/SKILL.md` only when concrete
+evidence crosses that threshold, or when the user explicitly requests an
+architecture audit. Do not ask permission merely to invoke the skill. Once the
+threshold is met, this standing project rule counts as the explicit invocation
+that the skill's `disable-model-invocation` metadata otherwise requires; it
+overrides that invocation flag. The autonomous path below also explicitly
+replaces the skill's user-selection pause when every safety gate passes; all
+other skill process and safeguards remain in force.
 
 Do not run it during the initial design-system phase, after every
 implementation, for visual or accessibility review, or to justify speculative
@@ -390,7 +406,7 @@ The recommended first checkpoint is after phases 4–5, when catalog, product,
 comparison, cart, pricing, and checkout behavior supplies enough evidence.
 Revisit it before phase 10 only when an approved integration creates a genuine
 seam. It is an optional discovery checkpoint, not a numbered build phase or an
-automatic gate.
+automatic phase gate.
 
 ### Architecture scan and candidate report
 
@@ -417,9 +433,63 @@ automatic gate.
    benefits, before/after visual, recommendation strength, and any material ADR
    conflict. End with one top recommendation. Do not propose interfaces yet or
    turn rejected or deferred candidates into backlog work.
-7. Stop after presenting the report and ask exactly: `Which of these would you like to explore?`
+7. Rank candidates by recommendation strength, deletion-test evidence,
+   locality, leverage, improvement to the interface as the test surface,
+   dependency category, scope, and risk. Then follow either the autonomous or
+   interactive path below.
 
-### Selected-candidate decision workflow
+### Autonomous candidate path
+
+The user's standing authorization permits the agent to continue without a
+selection or implementation go-ahead only when all of these gates pass:
+
+- Exactly one candidate is the uniquely strongest recommendation and is rated
+  `Strong`; close rankings, `Worth exploring`, and `Speculative` candidates are
+  not eligible.
+- The change is a behavior-preserving refactor inside already approved product
+  scope, backed by concrete code, test, and history evidence.
+- It introduces no product behavior, provider, dependency, destructive or
+  irreversible migration, public interface, persistent data contract, security
+  model, external side effect, or ADR-worthy decision.
+- It does not overlap unrelated or user-authored dirty files, and proportionate
+  verification can prove behavior was preserved.
+
+When every gate passes:
+
+1. Select the uniquely strongest candidate automatically and do not ask the
+   interactive selection question.
+2. Do not invoke `grilling`: that skill reserves decisions for the user. Resolve
+   factual branches from repository evidence. If a required branch is a product
+   or architecture decision rather than a fact, exit autonomous mode.
+3. For a nontrivial interface, run `codebase-design`'s Design-It-Twice process
+   automatically with at least three isolated, parallel designs. Select the
+   design with the strongest depth, locality, seam placement, caller simplicity,
+   and test surface while respecting the approved behavior.
+4. Use `domain-modeling` automatically only when code and approved requirements
+   make a domain term unambiguous. A fuzzy term or decision that qualifies for
+   an ADR exits autonomous mode; never invent or silently accept it.
+5. Write the normal detailed implementation prompt and add the exact marker
+   `AUTO-APPROVED: architecture workflow`, followed by the evidence and the
+   passed gates. Re-read it and every named source and skill, then execute it
+   without asking for approval.
+6. Complete the normal implementation workflow: capture the immutable
+   `BASE_SHA`, implement, verify, update owning docs, commit locally, run the
+   independent Standards and Spec review, fix verified findings separately, and
+   re-review when required. Never push.
+
+If any gate fails, pause only the architecture automation. Preserve the report
+and do not silently select, broaden scope, weaken safeguards, or mark a prompt
+auto-approved. If the current approved task can continue safely, continue it and
+report the deferred candidate at handoff. If it cannot, ask only for the missing
+decision or authority.
+
+### Interactive candidate path
+
+Use this path for a user-requested interactive audit, ambiguous rankings, or any
+candidate that fails an autonomous gate. Stop after presenting the report and
+ask exactly: `Which of these would you like to explore?`
+
+### Interactive selected-candidate decision workflow
 
 1. After the user selects a candidate, load `grilling` and work its decision
    tree in rounds until the user confirms shared understanding. Finding facts is
@@ -568,7 +638,7 @@ Use the skills that own the surface; do not load unrelated ones.
 | `clerk-testing` | authenticated end-to-end tests |
 | `clerk-webhooks` | verified event-driven user synchronization, only when required |
 | `clerk-billing` | subscriptions or billing only if explicitly added to product scope; it is not the furniture checkout provider |
-| `improve-codebase-architecture` | an explicitly requested architecture audit or an evidence-backed hotspot after meaningful implementation; candidate discovery only, never automatic refactoring |
+| `improve-codebase-architecture` | automatic architecture-signal detection, evidence-gated audits, candidate ranking, and safe orchestration; refactoring proceeds automatically only through every section 3.5 gate |
 | `codebase-design` | deep-module vocabulary, seam and adapter reasoning, dependency classification, deletion tests, and alternative interface design |
 | `grilling` | multi-round decision-tree exploration after the user selects an architecture candidate |
 | `domain-modeling` | canonical domain terms in `CONTEXT.md` and sparse, accepted ADRs when decisions meet all qualification tests |
