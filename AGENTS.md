@@ -387,6 +387,13 @@ know internal sequencing, tests that reach past a module's interface, repeated
 adapters, or an approved provider that creates a real multi-adapter seam. This
 check is detection, not a full audit.
 
+The single-letter phase commands take precedence over architecture automation.
+During `i`/`I`, detection may only be noted and deferred; do not run the audit,
+write another prompt, implement, stage, or commit. During `y`/`Y`, execute and
+review only the already approved prompt, then report and defer any architecture
+candidate. During `P`, run only the guarded push protocol and perform no
+architecture detection or work.
+
 Automatically load and run
 `.agents/skills/improve-codebase-architecture/SKILL.md` only when concrete
 evidence crosses that threshold, or when the user explicitly requests an
@@ -448,9 +455,9 @@ selection or implementation go-ahead only when all of these gates pass:
   not eligible.
 - The change is a behavior-preserving refactor inside already approved product
   scope, backed by concrete code, test, and history evidence.
-- It introduces no product behavior, provider, dependency, destructive or
-  irreversible migration, public interface, persistent data contract, security
-  model, external side effect, or ADR-worthy decision.
+- It introduces no product behavior, provider, dependency, migration, public
+  interface, persistent data contract, security model, external side effect, or
+  ADR-worthy decision.
 - It does not overlap unrelated or user-authored dirty files, and proportionate
   verification can prove behavior was preserved.
 
@@ -459,12 +466,16 @@ When every gate passes:
 1. Select the uniquely strongest candidate automatically and do not ask the
    interactive selection question.
 2. Do not invoke `grilling`: that skill reserves decisions for the user. Resolve
-   factual branches from repository evidence. If a required branch is a product
-   or architecture decision rather than a fact, exit autonomous mode.
+   factual branches from repository evidence. If a required branch is a product,
+   ADR-worthy, or authority-expanding architecture decision rather than a fact,
+   exit autonomous mode.
 3. For a nontrivial interface, run `codebase-design`'s Design-It-Twice process
    automatically with at least three isolated, parallel designs. Select the
    design with the strongest depth, locality, seam placement, caller simplicity,
-   and test surface while respecting the approved behavior.
+   and test surface while respecting the approved behavior. The standing
+   authorization replaces Design-It-Twice's user presentation and selection
+   only for behavior-preserving choices that pass every autonomous gate; record
+   the alternatives, trade-offs, and selection rationale in the prompt.
 4. Use `domain-modeling` automatically only when code and approved requirements
    make a domain term unambiguous. A fuzzy term or decision that qualifies for
    an ADR exits autonomous mode; never invent or silently accept it.
