@@ -69,5 +69,6 @@ named chrome geometry tokens). The subsequent Standards re-review found and
 resolved the remaining geometry/wordmark token gaps and documentation-status
 inconsistency; Spec re-review initially reported no remaining finding. The next
 full review accepted a docs-lifecycle correction, intermediate breadcrumb
-semantics, and 44px text-link target fixes. Final cumulative re-review from
-the original base is pending this narrow fix commit.
+semantics, 44px text-link target fixes, drawer insets on both narrow sides, and
+the certified sheet's public props export. Final cumulative re-review from the
+original base is pending this narrow fix commit.

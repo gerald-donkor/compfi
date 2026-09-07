@@ -29,7 +29,8 @@ This document owns the public component contracts, APIs, states, and accessibili
   transition, focus trapping, Escape/backdrop dismissal, and focus return.
 - **`Breadcrumb`, `Empty`, `Sheet`**: The Phase 3 compositions of these
   primitives are audited and verified. They are no longer treated as
-  unexamined generated components in this inventory.
+  unexamined generated components in this inventory. `SheetContentProps`
+  exposes its `side` and `showCloseButton` API.
 
 ### Certified Phase 2 Components
 The following components have been fully audited, styled to Compfi's measured design tokens, verified for accessibility (WCAG 2.2 AA floor), and tested in automated JSDOM suites and real-browser rendering:
