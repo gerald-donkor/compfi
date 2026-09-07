@@ -229,6 +229,8 @@ thing once does not satisfy an ALWAYS rule.
 | 2026-09-06 | Always plan implementation work in detailed, self-contained prompt files so execution is unambiguous and resumable. | Preserves measurements, scope, decisions, skills, acceptance criteria, and checks across sessions. |
 | 2026-09-06 | Always run the local `code-review` skill for every approved implementation, using its parallel Standards and Spec subagents, then rigorously evaluate and resolve the findings. | Enforces both repository-quality and requirement-fidelity review without conflating the two axes. |
 | 2026-09-06 | Always commit each approved implementation locally after self-verification, and never push it unless a later standalone uppercase `P` passes the guarded push protocol. | Makes build state recoverable from Git while keeping remote changes separately authorized. |
+| 2026-09-07 | Treat the word “always” as a durable-rule trigger in all cases, regardless of capitalization. | Ensures durable instructions are recorded whether the user types `always`, `ALWAYS`, or a mixed-case form. |
+| 2026-09-07 | Always use every required skill; when a capability is missing from `.agents/skills`, use `find-skills` before selecting and installing the minimum suitable skill. | Keeps task execution aligned with current specialized guidance while the detailed discovery, vetting, and installation procedure remains in Section 3.6. |
 
 ## 3.2 Implementation workflow
 
@@ -535,8 +537,15 @@ If the task needs a capability not present locally:
    discovery or current documentation genuinely requires it.
 3. Inspect its source, permissions, dependencies, maintenance, and overlap with
    existing skills before installation.
-4. Install only the minimum skill needed, record the source and reason, then
-   read and use it in the same task.
+4. During prompt preparation, discovery, inspection, vetting, and recording are
+   allowed, but do not install a skill into the project-local `.agents/skills/`
+   directory or otherwise mutate project files for that installation. An
+   already-installed local skill may still be read and used while preparing a
+   prompt.
+5. After the prompt is approved and execution begins, install only the minimum
+   skill needed, record its source and reason, then read and use it in the same
+   task. This is the only allowed installation timing unless the user
+   explicitly instructs the agent to skip the approval boundary.
 
 Do not install a skill merely because one exists. A skill never overrides the
 user, this file, repository facts, or security boundaries.
@@ -639,7 +648,7 @@ Use the skills that own the surface; do not load unrelated ones.
 | `building-components` | token architecture, artifact taxonomy, component APIs, state, data attributes, documentation, and accessibility |
 | `vercel-composition-patterns` | reusable React APIs, compound components, explicit variants, and avoiding boolean-prop proliferation |
 | `vercel-react-best-practices` | every React/Next.js implementation or review; waterfalls, bundle size, rendering, serialization, and rerenders |
-| `shadcn` | only after `components.json` exists or when adding/changing shadcn components; inspect project info and component docs before use |
+| `shadcn` | Compfi's established UI component approach; inspect `components.json`, project info, and component docs before adding or changing shadcn components; use the [official shadcn/ui docs](https://ui.shadcn.com/docs) |
 | `web-design-guidelines` | the final UI/UX and accessibility review before a surface is called complete |
 | `agent-browser` | browser-based implementation verification, responsive screenshots, interactions, forms, and accessibility smoke tests |
 | `clerk` | route any authentication task to the correct Clerk skill |
@@ -657,10 +666,13 @@ Use the skills that own the surface; do not load unrelated ones.
 | `caveman-commit` | every automatic implementation/review-fix commit and every user-requested commit-message task |
 | `find-skills` | a real capability gap after local skills are inspected |
 
-The current repository has no `components.json`; shadcn/ui is not established
-yet. Do not assume a base, style, icon library, aliases, or component API. If
-phase 1 chooses to initialize shadcn, inspect the current CLI and make that an
-explicit project decision rather than silently introducing it.
+Compfi uses shadcn/ui for its UI components. The repository has an established
+shadcn/ui baseline: `components.json` is present and `components/ui/` contains
+the existing component implementations. Inspect that configuration and the
+current component source before adding or changing components; do not assume a
+base, style, icon library, aliases, or component API when the repository can
+answer those questions. Use the [official shadcn/ui documentation](https://ui.shadcn.com/docs)
+for current component and CLI guidance.
 
 ---
 
