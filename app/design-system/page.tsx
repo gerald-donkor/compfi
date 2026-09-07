@@ -110,7 +110,7 @@ export default function DesignSystemPage() {
                 <Badge variant="default">Featured</Badge>
                 <Badge variant="secondary">In stock</Badge>
                 <Badge variant="outline">Handcrafted</Badge>
-                <Badge variant="destructive">-30%</Badge>
+                <Badge variant="discount">-30%</Badge>
                 <Badge variant="new">New</Badge>
               </Cluster>
             </Stack>

@@ -2,8 +2,9 @@ import { describe, it, expect, vi } from "vitest"
 import * as React from "react"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { ColorSelector, type ColorOption } from "@/components/commerce/color-swatch"
-import { SizeSelector, type SizeOption } from "@/components/commerce/size-selector"
+import { ColorSelector } from "@/components/commerce/color-swatch"
+import { SizeSelector } from "@/components/commerce/size-selector"
+import type { ColorOption, SizeOption } from "@/types/commerce"
 import { checkA11y } from "./a11y"
 
 describe("<ColorSelector />", () => {
@@ -42,6 +43,14 @@ describe("<ColorSelector />", () => {
   it("handles empty options gracefully", () => {
     render(<ColorSelector options={[]} />)
     expect(screen.getByText("No colors available")).toBeInTheDocument()
+  })
+
+  it("handles unknown controlled value gracefully without selection", () => {
+    render(<ColorSelector options={options} value="non-existent" />)
+    const walnutBtn = screen.getByRole("button", { name: "Walnut Brown" })
+    const sandBtn = screen.getByRole("button", { name: "Sand Linen" })
+    expect(walnutBtn).toHaveAttribute("aria-pressed", "false")
+    expect(sandBtn).toHaveAttribute("aria-pressed", "false")
   })
 
   it("throws on duplicate option values in development", () => {
@@ -91,6 +100,14 @@ describe("<SizeSelector />", () => {
   it("handles empty options gracefully", () => {
     render(<SizeSelector options={[]} />)
     expect(screen.getByText("No sizes available")).toBeInTheDocument()
+  })
+
+  it("handles unknown controlled value gracefully without selection", () => {
+    render(<SizeSelector options={options} value="non-existent" />)
+    const sBtn = screen.getByRole("button", { name: "S" })
+    const mBtn = screen.getByRole("button", { name: "M" })
+    expect(sBtn).toHaveAttribute("aria-pressed", "false")
+    expect(mBtn).toHaveAttribute("aria-pressed", "false")
   })
 
   it("throws on duplicate option values in development", () => {

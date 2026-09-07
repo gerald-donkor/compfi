@@ -4,7 +4,7 @@ import * as React from "react"
 import { MinusIcon, PlusIcon } from "lucide-react"
 import { cn } from "cn"
 
-export interface QuantityInputProps {
+export interface QuantityInputProps extends Omit<React.ComponentProps<"div">, "onChange"> {
   value?: number
   defaultValue?: number
   onValueChange?: (value: number) => void
@@ -19,6 +19,7 @@ export interface QuantityInputProps {
   "aria-label"?: string
   "aria-labelledby"?: string
   "aria-describedby"?: string
+  ref?: React.Ref<HTMLDivElement>
 }
 
 export function QuantityInput({
@@ -36,6 +37,8 @@ export function QuantityInput({
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   "aria-describedby": ariaDescribedBy,
+  ref,
+  ...props
 }: QuantityInputProps) {
   const isControlled = controlledValue !== undefined
   const [uncontrolledValue, setUncontrolledValue] = React.useState<number>(defaultValue)
@@ -91,7 +94,13 @@ export function QuantityInput({
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "ArrowUp") {
+      e.preventDefault()
+      handleIncrement()
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault()
+      handleDecrement()
+    } else if (e.key === "Enter") {
       e.preventDefault()
       if (draft === null) return
       const parsed = parseInt(draft, 10)
@@ -109,12 +118,16 @@ export function QuantityInput({
 
   return (
     <div
+      ref={ref}
       data-slot="quantity-input"
+      data-disabled={disabled ? "" : undefined}
+      data-readonly={readOnly ? "" : undefined}
       className={cn(
-        "inline-flex h-11 items-center rounded-[10px] border border-input bg-transparent transition-colors",
-        disabled && "opacity-50 pointer-events-none",
+        "inline-flex h-11 items-center rounded-control border border-input bg-transparent transition-colors",
+        disabled && "opacity-50",
         className
       )}
+      {...props}
     >
       <button
         type="button"
@@ -129,12 +142,10 @@ export function QuantityInput({
       <input
         id={id}
         name={name}
-        type="text"
-        inputMode="numeric"
-        role="spinbutton"
-        aria-valuenow={currentValue}
-        aria-valuemin={min}
-        aria-valuemax={max}
+        type="number"
+        min={min}
+        max={max}
+        step={step}
         aria-label={ariaLabel ?? "Quantity"}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
@@ -144,7 +155,7 @@ export function QuantityInput({
         onChange={handleInputChange}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        className="h-11 w-12 text-center text-sm font-medium tabular-nums text-foreground bg-transparent border-0 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="h-11 w-12 text-center text-sm font-medium tabular-nums text-foreground bg-transparent border-0 outline-none focus-visible:ring-2 focus-visible:ring-ring [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       />
 
       <button

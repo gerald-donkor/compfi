@@ -10,7 +10,7 @@ describe("<QuantityInput />", () => {
     const { container } = render(<QuantityInput defaultValue={1} min={1} max={5} />)
 
     const spin = screen.getByRole("spinbutton", { name: "Quantity" })
-    expect(spin).toHaveValue("1")
+    expect(spin).toHaveValue(1)
 
     const decBtn = screen.getByRole("button", { name: "Decrease quantity" })
     const incBtn = screen.getByRole("button", { name: "Increase quantity" })
@@ -32,15 +32,15 @@ describe("<QuantityInput />", () => {
     const incBtn = screen.getByRole("button", { name: "Increase quantity" })
 
     await user.click(incBtn)
-    expect(spin).toHaveValue("3")
+    expect(spin).toHaveValue(3)
     expect(handleChange).toHaveBeenCalledWith(3)
 
     await user.click(incBtn)
-    expect(spin).toHaveValue("4")
+    expect(spin).toHaveValue(4)
     expect(incBtn).toBeDisabled() // reached max 4
 
     await user.click(decBtn)
-    expect(spin).toHaveValue("3")
+    expect(spin).toHaveValue(3)
     expect(handleChange).toHaveBeenCalledWith(3)
   })
 
@@ -55,14 +55,14 @@ describe("<QuantityInput />", () => {
     await user.type(spin, "99")
     await user.tab()
 
-    expect(spin).toHaveValue("10")
+    expect(spin).toHaveValue(10)
     expect(handleChange).toHaveBeenCalledWith(10)
 
     await user.clear(spin)
     await user.type(spin, "abc")
     await user.tab()
 
-    expect(spin).toHaveValue("10") // restored to previous valid or min
+    expect(spin).toHaveValue(10) // restored to previous valid or min
   })
 
   it("supports controlled value and calls onValueChange", async () => {
@@ -73,18 +73,37 @@ describe("<QuantityInput />", () => {
     )
 
     const spin = screen.getByRole("spinbutton", { name: "Quantity" })
-    expect(spin).toHaveValue("2")
+    expect(spin).toHaveValue(2)
 
     const incBtn = screen.getByRole("button", { name: "Increase quantity" })
     await user.click(incBtn)
     expect(handleChange).toHaveBeenCalledWith(3)
 
     rerender(<QuantityInput value={3} onValueChange={handleChange} min={1} max={5} />)
-    expect(spin).toHaveValue("3")
+    expect(spin).toHaveValue(3)
+  })
+
+  it("increments and decrements using ArrowUp and ArrowDown keys", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    render(<QuantityInput defaultValue={2} min={1} max={5} onValueChange={handleChange} />)
+
+    const spin = screen.getByRole("spinbutton", { name: "Quantity" })
+
+    await user.click(spin)
+    await user.keyboard("{ArrowUp}")
+    expect(spin).toHaveValue(3)
+    expect(handleChange).toHaveBeenCalledWith(3)
+
+    await user.keyboard("{ArrowDown}")
+    expect(spin).toHaveValue(2)
+    expect(handleChange).toHaveBeenCalledWith(2)
   })
 
   it("disables all interaction when disabled is true", () => {
-    render(<QuantityInput disabled defaultValue={3} />)
+    const { container } = render(<QuantityInput disabled defaultValue={3} />)
+    const root = container.querySelector("[data-slot='quantity-input']")
+    expect(root).toHaveAttribute("data-disabled")
     expect(screen.getByRole("spinbutton")).toBeDisabled()
     expect(screen.getByRole("button", { name: "Decrease quantity" })).toBeDisabled()
     expect(screen.getByRole("button", { name: "Increase quantity" })).toBeDisabled()

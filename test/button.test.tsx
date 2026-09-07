@@ -87,7 +87,7 @@ describe("<Badge />", () => {
     const { container } = render(
       <div>
         <Badge variant="default">Featured</Badge>
-        <Badge variant="destructive">-30%</Badge>
+        <Badge variant="discount">-30%</Badge>
         <Badge variant="new">New</Badge>
       </div>
     )

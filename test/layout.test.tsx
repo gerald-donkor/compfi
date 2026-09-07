@@ -36,9 +36,9 @@ describe("Layout primitives", () => {
     expect(el).toHaveAttribute("data-gap", "loose")
   })
 
-  it("renders Cluster with wrapping, alignment and justify variants", () => {
+  it("renders Cluster with wrapping and alignment variants", () => {
     render(
-      <Cluster gap="compact" align="center" justify="between" data-testid="cluster-test">
+      <Cluster gap="compact" align="center" data-testid="cluster-test">
         <button type="button">Action 1</button>
         <button type="button">Action 2</button>
       </Cluster>
@@ -48,6 +48,5 @@ describe("Layout primitives", () => {
     expect(el).toHaveAttribute("data-slot", "cluster")
     expect(el).toHaveAttribute("data-gap", "compact")
     expect(el).toHaveAttribute("data-align", "center")
-    expect(el).toHaveAttribute("data-justify", "between")
   })
 })

@@ -16,8 +16,10 @@ const badgeVariants = cva(
           "border-border bg-transparent text-foreground",
         destructive:
           "bg-destructive text-destructive-foreground",
+        discount:
+          "bg-compfi-discount text-white",
         new:
-          "bg-[color:var(--color-new)] text-[color:var(--color-ink)]",
+          "bg-compfi-new text-compfi-ink",
       },
     },
     defaultVariants: {

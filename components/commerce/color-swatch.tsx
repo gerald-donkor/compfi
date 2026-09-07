@@ -5,16 +5,24 @@ import { ToggleGroup as ToggleGroupPrimitive } from "@base-ui/react/toggle-group
 import { Toggle as TogglePrimitive } from "@base-ui/react/toggle"
 import { CheckIcon } from "lucide-react"
 import { cn } from "cn"
+import type { ColorOption } from "@/types/commerce"
+import {
+  validateNoDuplicateOptions,
+  toSelectedArray,
+  handleSingleValueChange,
+} from "./selector-utils"
 
-export interface ColorOption {
-  value: string
-  label: string
-  color: string
+export type { ColorOption }
+
+export interface ColorSwatchProps {
+  option: ColorOption
+  ref?: React.Ref<HTMLButtonElement>
+  className?: string
   disabled?: boolean
 }
 
 export interface ColorSelectorProps {
-  options: ColorOption[]
+  options: readonly ColorOption[]
   value?: string
   defaultValue?: string
   onValueChange?: (value: string) => void
@@ -23,6 +31,7 @@ export interface ColorSelectorProps {
   id?: string
   "aria-label"?: string
   "aria-labelledby"?: string
+  ref?: React.Ref<HTMLDivElement>
 }
 
 export function ColorSelector({
@@ -34,55 +43,49 @@ export function ColorSelector({
   className,
   "aria-label": ariaLabel = "Choose color",
   "aria-labelledby": ariaLabelledBy,
+  ref,
+  ...props
 }: ColorSelectorProps) {
-  // Catch duplicate option values in development
-  if (process.env.NODE_ENV !== "production") {
-    const seen = new Set<string>()
-    for (const opt of options) {
-      if (seen.has(opt.value)) {
-        throw new Error(`Duplicate value in ColorSelector options: "${opt.value}"`)
-      }
-      seen.add(opt.value)
-    }
-  }
+  validateNoDuplicateOptions(options, "ColorSelector")
 
   if (!options || options.length === 0) {
     return (
       <div
+        ref={ref}
         data-slot="color-selector"
         data-empty="true"
         className="text-sm text-muted-foreground"
+        {...props}
       >
         No colors available
       </div>
     )
   }
 
-  const selectedArray = value !== undefined ? (value ? [value] : []) : undefined
-  const defaultArray = defaultValue !== undefined ? (defaultValue ? [defaultValue] : []) : undefined
+  const selectedArray = toSelectedArray(value)
+  const defaultArray = toSelectedArray(defaultValue)
 
   return (
     <ToggleGroupPrimitive
+      ref={ref}
       data-slot="color-selector"
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       disabled={disabled}
       value={selectedArray}
       defaultValue={defaultArray}
-      onValueChange={(val: string[]) => {
-        const next = val && val.length > 0 ? String(val[val.length - 1]) : ""
-        onValueChange?.(next)
-      }}
+      onValueChange={(val: string[]) => handleSingleValueChange(val, onValueChange)}
       className={cn("inline-flex flex-wrap items-center gap-2", className)}
+      {...props}
     >
       {options.map((option) => (
-        <ColorSwatchItem key={option.value} option={option} />
+        <ColorSwatch key={option.value} option={option} />
       ))}
     </ToggleGroupPrimitive>
   )
 }
 
-function ColorSwatchItem({ option }: { option: ColorOption }) {
+export function ColorSwatch({ option, ref, className, ...props }: ColorSwatchProps) {
   return (
     <TogglePrimitive
       data-slot="color-swatch"
@@ -90,26 +93,29 @@ function ColorSwatchItem({ option }: { option: ColorOption }) {
       disabled={option.disabled}
       aria-label={option.label}
       title={option.label}
-      render={(props, state) => (
+      {...props}
+      render={(renderProps, state) => (
         <button
+          ref={ref}
           type="button"
-          {...props}
+          {...renderProps}
           className={cn(
             "group relative flex size-11 items-center justify-center rounded-full transition-all outline-none",
             "focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2",
-            "disabled:cursor-not-allowed disabled:opacity-40"
+            "disabled:cursor-not-allowed disabled:opacity-40",
+            className
           )}
         >
           <span
             className={cn(
-              "relative flex size-8 items-center justify-center rounded-full border border-black/15 transition-all",
+              "relative flex size-8 items-center justify-center rounded-full border border-compfi-ink/15 transition-all",
               state.pressed && "ring-2 ring-primary ring-offset-2 scale-105"
             )}
             style={{ backgroundColor: option.color }}
           >
             {state.pressed && (
               <CheckIcon
-                className="size-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+                className="size-4 text-white drop-shadow-xs"
                 aria-hidden="true"
               />
             )}
@@ -119,5 +125,3 @@ function ColorSwatchItem({ option }: { option: ColorOption }) {
     />
   )
 }
-
-export { ColorSwatchItem as ColorSwatch }

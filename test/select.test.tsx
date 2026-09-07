@@ -68,4 +68,35 @@ describe("<Select />", () => {
       expect.anything()
     )
   })
+
+  it("opens popup and navigates items via keyboard", async () => {
+    const user = userEvent.setup()
+    const handleValueChange = vi.fn()
+    render(
+      <Select onValueChange={handleValueChange}>
+        <SelectTrigger aria-label="Sort by">
+          <SelectValue placeholder="Default" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="price-asc">Price: Low to High</SelectItem>
+            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    )
+
+    const trigger = screen.getByRole("combobox", { name: "Sort by" })
+    trigger.focus()
+    await user.keyboard("{Enter}")
+
+    const option = await screen.findByRole("option", { name: "Price: Low to High" })
+    expect(option).toBeInTheDocument()
+    await user.keyboard("{Enter}")
+
+    expect(handleValueChange).toHaveBeenCalledWith(
+      "price-asc",
+      expect.anything()
+    )
+  })
 })

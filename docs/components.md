@@ -62,7 +62,8 @@ Generated components outside this certified inventory (including accordion, aler
   - `default`: Primary brand token
   - `secondary`: Wash background
   - `outline`: Border-thin outline
-  - `destructive`: Measured discount badge (`#8D3333` with white text, 7.91:1 ratio)
+  - `destructive`: Destructive red badge
+  - `discount`: Measured discount badge (`#8D3333` with white text, 7.91:1 ratio)
   - `new`: Measured new product badge (`#2EC1AC` with dark ink, 6.90:1 ratio)
 - **A11y**: Descriptive by default; does not communicate meaning through color alone (visible text like "-30%" or "New" is always present).
 - **Slot**: `data-slot="badge"`.
@@ -145,8 +146,8 @@ Generated components outside this certified inventory (including accordion, aler
 - **Purpose**: Wrapping horizontal flex layout for tags, button groups, and toolbar items.
 - **Server/Client**: Server component.
 - **Exported Props**: `ClusterProps = React.ComponentProps<"div"> & VariantProps<typeof clusterVariants>`
-- **Variants**: `gap` (`none`, `compact`, `default`, `loose`, `spacious`), `align` (`start`, `center`, `end`, `baseline`, `stretch`), `justify` (`start`, `center`, `between`, `end`).
-- **Slot**: `data-slot="cluster"`, `data-gap={gap}`.
+- **Variants**: `gap` (`none`, `compact`, `default`, `loose`, `spacious`), `align` (`start`, `center`, `end`, `baseline`, `stretch`).
+- **Slot**: `data-slot="cluster"`, `data-gap={gap}`, `data-align={align}`.
 
 ### Container (`components/layout/container.tsx`)
 - **Purpose**: Centered max-width responsive container (1240px desktop container with fluid gutters).
@@ -170,36 +171,39 @@ Generated components outside this certified inventory (including accordion, aler
 ### QuantityInput (`components/commerce/quantity-input.tsx`)
 - **Purpose**: Accessible stepper for line item and product quantity selection.
 - **Server/Client**: Client component.
-- **Exported Props**: `QuantityInputProps` supporting `value`, `defaultValue`, `onValueChange`, `min`, `max`, `step`, `name`, `disabled`, `readOnly`.
+- **Exported Props**: `QuantityInputProps` supporting `value`, `defaultValue`, `onValueChange`, `min`, `max`, `step`, `name`, `disabled`, `readOnly`, `ref`.
 - **Behavior**:
-  - Decrement and increment buttons meet 44px minimum targets.
+  - Composes native `<input type="number">` with custom decrement and increment buttons meeting 44px minimum targets.
+  - Full WAI-ARIA spinbutton keyboard support: `ArrowUp` increments, `ArrowDown` decrements, `Enter` commits draft text.
   - Buttons clamp within `[min, max]` boundaries and disable at respective boundaries.
-  - Text input supports typing drafts and normalizes on blur/Enter without firing duplicate changes.
+  - Sets `data-disabled` and `data-readonly` attributes on root container.
   - Free of cascading renders: uses derived state rather than synchronization effects.
 - **Slot**: `data-slot="quantity-input"`.
 - **Real Usage**: Single product detail page add-to-cart, cart drawer quantity adjuster, checkout item count.
 
-### ColorSelector (`components/commerce/color-swatch.tsx`)
+### ColorSelector & ColorSwatch (`components/commerce/color-swatch.tsx`)
 - **Purpose**: Variant color option selector for furniture upholstery and finishes.
 - **Server/Client**: Client component backed by `@base-ui/react/toggle-group`.
-- **Exported Props**: `ColorSelectorProps`, `ColorOption = { value, label, color, disabled? }`.
+- **Exported Props**: `ColorSelectorProps`, `ColorSwatchProps`, `ColorOption` (shared via `types/commerce.ts`).
 - **Features**:
   - Hides array-valued Base UI quirk behind string-valued selection.
   - Non-color selection cue: visible checkmark icon + ring when selected.
   - Minimum 44 × 44 px touch targets (`size-11`).
   - Detects and throws on duplicate option values in development.
-  - Renders documented non-interactive fallback when options array is empty.
+  - Gracefully handles empty and non-existent controlled values.
+  - Forwards `ref` and native DOM attributes on both selector and individual swatches.
 - **Slot**: `data-slot="color-selector"`, `data-slot="color-swatch"`.
 - **Real Usage**: Sofa and chair fabric color selection on product detail page.
 
 ### SizeSelector (`components/commerce/size-selector.tsx`)
 - **Purpose**: Variant size option selector for dimensions and configurations.
 - **Server/Client**: Client component backed by `@base-ui/react/toggle-group`.
-- **Exported Props**: `SizeSelectorProps`, `SizeOption = { value, label, disabled? }`.
+- **Exported Props**: `SizeSelectorProps`, `SizeOption` (shared via `types/commerce.ts`).
 - **Features**:
   - Visible text labels with 44px minimum target floor (`min-h-11 min-w-11`).
   - Single string selection.
   - Detects and throws on duplicate option values in development.
-  - Renders documented non-interactive fallback when options array is empty.
+  - Gracefully handles empty and non-existent controlled values.
+  - Forwards `ref` and native DOM attributes.
 - **Slot**: `data-slot="size-selector"`, `data-slot="size-option"`.
 - **Real Usage**: Bed, dining table, and sofa sizing on product detail page.

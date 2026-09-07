@@ -175,6 +175,13 @@
   --color-compfi-muted: var(--color-muted);
   --color-compfi-brand: var(--color-brand);
   --color-compfi-brand-action: var(--color-brand-action);
+  --color-compfi-brand-focus: var(--color-brand-focus);
+  --color-compfi-product-ink: var(--color-product-ink);
+  --color-compfi-border: var(--color-border);
+  --color-compfi-control-border: var(--color-control-border);
+  --color-compfi-discount: var(--color-discount);
+  --color-compfi-new: var(--color-new);
+  --radius-control: var(--radius-control);
   --color-compfi-hero: var(--color-hero);
   --color-compfi-wash: var(--color-wash);
   --color-compfi-benefit: var(--color-benefit);

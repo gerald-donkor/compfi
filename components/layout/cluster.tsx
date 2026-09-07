@@ -18,17 +18,10 @@ const clusterVariants = cva("flex flex-wrap", {
       baseline: "items-baseline",
       stretch: "items-stretch",
     },
-    justify: {
-      start: "justify-start",
-      center: "justify-center",
-      between: "justify-between",
-      end: "justify-end",
-    },
   },
   defaultVariants: {
     gap: "default",
     align: "center",
-    justify: "start",
   },
 })
 
@@ -39,7 +32,6 @@ function Cluster({
   className,
   gap = "default",
   align = "center",
-  justify = "start",
   ...props
 }: ClusterProps) {
   return (
@@ -47,8 +39,7 @@ function Cluster({
       data-slot="cluster"
       data-gap={gap}
       data-align={align}
-      data-justify={justify}
-      className={cn(clusterVariants({ gap, align, justify }), className)}
+      className={cn(clusterVariants({ gap, align }), className)}
       {...props}
     />
   )
