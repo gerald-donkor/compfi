@@ -1,7 +1,7 @@
 # Establish the Compfi design system
 
-Status: approved; implementation self-verified. Completion requires a local
-commit and independent Standards and Spec review.
+Status: approved and implemented in a local commit; accepted independent-review
+fixes are verified and awaiting re-review.
 
 ## Goal and dependency
 

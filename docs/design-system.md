@@ -1,6 +1,6 @@
 # Compfi design system
 
-Status: implemented and self-verified; independent review pending.
+Status: implemented; accepted initial-review fixes verified, re-review pending.
 
 This document owns Compfi's measured visual tokens and responsive foundation.
 The implementation authority is `app/globals.css`; this record explains the
@@ -64,6 +64,21 @@ records the family, designers, source commit, filenames, and copyright; `OFL.txt
 contains the SIL Open Font License 1.1. The downloaded files were retrieved from
 `https://github.com/google/fonts/tree/main/ofl/poppins` on 2026-09-07.
 
+The comparison used three locally available, openly licensed candidates and
+preserved the raster dimensions of the same strings at the same nominal sizes:
+
+| specimen | Poppins | Noto Sans | Liberation Sans |
+| --- | --- | --- | --- |
+| Bold 52 px, `Discover Our New Collection` | 754 × 75 px | 738 × 73 px | 717 × 61 px |
+| Regular 16 px, `Furniture for everyday rituals.` | 233 × 24 px | 225 × 24 px | 210 × 20 px |
+| Semibold/Bold 24 px, `$1,249.00 0123456789` | 262 × 36 px | 255 × 35 px | 248 × 29 px |
+
+Poppins retained the closest combined proportions and the geometric,
+single-storey lowercase forms visible across the references. Noto Sans and
+Liberation Sans were credible controls but are narrower and use materially
+different lowercase forms. This specimen comparison supports the production
+choice; it does not prove the source design's original family.
+
 | role | production size / line height | weight | intended use |
 | --- | --- | --- | --- |
 | display | fluid 40–52 px / 1.18–1.25 | 700 | campaign statements only |
@@ -93,6 +108,7 @@ Ratios were calculated with WCAG relative luminance.
 | filled action | `#B88E2F` | `#8A681A` | white on action gold: 5.15:1 |
 | focus | not shown | `#765A16` | white: 6.47:1; hero cream: 5.91:1 |
 | muted text | `#898989` | `#686868` | white: 5.57:1; reference was 3.50:1 |
+| control boundary | `#D9D9D9` | `#898989` | white: 3.50:1; structural separators retain the lighter reference border |
 | discount | `#E97171` | `#8D3333` when carrying white text | white: 7.91:1; reference was 2.97:1 |
 | new badge | `#2EC1AC` | same | dark ink: 6.90:1 |
 | hero | `#FFF3E3` | same | campaign grouping |
@@ -108,18 +124,20 @@ normal-size customer copy; the sampled muted value remains evidence only.
 
 `Container` is the shared layout component. It renders a div, accepts native div
 props, composes children, merges its base class before a caller class, and keeps
-`data-slot="container"` stable. At desktop it is 77.5rem (1240 px) wide with
-6.25rem nominal gutters on a 1440 px viewport.
+`data-slot="container"` stable. The base class owns width and centering. A caller
+class is an additive styling hook; any intentional layout override must be a
+later unlayered rule with adequate specificity. At desktop the container is
+77.5rem (1240 px) wide with 6.25rem nominal gutters on a 1440 px viewport.
 
 Breakpoints are implementation decisions because no tablet or mobile references
 were supplied:
 
 | viewport | container gutter | behavior |
 | --- | --- | --- |
-| wider than 1024 px | 100 px until max-width pressure | reference-scale desktop composition |
+| 1024–1440 px | fluid 32–100 px | expand continuously into the reference-scale desktop composition |
 | 768–1024 px | 32 px | reduce columns at content pressure; preserve reading measure |
-| 380–767 px | 20 px | stack primary groups; wrap control rows |
-| 320–379 px | 16 px | single-column samples; labels wrap without overflow |
+| 390–768 px | fluid 20–32 px | stack primary groups; wrap control rows |
+| 320–390 px | fluid 16–20 px | single-column samples; labels wrap without overflow |
 
 The spacing scale is 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96, and 120 px.
 Prefer 24–32 px card/grid gaps, 64–96 px section gaps, and 120 px only for the
@@ -132,7 +150,8 @@ an established primitive in the component phase.
 
 ## Borders, radii, elevation, and motion
 
-- Default border: 1 px `#D9D9D9`.
+- Structural separator border: 1 px `#D9D9D9`; essential control boundaries use
+  `#898989` to reach 3:1 against white.
 - Buttons in the references are predominantly square; field and image roles use
   a 10 px radius. Circular badges use the round token.
 - Most reference surfaces are flat. The one panel shadow token is subtle and is
@@ -181,13 +200,14 @@ Self-verification on 2026-09-07:
 | `npx tsc --noEmit` | passed |
 | `npm run build -- --webpack` | passed; `/` and `/design-system` prerendered as static content |
 | default `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind an internal port in the restricted sandbox; installed Next 16 documentation identifies `--webpack` as the supported fallback |
-| compiled CSS/fonts | four local Poppins faces emitted; semantic tokens, 768/1024 responsive rules, and reduced-motion media query present |
-| browser geometry | no horizontal overflow at 1440, 1024, 768, 390, or 320 px; measured gutters were 100, 32, 32, 20, and 16 px respectively |
+| compiled CSS/fonts | four local Poppins faces emitted; reference, semantic, framework-alias and full typography token layers plus responsive and reduced-motion rules present |
+| browser geometry | no horizontal overflow at 1440, 1200, 1025, 1024, 768, 390, or 320 px; measured gutters progressed continuously as 100, 81, 32, 32, 32, 20, and 16 px respectively |
 | font/runtime | `document.fonts.status` was `loaded` at every width; no application console, hydration, CSS, or font errors observed |
-| keyboard | skip link, home link, enabled buttons, and labeled search field followed DOM order; disabled button was skipped; focus outlines were visible and unclipped |
+| keyboard | skip link, 44 px home link, enabled buttons, labeled search field, and motion disclosure followed DOM order; disabled button was skipped; focus outlines were visible and unclipped |
 | reflow | 320 px viewport retained `scrollWidth === clientWidth` at default sizing and after 200% root text sizing |
-| reduced motion | media query matched, root scroll behavior became `auto`, and transition duration collapsed to 0.01 ms |
-| screenshots | inspected desktop, small desktop, tablet, mobile, and narrow-mobile captures in `/tmp`; source references remained unchanged |
+| controls and motion | search boundary computed to `rgb(137, 137, 137)` (3.50:1 on white); native disclosure toggled open and produced the intended 16 px transform |
+| reduced motion | with the disclosure open, media query matched, root scroll behavior became `auto`, transition duration collapsed to 0.01 ms, and the transform was removed |
+| screenshots | inspected desktop, small desktop, tablet, mobile, and narrow-mobile captures in `/tmp`, including post-review desktop/mobile captures; source references remained unchanged |
 | Web Interface Guidelines | fresh 2026-09-07 rules reviewed; skip navigation, heading anchor offsets, theme color, autocomplete, ellipsis, touch treatment, hover, long-word wrapping, and reduced motion verified; no remaining finding |
 
 The required `agent-browser` executable was not installed. Automatic npm
@@ -196,4 +216,28 @@ so the already-installed Chromium binary and local DevTools Protocol supplied
 equivalent viewport, keyboard, focus, font, reflow, and media-query evidence
 without adding a dependency.
 
-Pending: local implementation commit and independent Standards and Spec review.
+## Initial independent review
+
+The required parallel review against base
+`764064c4d73f7e27c43eb5e4bf6778c8db3c4a14` reported four Standards findings
+(worst severity High) and four Spec findings (worst severity High). The axes
+overlapped across six underlying concerns:
+
+- The search field's light boundary failed non-text contrast. Accepted: the
+  control now uses the accessible `--color-control-border` role.
+- Reference evidence and production roles were not layered deeply enough, and
+  type values were repeated in utilities. Accepted: reference, semantic,
+  framework-alias, and complete typography layers are now explicit.
+- The motion sample reacted to focus without exposing an operable control.
+  Accepted: a native `details`/`summary` control now drives its state.
+- Container width shrank across the 1024/1025 transition, and the brand link's
+  height was below the target. Accepted: gutters interpolate continuously and
+  the link has a 44 px minimum height.
+- Font comparison was described but its evidence was not preserved. Accepted:
+  candidate strings and raster dimensions are recorded above.
+
+No smell-baseline violations were reported. The accepted fixes passed lint,
+standalone TypeScript checking, the webpack production build, browser geometry,
+keyboard, state, reflow, reduced-motion, and screenshot checks. The required
+full two-axis re-review remains pending because the fixes affect shared tokens,
+responsive behavior, and interaction.

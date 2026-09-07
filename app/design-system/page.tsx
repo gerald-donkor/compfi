@@ -145,9 +145,10 @@ export default function DesignSystemPage() {
             <StateSample title="Empty example">Explain what is missing and offer a useful next step.</StateSample>
             <StateSample title="Error example">State the problem and how the customer can recover.</StateSample>
           </div>
-          <div className={styles.motionSample}>
+          <details className={styles.motionSample}>
+            <summary>Toggle motion sample</summary>
             <div className={styles.motionDot} aria-hidden="true" />
-          </div>
+          </details>
           <p className={`${styles.note} type-body-sm`}>
             Motion is interaction-led and removed when reduced motion is preferred.
             Product comparison will scroll horizontally when necessary; cart rows

@@ -3,25 +3,78 @@
 :root {
   color-scheme: light;
 
-  /* Reference palette */
-  --color-canvas: #ffffff;
-  --color-ink: #242424;
-  --color-ink-strong: #333333;
-  --color-product-ink: #3a3a3a;
-  --color-muted-reference: #898989;
+  /* Measured reference evidence */
+  --reference-canvas: #ffffff;
+  --reference-ink: #242424;
+  --reference-ink-strong: #333333;
+  --reference-product-ink: #3a3a3a;
+  --reference-muted: #898989;
+  --reference-brand: #b88e2f;
+  --reference-hero: #fff3e3;
+  --reference-wash: #f9f1e7;
+  --reference-benefit: #faf3ea;
+  --reference-product: #f4f5f7;
+  --reference-border: #d9d9d9;
+  --reference-discount: #e97171;
+  --reference-new: #2ec1ac;
+
+  /* Production semantic roles */
+  --color-canvas: var(--reference-canvas);
+  --color-ink: var(--reference-ink);
+  --color-ink-strong: var(--reference-ink-strong);
+  --color-product-ink: var(--reference-product-ink);
   --color-muted: #686868;
-  --color-brand: #b88e2f;
+  --color-brand: var(--reference-brand);
   --color-brand-action: #8a681a;
   --color-brand-focus: #765a16;
-  --color-hero: #fff3e3;
-  --color-wash: #f9f1e7;
-  --color-benefit: #faf3ea;
-  --color-product: #f4f5f7;
-  --color-border: #d9d9d9;
-  --color-discount-reference: #e97171;
+  --color-hero: var(--reference-hero);
+  --color-wash: var(--reference-wash);
+  --color-benefit: var(--reference-benefit);
+  --color-product: var(--reference-product);
+  --color-border: var(--reference-border);
+  --color-control-border: var(--reference-muted);
   --color-discount: #8d3333;
-  --color-new: #2ec1ac;
-  --color-overlay: rgb(58 58 58 / 72%);
+  --color-new: var(--reference-new);
+  --color-overlay: color-mix(in srgb, var(--color-product-ink) 72%, transparent);
+
+  /* Typography */
+  --font-family-body: var(--font-poppins), Arial, sans-serif;
+  --type-display-size: clamp(2.5rem, 2.05rem + 1.75vw, 3.25rem);
+  --type-display-weight: 700;
+  --type-display-leading: 1.25;
+  --type-display-tracking: -0.02em;
+  --type-heading-xl-size: clamp(2rem, 1.7rem + 1.15vw, 3rem);
+  --type-heading-xl-weight: 600;
+  --type-heading-xl-leading: 1.25;
+  --type-heading-xl-tracking: -0.015em;
+  --type-heading-lg-size: clamp(1.75rem, 1.6rem + 0.55vw, 2rem);
+  --type-heading-lg-weight: 700;
+  --type-heading-lg-leading: 1.2;
+  --type-heading-lg-tracking: 0;
+  --type-heading-md-size: 1.5rem;
+  --type-heading-md-weight: 600;
+  --type-heading-md-leading: 1.35;
+  --type-heading-md-tracking: 0;
+  --type-heading-sm-size: 1.25rem;
+  --type-heading-sm-weight: 600;
+  --type-heading-sm-leading: 1.4;
+  --type-heading-sm-tracking: 0;
+  --type-body-lg-size: 1.125rem;
+  --type-body-lg-weight: 400;
+  --type-body-lg-leading: 1.6;
+  --type-body-lg-tracking: 0;
+  --type-body-size: 1rem;
+  --type-body-weight: 400;
+  --type-body-leading: 1.5;
+  --type-body-tracking: 0;
+  --type-body-sm-size: 0.875rem;
+  --type-body-sm-weight: 400;
+  --type-body-sm-leading: 1.5;
+  --type-body-sm-tracking: 0;
+  --type-label-size: 0.875rem;
+  --type-label-weight: 500;
+  --type-label-leading: 1.4;
+  --type-label-tracking: 0;
 
   /* Spacing and geometry */
   --space-1: 0.25rem;
@@ -38,7 +91,7 @@
   --space-24: 6rem;
   --space-30: 7.5rem;
   --container-max: 77.5rem;
-  --container-gutter: 6.25rem;
+  --container-gutter: clamp(2rem, calc(16.35vw - 8.46rem), 6.25rem);
   --control-min: 2.75rem;
   --radius-control: 0.625rem;
   --radius-image: 0.625rem;
@@ -51,22 +104,16 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-poppins), Arial, sans-serif;
-  --color-canvas: var(--color-canvas);
-  --color-ink: var(--color-ink);
-  --color-ink-strong: var(--color-ink-strong);
-  --color-product-ink: var(--color-product-ink);
-  --color-muted: var(--color-muted);
-  --color-brand: var(--color-brand);
-  --color-brand-action: var(--color-brand-action);
-  --color-brand-focus: var(--color-brand-focus);
-  --color-hero: var(--color-hero);
-  --color-wash: var(--color-wash);
-  --color-benefit: var(--color-benefit);
-  --color-product: var(--color-product);
-  --color-border: var(--color-border);
-  --color-discount: var(--color-discount);
-  --color-new: var(--color-new);
+  --font-sans: var(--font-family-body);
+  --color-compfi-canvas: var(--color-canvas);
+  --color-compfi-ink: var(--color-ink);
+  --color-compfi-muted: var(--color-muted);
+  --color-compfi-brand: var(--color-brand);
+  --color-compfi-brand-action: var(--color-brand-action);
+  --color-compfi-hero: var(--color-hero);
+  --color-compfi-wash: var(--color-wash);
+  --color-compfi-benefit: var(--color-benefit);
+  --color-compfi-product: var(--color-product);
   --breakpoint-md: 48rem;
   --breakpoint-lg: 64rem;
 }
@@ -80,18 +127,19 @@
 html {
   background: var(--color-canvas);
   color: var(--color-ink);
-  font-family: var(--font-poppins), Arial, sans-serif;
+  font-family: var(--font-family-body);
   scroll-behavior: smooth;
   text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgb(184 142 47 / 22%);
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--color-brand) 22%, transparent);
 }
 
 body {
   margin: 0;
   background: var(--color-canvas);
   color: var(--color-ink);
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-leading);
   text-rendering: optimizeLegibility;
 }
 
@@ -174,56 +222,66 @@ textarea {
 }
 
 .type-display {
-  font-size: clamp(2.5rem, 2.05rem + 1.75vw, 3.25rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  letter-spacing: var(--type-display-tracking);
+  line-height: var(--type-display-leading);
 }
 
 .type-heading-xl {
-  font-size: clamp(2rem, 1.7rem + 1.15vw, 3rem);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1.25;
+  font-size: var(--type-heading-xl-size);
+  font-weight: var(--type-heading-xl-weight);
+  letter-spacing: var(--type-heading-xl-tracking);
+  line-height: var(--type-heading-xl-leading);
 }
 
 .type-heading-lg {
-  font-size: clamp(1.75rem, 1.6rem + 0.55vw, 2rem);
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: var(--type-heading-lg-size);
+  font-weight: var(--type-heading-lg-weight);
+  letter-spacing: var(--type-heading-lg-tracking);
+  line-height: var(--type-heading-lg-leading);
 }
 
 .type-heading-md {
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.35;
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-md-weight);
+  letter-spacing: var(--type-heading-md-tracking);
+  line-height: var(--type-heading-md-leading);
 }
 
 .type-heading-sm {
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.4;
+  font-size: var(--type-heading-sm-size);
+  font-weight: var(--type-heading-sm-weight);
+  letter-spacing: var(--type-heading-sm-tracking);
+  line-height: var(--type-heading-sm-leading);
 }
 
 .type-body-lg {
-  font-size: 1.125rem;
-  line-height: 1.6;
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-body-lg-weight);
+  letter-spacing: var(--type-body-lg-tracking);
+  line-height: var(--type-body-lg-leading);
 }
 
 .type-body {
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  letter-spacing: var(--type-body-tracking);
+  line-height: var(--type-body-leading);
 }
 
 .type-body-sm {
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-body-sm-weight);
+  letter-spacing: var(--type-body-sm-tracking);
+  line-height: var(--type-body-sm-leading);
 }
 
 .type-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.4;
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-tracking);
+  line-height: var(--type-label-leading);
 }
 
 .text-muted {
@@ -291,25 +349,19 @@ textarea {
   opacity: 0.48;
 }
 
-@media (max-width: 64rem) {
+@media (max-width: 48rem) {
   :root {
-    --container-gutter: 2rem;
-  }
-}
-
-@media (max-width: 47.999rem) {
-  :root {
-    --container-gutter: 1.25rem;
+    --container-gutter: clamp(1.25rem, calc(3.1746vw + 0.4762rem), 2rem);
   }
 
   .type-display {
-    line-height: 1.18;
+    --type-display-leading: 1.18;
   }
 }
 
-@media (max-width: 23.75rem) {
+@media (max-width: 24.375rem) {
   :root {
-    --container-gutter: 1rem;
+    --container-gutter: clamp(1rem, calc(5.7143vw - 0.1429rem), 1.25rem);
   }
 }
 

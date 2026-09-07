@@ -12,9 +12,12 @@
 }
 
 .brand {
+  display: inline-flex;
+  min-height: var(--control-min);
+  align-items: center;
   color: var(--color-ink-strong);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--type-heading-md-size);
+  font-weight: var(--type-heading-lg-weight);
   text-decoration: none;
 }
 
@@ -97,7 +100,7 @@
 
 .sampleName {
   color: var(--color-muted);
-  font-size: 0.875rem;
+  font-size: var(--type-label-size);
 }
 
 .spacingGrid,
@@ -156,13 +159,13 @@
   flex: 1 1 16rem;
   gap: var(--space-2);
   max-width: 24rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
 }
 
 .field input {
   width: 100%;
-  border: var(--border-thin) solid var(--color-border);
+  border: var(--border-thin) solid var(--color-control-border);
   border-radius: var(--radius-control);
   background: var(--color-canvas);
   padding-inline: var(--space-4);
@@ -170,24 +173,31 @@
 }
 
 .motionSample {
-  display: grid;
-  min-height: 9rem;
-  place-items: center;
   margin-top: var(--space-8);
   border: var(--border-thin) solid var(--color-border);
   background: var(--color-product);
+  padding: var(--space-6);
+}
+
+.motionSample summary {
+  display: flex;
+  min-height: var(--control-min);
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  touch-action: manipulation;
 }
 
 .motionDot {
   width: 3rem;
   height: 3rem;
   border-radius: var(--radius-round);
+  margin: var(--space-6) auto;
   background: var(--color-brand);
   transition: transform var(--duration-standard) var(--ease-standard);
 }
 
-.motionSample:hover .motionDot,
-.motionSample:focus-within .motionDot {
+.motionSample[open] .motionDot {
   transform: translateX(1rem);
 }
 
