@@ -27,6 +27,9 @@ This document owns the public component contracts, APIs, states, and accessibili
   present. The audited Sheet adaptation uses a 20% scrim, flat 550px maximum
   side sheet, viewport-safe width, overscroll containment, reduced-motion-safe
   transition, focus trapping, Escape/backdrop dismissal, and focus return.
+- **`Breadcrumb`, `Empty`, `Sheet`**: The Phase 3 compositions of these
+  primitives are audited and verified. They are no longer treated as
+  unexamined generated components in this inventory.
 
 ### Certified Phase 2 Components
 The following components have been fully audited, styled to Compfi's measured design tokens, verified for accessibility (WCAG 2.2 AA floor), and tested in automated JSDOM suites and real-browser rendering:
@@ -37,7 +40,7 @@ The following components have been fully audited, styled to Compfi's measured de
 - **Product Foundations**: `Money`, `QuantityInput`, `ColorSelector` / `ColorSwatch`, `SizeSelector`
 
 ### Existing Uncertified Components
-Generated components outside this certified inventory (including accordion, alert-dialog, avatar, breadcrumb, calendar, card, carousel, chart, checkbox, collapsible, combobox, command, context-menu, dialog, drawer, dropdown-menu, empty, hover-card, input-group, input-otp, item, kbd, marker, menubar, message-scroller, message, native-select, navigation-menu, pagination, popover, progress, questionnaire, radio-group, resizable, scroll-area, sheet, sidebar, skeleton, slider, switch, table, tabs, tooltip) remain committed in the repository as pre-existing base files. They are **not yet certified** and will be audited and adapted as future owning phases require them.
+Generated components outside this certified inventory (including accordion, alert-dialog, avatar, calendar, card, carousel, chart, checkbox, collapsible, combobox, command, context-menu, dialog, drawer, dropdown-menu, hover-card, input-group, input-otp, item, kbd, marker, menubar, message-scroller, message, native-select, navigation-menu, pagination, popover, progress, questionnaire, radio-group, resizable, scroll-area, sidebar, skeleton, slider, switch, table, tabs, tooltip) remain committed in the repository as pre-existing base files. They are **not yet certified** and will be audited and adapted as future owning phases require them.
 
 ---
 

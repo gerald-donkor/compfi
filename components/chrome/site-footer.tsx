@@ -13,7 +13,7 @@ export function SiteFooter() {
       <Container>
         <div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_repeat(2,minmax(9rem,0.5fr))]">
           <div>
-            <p className="text-2xl font-bold tracking-[-0.04em]" translate="no">Compfi</p>
+            <p className="type-wordmark type-wordmark-footer" translate="no">Compfi</p>
             <p className="type-body text-muted mt-4 max-w-xs">Furniture and home furnishings, thoughtfully presented.</p>
           </div>
           {footerGroups.map((group) => (

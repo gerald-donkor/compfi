@@ -202,6 +202,22 @@ an established primitive in the component phase.
 - Reduced-motion preference removes smooth scrolling, collapses transitions,
   and prevents the specimen motion transform. Content never depends on motion.
 
+## Shared chrome tokens
+
+Phase 3 owns a small chrome layer rather than scattering measured values in
+component utilities. `--chrome-header-height` is the 100 px desktop header;
+`--chrome-page-hero-banner-height` and
+`--chrome-page-hero-breadcrumb-height` are the 315 px and 180 px wash regions;
+`--chrome-benefits-block-padding` produces the 275 px benefits band around its
+content. The drawer layer records the measured 550 px maximum, 16 px narrow
+insets, and 40 px entry offset as `--chrome-drawer-max-width`,
+`--chrome-drawer-inline-inset`, and `--chrome-sheet-entry-offset`.
+
+`type-wordmark`, `type-wordmark-header`, and `type-wordmark-footer` are the
+single reusable Compfi wordmark treatment. Their 700 weight, -0.04em tracking,
+and 20/24 px contextual sizes are named typography roles, not component-local
+utilities.
+
 ## State guidance
 
 Loading treatments preserve geometry and name the pending result. Empty states

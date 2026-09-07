@@ -14,6 +14,9 @@ committed with the implementation.
 | Benefits | Contact benefit band is 550 raster px tall | 275 CSS px desktop band with four item groups; responsive 2-column then 1-column flow |
 | Cart drawer | 1100 raster px sheet from x=1780; background white changed to `#CCCCCC` | 550 CSS px maximum right sheet and 20% black scrim; narrow viewports preserve a 16 CSS px inset on each side |
 
+The exact shared-chrome geometry is consumed through the named chrome and
+wordmark tokens documented in `docs/design-system.md`.
+
 ### Components and behavior
 
 - `SiteHeader` is server-rendered; `HeaderControls` is the small client boundary
@@ -62,7 +65,7 @@ Self-verification on 2026-09-07:
 
 Initial independent review found and resolved two Spec issues (PageHero height
 and fake current-page link) and four Standards issues (semantic scrim/motion and
-named chrome geometry tokens). The review-fix commit and re-review results are
-recorded after they complete.
-
-The required independent review follows the implementation commit.
+named chrome geometry tokens). The subsequent Standards re-review found and
+resolved the remaining geometry/wordmark token gaps and documentation-status
+inconsistency; Spec re-review reported no remaining finding. The final re-review
+results are recorded after that fix commit.

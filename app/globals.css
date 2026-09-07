@@ -131,9 +131,17 @@
   --duration-fast: 140ms;
   --duration-standard: 220ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --type-wordmark-weight: 700;
+  --type-wordmark-tracking: -0.04em;
+  --type-wordmark-header-size: 1.25rem;
+  --type-wordmark-footer-size: 1.5rem;
+  --chrome-header-height: 6.25rem;
   --chrome-page-hero-banner-height: 19.6875rem;
   --chrome-page-hero-breadcrumb-height: 11.25rem;
   --chrome-benefits-block-padding: 6.75rem;
+  --chrome-drawer-max-width: 34.375rem;
+  --chrome-drawer-inline-inset: 1rem;
+  --chrome-sheet-entry-offset: 2.5rem;
   /* shadcn semantic role mappings to Compfi design tokens */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);
@@ -397,6 +405,19 @@ textarea {
   font-weight: var(--type-label-weight);
   letter-spacing: var(--type-label-tracking);
   line-height: var(--type-label-leading);
+}
+
+.type-wordmark {
+  font-weight: var(--type-wordmark-weight);
+  letter-spacing: var(--type-wordmark-tracking);
+}
+
+.type-wordmark-header {
+  font-size: var(--type-wordmark-header-size);
+}
+
+.type-wordmark-footer {
+  font-size: var(--type-wordmark-footer-size);
 }
 
 .text-muted {
