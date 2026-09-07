@@ -19,7 +19,7 @@ export function BenefitsStrip() {
           <div key={title} className="flex items-start gap-4">
             <Icon aria-hidden="true" className="mt-1 shrink-0 text-compfi-ink" />
             <div>
-              <h2 className="type-heading-sm">{title}</h2>
+              <h2 className="type-heading-md">{title}</h2>
               <p className="type-body text-muted mt-1">{description}</p>
             </div>
           </div>
