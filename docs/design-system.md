@@ -1,6 +1,6 @@
 # Compfi design system
 
-Status: implemented; closure-review fixes verified, final review pending.
+Status: implemented; sign-off review fix verified, final review pending.
 
 This document owns Compfi's measured visual tokens and responsive foundation.
 The implementation authority is `app/globals.css`; this record explains the
@@ -190,8 +190,8 @@ an established primitive in the component phase.
   receive invented elevation. At Home y=4100, x=198–203 remains white before
   the product surface starts at x=204; at x=400 the surface ends at y=4271 and
   returns directly to white at y=4272, with no intervening shadow run.
-- The product-card overlay is product ink at 72%; the cart scrim is a separate
-  20% black role. The coordinate evidence and blend derivation are above.
+- `--color-overlay` is product ink at 72%; `--color-scrim` is the separate 20%
+  black cart/modal role. The coordinate evidence and blend derivation are above.
 - Focus rings are 3 px wide with a 3 px offset; the one-pixel active offset is
   reserved for pressed buttons. These are accessible implementation additions.
 - Interaction transitions use the implementation-selected 140 ms for color and
@@ -356,3 +356,14 @@ severity High) and three Spec findings (worst severity Medium):
 These changes pass lint, standalone TypeScript checking, the webpack production
 build, the expanded eight-width browser matrix, and desktop/mobile visual
 inspection. One final cumulative review remains pending.
+
+## Sign-off review
+
+The Standards axis passed with zero findings and no smell-baseline concerns.
+The Spec axis reported one Medium implementation finding plus the known tooling
+exception: the measured 20% cart scrim was documented as a separate role but
+only the 72% product overlay had a token. The verified finding is accepted;
+`--color-scrim` now maps the measured value independently and appears in the
+color specimen. Lint, standalone TypeScript checking, the webpack production
+build, and the eight-width browser matrix pass. Final cumulative review remains
+pending.

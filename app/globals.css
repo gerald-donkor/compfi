@@ -17,6 +17,7 @@
   --reference-border: #d9d9d9;
   --reference-discount: #e97171;
   --reference-new: #2ec1ac;
+  --reference-scrim: rgb(0 0 0 / 20%);
   --reference-type-display-size: 3.25rem;
   --reference-type-display-weight: 700;
   --reference-type-display-leading: 1.25;
@@ -48,6 +49,7 @@
   --color-discount: #8d3333;
   --color-new: var(--reference-new);
   --color-overlay: color-mix(in srgb, var(--color-product-ink) 72%, transparent);
+  --color-scrim: var(--reference-scrim);
 
   /* Typography */
   --font-family-body: var(--font-poppins), Arial, sans-serif;
@@ -139,6 +141,7 @@
   --color-compfi-wash: var(--color-wash);
   --color-compfi-benefit: var(--color-benefit);
   --color-compfi-product: var(--color-product);
+  --color-compfi-scrim: var(--color-scrim);
   --breakpoint-md: 48rem;
   --breakpoint-lg: 64rem;
 }

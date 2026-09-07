@@ -84,6 +84,7 @@
 .inkColor { background: var(--color-ink); }
 .mutedColor { background: var(--color-muted); }
 .newColor { background: var(--color-new); }
+.scrimColor { background: var(--color-scrim); }
 
 .typeStack {
   display: grid;

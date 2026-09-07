@@ -49,6 +49,7 @@ export default function DesignSystemPage() {
             <Swatch colorClass={styles.inkColor} name="Primary ink" token="--color-ink" />
             <Swatch colorClass={styles.mutedColor} name="Accessible muted" token="--color-muted" />
             <Swatch colorClass={styles.newColor} name="New accent" token="--color-new" />
+            <Swatch colorClass={styles.scrimColor} name="Modal scrim" token="--color-scrim" />
           </div>
         </section>
 
