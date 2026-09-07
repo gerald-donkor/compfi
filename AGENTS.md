@@ -165,7 +165,7 @@ implementation evidence.
 | `AGENTS.md` | project, workflow, design, architecture, and verification contract | current |
 | `CONTEXT.md` | canonical Compfi domain glossary | planned; create lazily when the first domain term is resolved |
 | `docs/design-system.md` | measured tokens and responsive foundations | current; implemented and reviewed |
-| `docs/components.md` | component inventory, APIs, states, and accessibility | planned in phase 2 |
+| `docs/components.md` | component inventory, APIs, states, and accessibility | current; implemented and verified in Phase 2 |
 | `docs/pages.md` | route-by-route build record and reference deltas | planned with page phases |
 | `docs/automation.md` | repeatable measurement and screenshot-diff procedure | current |
 | `docs/auth.md` | Clerk setup, protected surfaces, and verification | planned when authentication is needed |
@@ -210,9 +210,10 @@ accepted. A directory or speculative template is not documentation evidence.
 
 ## 3.1 The ALWAYS ledger
 
-Whenever the user writes the word **ALWAYS** in the prompt box as part of an
-instruction, treat that instruction as a durable project rule rather than a
-one-turn preference. Before continuing with the request:
+Whenever the user writes the word **always**, in any capitalization, in the
+prompt box as part of an instruction, treat that instruction as a durable
+project rule rather than a one-turn preference. Before continuing with the
+request:
 
 1. Add one dated row to the ledger below, using the user's own terms and a short
    explanation of why the rule exists when that is not self-evident.
@@ -533,10 +534,12 @@ it: read its complete `SKILL.md` and the references it routes to before acting.
 If the task needs a capability not present locally:
 
 1. Load `find-skills`.
-2. Search for a narrowly scoped, reputable skill; browse the web only when
-   discovery or current documentation genuinely requires it.
-3. Inspect its source, permissions, dependencies, maintenance, and overlap with
-   existing skills before installation.
+2. Search the current web ecosystem for narrowly scoped candidates, checking
+   the skills leaderboard and other current evidence of popularity and
+   recommendation rather than relying on stale memory.
+3. Inspect each serious candidate's source, permissions, dependencies,
+   maintenance, security signals, install count, source reputation, and overlap
+   with existing skills before installation.
 4. During prompt preparation, discovery, inspection, vetting, and recording are
    allowed, but do not install a skill into the project-local `.agents/skills/`
    directory or otherwise mutate project files for that installation. An
@@ -648,6 +651,7 @@ Use the skills that own the surface; do not load unrelated ones.
 | `building-components` | token architecture, artifact taxonomy, component APIs, state, data attributes, documentation, and accessibility |
 | `vercel-composition-patterns` | reusable React APIs, compound components, explicit variants, and avoiding boolean-prop proliferation |
 | `vercel-react-best-practices` | every React/Next.js implementation or review; waterfalls, bundle size, rendering, serialization, and rerenders |
+| `react-testing` | behavior-focused React component and hook tests, accessible queries, user-event interaction, axe assertions, and the component-test/E2E boundary |
 | `shadcn` | Compfi's established UI component approach; inspect `components.json`, project info, and component docs before adding or changing shadcn components; use the [official shadcn/ui docs](https://ui.shadcn.com/docs) |
 | `web-design-guidelines` | the final UI/UX and accessibility review before a surface is called complete |
 | `agent-browser` | browser-based implementation verification, responsive screenshots, interactions, forms, and accessibility smoke tests |

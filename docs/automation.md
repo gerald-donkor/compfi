@@ -93,12 +93,15 @@ that evidence.
 ## Static checks
 
 ```bash
+npm run test
 npm run lint
 npx tsc --noEmit
 npm run build
 ```
 
-Inspect emitted styles for the local font faces, semantic tokens, and responsive
+The test runner (`vitest`) executes behavior-focused component tests with React
+Testing Library, user-event interaction simulation, and automated `axe-core` accessibility
+checks. Inspect emitted styles for the local font faces, semantic tokens, and responsive
 rules after the production build. Do not treat a source declaration alone as
 proof that it compiled.
 

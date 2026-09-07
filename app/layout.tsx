@@ -2,10 +2,6 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const poppins = localFont({
   src: [
@@ -49,7 +45,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-US" className={cn("font-sans", geist.variable)}>
+    <html lang="en-US" className={poppins.variable}>
       <body>
         <a className="skip-link" href="#main-content">
           Skip to main content

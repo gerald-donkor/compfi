@@ -3,7 +3,9 @@
 import * as React from "react"
 import { cn } from "cn"
 
-function Label({ className, ...props }: React.ComponentProps<"label">) {
+export type LabelProps = React.ComponentProps<"label">
+
+function Label({ className, ...props }: LabelProps) {
   return (
     <label
       data-slot="label"

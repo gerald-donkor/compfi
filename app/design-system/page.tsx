@@ -1,40 +1,223 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from "next"
+import NextLink from "next/link"
 
-import { Container } from "@/components/layout/container";
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
+import { Stack } from "@/components/layout/stack"
+import { Cluster } from "@/components/layout/cluster"
+import { Button } from "@/components/ui/button"
+import { IconButton } from "@/components/ui/icon-button"
+import { Link } from "@/components/ui/link"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+  FieldSet,
+  FieldLegend,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Money } from "@/components/commerce/money"
+import { InteractiveSpecimens } from "./component-specimens"
+import { HeartIcon, Share2Icon } from "lucide-react"
 
-import styles from "./design-system.module.css";
+import styles from "./design-system.module.css"
 
 export const metadata: Metadata = {
-  title: "Design system",
+  title: "Design system & component specimen",
   robots: {
     index: false,
     follow: false,
   },
-};
+}
 
 export default function DesignSystemPage() {
   return (
     <main id="main-content" className={styles.page}>
       <Container>
         <header className={styles.masthead}>
-          <Link className={styles.brand} href="/" translate="no">
+          <NextLink className={styles.brand} href="/" translate="no">
             Compfi
-          </Link>
-          <span className="type-label text-muted">Foundation specimen</span>
+          </NextLink>
+          <span className="type-label text-muted">Component & foundation specimen</span>
         </header>
 
         <div className={styles.intro}>
-          <h1 className="type-display">A quiet frame for expressive rooms.</h1>
+          <h1 className="type-display">Considered foundations for modern living.</h1>
           <p className="type-body-lg text-muted">
-            These measured foundations translate the supplied desktop references
-            into a responsive, accessible system for Compfi.
+            These measured tokens, primitives, and accessible interactive components
+            form the production UI layer for Compfi.
           </p>
         </div>
 
+        {/* Phase 2: Actions and Display */}
+        <section className={styles.section} aria-labelledby="actions-title">
+          <div className={styles.sectionHeader}>
+            <h2 id="actions-title" className="type-heading-lg">Actions and display</h2>
+            <p className="text-muted">
+              Square action geometry, 44px minimum touch targets, visible focus rings,
+              and semantic text links.
+            </p>
+          </div>
+
+          <Stack gap="spacious" className="mt-8">
+            <Stack gap="compact">
+              <h3 className="type-heading-sm">Button variants</h3>
+              <Cluster gap="compact">
+                <Button variant="default">Primary action</Button>
+                <Button variant="outline">Outline action</Button>
+                <Button variant="secondary">Secondary action</Button>
+                <Button variant="ghost">Ghost action</Button>
+                <Button variant="destructive">Destructive action</Button>
+                <Button variant="link">Text button link</Button>
+              </Cluster>
+            </Stack>
+
+            <Stack gap="compact">
+              <h3 className="type-heading-sm">Action states</h3>
+              <Cluster gap="compact">
+                <Button variant="default">Default</Button>
+                <Button variant="default" disabled>Disabled</Button>
+                <Button variant="outline" disabled>Disabled outline</Button>
+                <Button
+                  render={<NextLink href="/catalog" />}
+                  nativeButton={false}
+                >
+                  Link as button
+                </Button>
+                <IconButton label="Favorite item" icon={HeartIcon} variant="outline" />
+                <IconButton label="Share item" icon={Share2Icon} variant="ghost" />
+              </Cluster>
+            </Stack>
+
+            <Stack gap="compact">
+              <h3 className="type-heading-sm">Text links</h3>
+              <Cluster gap="loose">
+                <Link href="/shop">Default link</Link>
+                <Link href="/shop" variant="muted">Muted link</Link>
+                <Link href="/shop" variant="primary">Brand primary link</Link>
+                <Link href="/shop" variant="underline">Underline link</Link>
+              </Cluster>
+            </Stack>
+
+            <Stack gap="compact">
+              <h3 className="type-heading-sm">Badges</h3>
+              <Cluster gap="compact">
+                <Badge variant="default">Featured</Badge>
+                <Badge variant="secondary">In stock</Badge>
+                <Badge variant="outline">Handcrafted</Badge>
+                <Badge variant="destructive">-30%</Badge>
+                <Badge variant="new">New</Badge>
+              </Cluster>
+            </Stack>
+
+            <Stack gap="compact">
+              <h3 className="type-heading-sm">Separators</h3>
+              <div className="flex flex-col gap-4 max-w-lg">
+                <span className="text-sm text-muted-foreground">Horizontal divider:</span>
+                <Separator />
+                <div className="flex h-8 items-center gap-4 text-sm text-muted-foreground">
+                  <span>Section A</span>
+                  <Separator orientation="vertical" />
+                  <span>Section B</span>
+                  <Separator orientation="vertical" />
+                  <span>Section C</span>
+                </div>
+              </div>
+            </Stack>
+          </Stack>
+        </section>
+
+        {/* Phase 2: Form Controls */}
+        <section className={styles.section} aria-labelledby="forms-title">
+          <div className={styles.sectionHeader}>
+            <h2 id="forms-title" className="type-heading-lg">Forms and fields</h2>
+            <p className="text-muted">
+              Persistent labels, 10px control radius, 44px min targets, and clear validation states.
+            </p>
+          </div>
+
+          <div className="mt-8 max-w-2xl">
+            <FieldSet>
+              <FieldLegend>Customer contact details</FieldLegend>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="specimen-name">Full name</FieldLabel>
+                  <Input id="specimen-name" placeholder="E.g. Eleanor Vance" autoComplete="name" />
+                  <FieldDescription>Required for order delivery confirmation.</FieldDescription>
+                </Field>
+
+                <Field data-invalid="true">
+                  <FieldLabel htmlFor="specimen-email">Email address</FieldLabel>
+                  <Input
+                    id="specimen-email"
+                    type="email"
+                    defaultValue="invalid-email-address"
+                    aria-invalid="true"
+                    aria-describedby="specimen-email-error"
+                  />
+                  <FieldError id="specimen-email-error">
+                    Please provide a valid email address with an @ domain.
+                  </FieldError>
+                </Field>
+
+                <Field>
+                  <FieldLabel htmlFor="specimen-disabled">Account reference</FieldLabel>
+                  <Input id="specimen-disabled" disabled defaultValue="COMPFI-84920" />
+                  <FieldDescription>Assigned account ID (read only).</FieldDescription>
+                </Field>
+
+                <Field>
+                  <FieldLabel htmlFor="specimen-notes">Special instructions</FieldLabel>
+                  <Textarea id="specimen-notes" placeholder="Delivery gate codes or special notes…" />
+                </Field>
+              </FieldGroup>
+            </FieldSet>
+          </div>
+        </section>
+
+        {/* Phase 2: Product foundations & Interactive specimens */}
+        <section className={styles.section} aria-labelledby="commerce-title">
+          <div className={styles.sectionHeader}>
+            <h2 id="commerce-title" className="type-heading-lg">Product foundations & specimens</h2>
+            <p className="text-muted">
+              USD money formatting, quantity inputs, color swatches, and size selectors.
+            </p>
+          </div>
+
+          <Stack gap="spacious" className="mt-8">
+            <Stack gap="compact">
+              <h3 className="type-heading-sm">Money component (en-US USD)</h3>
+              <Cluster gap="loose">
+                <div>
+                  <span className="block text-xs text-muted-foreground">Zero:</span>
+                  <Money amountCents={0} className="text-lg" />
+                </div>
+                <div>
+                  <span className="block text-xs text-muted-foreground">Standard:</span>
+                  <Money amountCents={4900} className="text-lg" />
+                </div>
+                <div>
+                  <span className="block text-xs text-muted-foreground">Thousands:</span>
+                  <Money amountCents={245000} className="text-lg" />
+                </div>
+              </Cluster>
+            </Stack>
+
+            <div className="pt-4 border-t border-border">
+              <InteractiveSpecimens />
+            </div>
+          </Stack>
+        </section>
+
+        {/* Phase 1 Foundations preserved */}
         <section className={styles.section} aria-labelledby="color-title">
           <div className={styles.sectionHeader}>
-            <h2 id="color-title" className="type-heading-lg">Color</h2>
+            <h2 id="color-title" className="type-heading-lg">Color foundations</h2>
             <p className="text-muted">
               Warm grouping surfaces and a restrained gold accent keep furniture
               imagery in the foreground.
@@ -75,7 +258,7 @@ export default function DesignSystemPage() {
 
         <section className={styles.section} aria-labelledby="space-title">
           <div className={styles.sectionHeader}>
-            <h2 id="space-title" className="type-heading-lg">Spacing</h2>
+            <h2 id="space-title" className="type-heading-lg">Spacing scale</h2>
             <p className="text-muted">
               A four-pixel base supports compact controls and the references&apos;
               larger section intervals.
@@ -135,53 +318,18 @@ export default function DesignSystemPage() {
         </section>
       </Container>
 
-      <section className={`${styles.section} ${styles.containerDemo}`} aria-labelledby="layout-title">
+      <Section spacing="default" className={styles.containerDemo} aria-labelledby="layout-title">
         <Container>
           <div className={styles.containerInner}>
-            <h2 id="layout-title" className="type-heading-lg">Measured container</h2>
+            <h2 id="layout-title" className="type-heading-lg">Measured container & Section</h2>
             <p className="text-muted mt-3">
               77.5rem maximum width with fluid tablet and mobile gutters.
             </p>
           </div>
         </Container>
-      </section>
-
-      <Container>
-        <section className={styles.section} aria-labelledby="controls-title">
-          <div className={styles.sectionHeader}>
-            <h2 id="controls-title" className="type-heading-lg">Controls and states</h2>
-            <p className="text-muted">
-              Native elements preserve semantics, 44-pixel targets, keyboard focus,
-              and familiar disabled behavior.
-            </p>
-          </div>
-          <div className={styles.controlStack}>
-            <button className="button-primary" type="button">Primary action</button>
-            <button className="button-outline" type="button">Outline action</button>
-            <button className="button-primary" type="button" disabled>Disabled action</button>
-            <label className={styles.field}>
-              Material search
-              <input autoComplete="off" name="material" placeholder="Try oak or linen…" type="search" />
-            </label>
-          </div>
-          <div className={styles.stateGrid}>
-            <StateSample title="Loading example">Keep layout stable and name the pending result.</StateSample>
-            <StateSample title="Empty example">Explain what is missing and offer a useful next step.</StateSample>
-            <StateSample title="Error example">State the problem and how the customer can recover.</StateSample>
-          </div>
-          <details className={styles.motionSample}>
-            <summary>Toggle motion sample</summary>
-            <div className={styles.motionDot} aria-hidden="true" />
-          </details>
-          <p className={`${styles.note} type-body-sm`}>
-            Motion is interaction-led and removed when reduced motion is preferred.
-            Product comparison will scroll horizontally when necessary; cart rows
-            will stack on small screens; modal sheets will use the available viewport.
-          </p>
-        </section>
-      </Container>
+      </Section>
     </main>
-  );
+  )
 }
 
 function Swatch({ colorClass, name, token }: { colorClass: string; name: string; token: string }) {
@@ -193,7 +341,7 @@ function Swatch({ colorClass, name, token }: { colorClass: string; name: string;
         <p className="type-body-sm text-muted">{token}</p>
       </div>
     </div>
-  );
+  )
 }
 
 function TypeSample({ children, className, name }: { children: React.ReactNode; className: string; name: string }) {
@@ -202,7 +350,7 @@ function TypeSample({ children, className, name }: { children: React.ReactNode; 
       <p className={styles.sampleName}>{name}</p>
       <p className={className}>{children}</p>
     </div>
-  );
+  )
 }
 
 function SpaceSample({ className, label }: { className: string; label: string }) {
@@ -211,18 +359,9 @@ function SpaceSample({ className, label }: { className: string; label: string })
       <p className="type-label">{label}</p>
       <div className={`${styles.spaceBar} ${className}`} aria-hidden="true" />
     </div>
-  );
-}
-
-function StateSample({ children, title }: { children: React.ReactNode; title: string }) {
-  return (
-    <div className={styles.stateCard}>
-      <strong>{title}</strong>
-      <p className="type-body-sm text-muted mt-2">{children}</p>
-    </div>
-  );
+  )
 }
 
 function GeometrySample({ className, label }: { className: string; label: string }) {
-  return <div className={`${styles.geometrySample} ${className}`}>{label}</div>;
+  return <div className={`${styles.geometrySample} ${className}`}>{label}</div>
 }

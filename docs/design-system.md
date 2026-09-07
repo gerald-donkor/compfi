@@ -391,3 +391,11 @@ roles remain distinct, and the complete approved prompt is implemented across
 desktop, tablet, mobile, and narrow-mobile widths. The unavailable
 `agent-browser` executable remains the disclosed tooling exception; Chromium/CDP
 provided equivalent behavioral evidence without changing project dependencies.
+
+## Phase 2 token and font reconciliation
+
+During Phase 2 component establishment, drift introduced by post-Phase 1 generation was reconciled with the reviewed design system:
+1. **Typography Authority**: Generated Geist font declarations were removed. Poppins is the sole shipped family. Tailwind's `--font-sans` and `--font-heading` inline theme definitions resolve directly to `var(--font-poppins), Arial, sans-serif`.
+2. **Semantic Mappings**: The shadcn semantic tokens (`background`, `foreground`, `primary`, `primary-foreground`, `secondary`, `secondary-foreground`, `muted`, `muted-foreground`, `accent`, `accent-foreground`, `destructive`, `destructive-foreground`, `border`, `input`, `ring`, `radius`) are mapped directly to Compfi's measured and accessible semantic roles rather than maintaining a redundant neutral palette.
+3. **Light-Only Baseline**: The active `.dark` class block and `@custom-variant dark` were removed from `app/globals.css`, keeping the storefront strictly light-only.
+4. **Legacy Selectors Eliminated**: The legacy `.button-primary` and `.button-outline` classes were completely replaced by the certified `Button` component and removed from `app/globals.css`.
