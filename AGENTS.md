@@ -164,10 +164,10 @@ implementation evidence.
 | --- | --- | --- |
 | `AGENTS.md` | project, workflow, design, architecture, and verification contract | current |
 | `CONTEXT.md` | canonical Compfi domain glossary | planned; create lazily when the first domain term is resolved |
-| `docs/design-system.md` | measured tokens and responsive foundations | planned in phase 1 |
+| `docs/design-system.md` | measured tokens and responsive foundations | implemented and self-verified; review pending |
 | `docs/components.md` | component inventory, APIs, states, and accessibility | planned in phase 2 |
 | `docs/pages.md` | route-by-route build record and reference deltas | planned with page phases |
-| `docs/automation.md` | repeatable measurement and screenshot-diff procedure | planned when first needed |
+| `docs/automation.md` | repeatable measurement and screenshot-diff procedure | current |
 | `docs/auth.md` | Clerk setup, protected surfaces, and verification | planned when authentication is needed |
 
 Once a planned file exists, replace `planned` with a truthful status and read it
