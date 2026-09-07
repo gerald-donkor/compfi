@@ -27,6 +27,27 @@ Count exact flat fills in that crop:
 magick "$work_dir/home-hero.png" -format %c histogram:info:- | sort -nr
 ```
 
+Record repeated image bounds from native scanlines before interpreting their
+ratio. For example, Home y=2400 has category-image runs x=262–1023,
+1064–1825, and 1866–2627; Blog y=1200 has its lead image at x=200–1833.
+Vertical scans confirm 960- and 1000-raster-pixel heights respectively.
+
+Reproduce overlay samples directly from corresponding source pixels:
+
+```bash
+magick "design/4-Cart Sidebar.png" \
+  -format '%[pixel:p{1000,100}] %[pixel:p{2500,100}]\n' info:
+magick "design/2-Shop.png" \
+  -format '%[pixel:p{1100,1450}] %[pixel:p{1100,2420}]\n' info:
+magick "design/2-Shop.png" \
+  -format '%[pixel:p{900,1300}] %[pixel:p{900,2270}]\n' info:
+```
+
+The cart command yields `#CCCCCC` outside and `#FFFFFF` inside the sheet. The
+Shop pairs compare the hovered and plain copies of the same image. Solve each
+channel with `output = alpha × overlay + (1 − alpha) × source`; both samples
+round to a 72% `#3A3A3A` overlay.
+
 For overview-only location work, resize into the temporary directory. Do not use
 the quantized overview as exact palette evidence.
 

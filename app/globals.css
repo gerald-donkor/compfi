@@ -17,15 +17,15 @@
   --reference-border: #d9d9d9;
   --reference-discount: #e97171;
   --reference-new: #2ec1ac;
-  --reference-type-display-size: clamp(2.5rem, 2.05rem + 1.75vw, 3.25rem);
+  --reference-type-display-size: 3.25rem;
   --reference-type-display-weight: 700;
   --reference-type-display-leading: 1.25;
   --reference-type-display-tracking: -0.02em;
-  --reference-type-heading-xl-size: clamp(2rem, 1.7rem + 1.15vw, 3rem);
+  --reference-type-heading-xl-size: 3rem;
   --reference-type-heading-xl-weight: 600;
   --reference-type-heading-xl-leading: 1.25;
   --reference-type-heading-xl-tracking: -0.015em;
-  --reference-type-heading-lg-size: clamp(1.75rem, 1.6rem + 0.55vw, 2rem);
+  --reference-type-heading-lg-size: 2rem;
   --reference-type-heading-lg-weight: 700;
   --reference-type-heading-lg-leading: 1.2;
   --reference-type-tracking-default: 0;
@@ -64,13 +64,9 @@
   --reference-radius-button: 0;
   --reference-radius-control: 0.625rem;
   --reference-radius-image: 0.625rem;
-  --reference-radius-round: 999px;
   --reference-border-thin: 1px;
   --reference-border-accent: 0.125rem;
-  --reference-shadow-panel: 0 0.25rem 1.5rem rgb(36 36 36 / 8%);
-  --reference-duration-fast: 140ms;
-  --reference-duration-standard: 220ms;
-  --reference-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --reference-shadow-flat: none;
 
   /* Production semantic roles */
   --color-canvas: var(--reference-canvas);
@@ -93,15 +89,15 @@
 
   /* Typography */
   --font-family-body: var(--font-poppins), Arial, sans-serif;
-  --type-display-size: var(--reference-type-display-size);
+  --type-display-size: clamp(2.5rem, 2.05rem + 1.75vw, var(--reference-type-display-size));
   --type-display-weight: var(--reference-type-display-weight);
   --type-display-leading: var(--reference-type-display-leading);
   --type-display-tracking: var(--reference-type-display-tracking);
-  --type-heading-xl-size: var(--reference-type-heading-xl-size);
+  --type-heading-xl-size: clamp(2rem, 1.7rem + 1.15vw, var(--reference-type-heading-xl-size));
   --type-heading-xl-weight: var(--reference-type-heading-xl-weight);
   --type-heading-xl-leading: var(--reference-type-heading-xl-leading);
   --type-heading-xl-tracking: var(--reference-type-heading-xl-tracking);
-  --type-heading-lg-size: var(--reference-type-heading-lg-size);
+  --type-heading-lg-size: clamp(1.75rem, 1.6rem + 0.55vw, var(--reference-type-heading-lg-size));
   --type-heading-lg-weight: var(--reference-type-heading-lg-weight);
   --type-heading-lg-leading: var(--reference-type-heading-lg-leading);
   --type-heading-lg-tracking: var(--reference-type-tracking-default);
@@ -158,16 +154,16 @@
   --radius-button: var(--reference-radius-button);
   --radius-control: var(--reference-radius-control);
   --radius-image: var(--reference-radius-image);
-  --radius-round: var(--reference-radius-round);
+  --radius-round: 999px;
   --border-thin: var(--reference-border-thin);
   --border-accent: var(--reference-border-accent);
   --focus-ring-width: 0.1875rem;
   --focus-ring-offset: 0.1875rem;
   --active-offset: 1px;
-  --shadow-panel: var(--reference-shadow-panel);
-  --duration-fast: var(--reference-duration-fast);
-  --duration-standard: var(--reference-duration-standard);
-  --ease-standard: var(--reference-ease-standard);
+  --shadow-panel: var(--reference-shadow-flat);
+  --duration-fast: 140ms;
+  --duration-standard: 220ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @theme inline {

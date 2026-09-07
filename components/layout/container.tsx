@@ -1,6 +1,6 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentProps } from "react";
 
-export type ContainerProps = ComponentPropsWithoutRef<"div">;
+export type ContainerProps = ComponentProps<"div">;
 
 export function Container({ className, ...props }: ContainerProps) {
   const classes = className ? `container ${className}` : "container";

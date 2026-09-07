@@ -1,6 +1,6 @@
 # Compfi design system
 
-Status: implemented; second-review fixes verified, final re-review pending.
+Status: implemented; third-review fixes verified, final re-review pending.
 
 This document owns Compfi's measured visual tokens and responsive foundation.
 The implementation authority is `app/globals.css`; this record explains the
@@ -43,6 +43,25 @@ only to locate representative areas.
 | Checkout | 2880 × 6140 | `2200×3000+300+900` | white 6,454,154 px; gold 3,647 px | two-column desktop form; ~75 px fields with 10 px radii | high surface; medium geometry |
 | Contact | 2880 × 4730 | `2880×550+0+3100` | benefit `#FAF3EA` 1,462,171 px; ink `#242424` 35,404 px; muted `#898989` 11,492 px | 275 px benefit strip; 24 px benefit titles and 16 px supporting copy | high |
 | Blog | 2880 × 7962 | `2400×4000+240+900` | white 5,331,406 px; black 42,385 px; product gray 456 px | approximately 820/300 px content/sidebar split with 32 px gaps and 10 px image radii | high surface; medium geometry |
+
+Representative image bounds preserve the proportions later image-led work must
+use instead of inferring them from a resized overview:
+
+| role | native raster bounds | CSS interpretation | aspect ratio |
+| --- | --- | --- | --- |
+| Home room category | 762 × 960 at x 262–1023, y 2016–2975 | 381 × 480 px | 0.794:1 (portrait) |
+| Home product image | 570 × 602 within the 570 × 892 card run beginning at x 202, y 3380 | 285 × 301 px within a 285 × 446 card | 0.947:1 |
+| Blog lead article | 1634 × 1000 at x 200–1833, y 1044–2043 | 817 × 500 px | 1.634:1 (landscape) |
+
+The cart-drawer reference changes a known white canvas pixel to `#CCCCCC`
+outside the sheet while the sheet stays `#FFFFFF`, proving a 20% black scrim.
+For the product-card overlay, corresponding points on the same chair image in
+Shop's hovered first row and plain second row change `#E5E2E3` to `#6A6A6A`
+(1100,1450 versus 1100,2420) and `#CDCDCD` to `#636363` (900,1300 versus
+900,2270). Solving the alpha blend against `#3A3A3A` gives 71–72%, supporting
+the production 72% overlay token. Flat card and panel edge scanlines showed no
+separate repeated shadow band; the foundation therefore records `none` rather
+than inventing elevation.
 
 Representative type measurements across the raster references support 52/65,
 48/60, 32/38, 24/32, 20/28, 18/29, 16/24, and 14/21 CSS-pixel roles after
@@ -156,12 +175,15 @@ an established primitive in the component phase.
   `#898989` to reach 3:1 against white.
 - Buttons in the references are predominantly square; field and image roles use
   a 10 px radius. Circular badges use the round token.
-- Most reference surfaces are flat. The one panel shadow token is subtle and is
-  reserved for genuinely floating panels; cards do not receive default shadows.
-- The page overlay token is product ink at 72%; the cart reference scrim is
-  interpreted separately at approximately 20% black.
-- Interaction transitions use 140 ms for color and 220 ms for short spatial
-  feedback with `cubic-bezier(0.2, 0, 0, 1)`.
+- Measured surfaces are flat, so the panel-shadow role is `none`; cards do not
+  receive invented elevation.
+- The product-card overlay is product ink at 72%; the cart scrim is a separate
+  20% black role. The coordinate evidence and blend derivation are above.
+- Focus rings are 3 px wide with a 3 px offset; the one-pixel active offset is
+  reserved for pressed buttons. These are accessible implementation additions.
+- Interaction transitions use the implementation-selected 140 ms for color and
+  220 ms for short spatial feedback with `cubic-bezier(0.2, 0, 0, 1)`. Static
+  references do not supply timing or easing evidence.
 - Reduced-motion preference removes smooth scrolling, collapses transitions,
   and prevents the specimen motion transform. Content never depends on motion.
 
@@ -273,3 +295,30 @@ checked against the cumulative diff, prompt, and repository rules:
 The code and evidence fixes again pass lint, standalone TypeScript checking,
 the webpack production build, and the full browser matrix. A final two-axis
 re-review is pending because token architecture changed materially.
+
+## Third independent review
+
+The next cumulative review reported two Standards findings (worst severity
+High) and three Spec findings (worst severity Medium). The findings were
+verified against the repository contract:
+
+- Standards correctly found that responsive clamps and chosen motion/shadow
+  behavior had been mislabeled as measured reference facts. Reference tokens
+  now contain only observed values; responsive interpolation and interaction
+  timing live in production roles, while measured flat elevation maps to
+  `--shadow-panel: none`.
+- Standards correctly found that `ContainerProps` excluded React 19's `ref`.
+  It now inherits `ComponentProps<"div">`, and the existing prop spread passes
+  the ref through without legacy `forwardRef`.
+- Spec correctly found that image proportions, shadow evidence, and overlay
+  derivation were absent. Native bounds for category, product, and article
+  imagery plus two independent alpha samples and the flat-shadow observation
+  are now recorded above.
+- Spec correctly found that focus-ring and active-offset tokens lacked exact
+  role documentation. Their values and permitted use are now explicit.
+- The low tooling exception for unavailable `agent-browser` is unchanged and
+  remains disclosed; it is not an observed UI defect.
+
+These fixes pass lint, standalone TypeScript checking, the webpack production
+build, and the full browser matrix. Another cumulative re-review remains pending
+because they change a shared public prop type and the token contract.
