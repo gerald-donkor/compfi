@@ -4,16 +4,14 @@ import { cn } from "cn"
 
 export interface IconButtonProps extends Omit<ButtonProps, "size" | "children"> {
   label: string
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>
   size?: "icon" | "icon-xs" | "icon-sm" | "icon-lg"
-  icon?: React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>
-  children?: React.ReactNode
 }
 
 function IconButton({
   label,
   size = "icon",
   icon: Icon,
-  children,
   className,
   ...props
 }: IconButtonProps) {
@@ -25,7 +23,7 @@ function IconButton({
       className={cn(className)}
       {...props}
     >
-      {Icon ? <Icon aria-hidden="true" /> : children}
+      <Icon aria-hidden="true" />
     </Button>
   )
 }

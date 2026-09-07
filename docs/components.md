@@ -102,7 +102,7 @@ Generated components outside this certified inventory (including accordion, aler
 - **Purpose**: Single-line text input for forms.
 - **Server/Client**: Client component wrapping `@base-ui/react/input`.
 - **Exported Props**: `InputProps = React.ComponentProps<"input"> & InputPrimitive.Props`.
-- **Geometry**: 44px minimum height (`min-h-11`), 10px corner radius (`rounded-[10px]`).
+- **Geometry**: 44px minimum height (`min-h-11`), 10px corner radius (`rounded-control`).
 - **A11y**: Visual focus via `:focus-visible`, invalid state styling via `aria-invalid="true"`.
 - **Slot**: `data-slot="input"`.
 - **Real Usage**: Email input, search input, coupon codes, shipping address fields.
@@ -111,14 +111,14 @@ Generated components outside this certified inventory (including accordion, aler
 - **Purpose**: Multi-line text input for longer messages.
 - **Server/Client**: Server-safe component wrapping native `<textarea>`.
 - **Exported Props**: `TextareaProps = React.ComponentProps<"textarea">`.
-- **Geometry**: Min height 96px (`min-h-24`), 10px corner radius (`rounded-[10px]`), user-resizable vertically (`resize-y`).
+- **Geometry**: Min height 96px (`min-h-24`), 10px corner radius (`rounded-control`), user-resizable vertically (`resize-y`).
 - **Slot**: `data-slot="textarea"`.
 - **Real Usage**: Contact message textarea, delivery order notes.
 
 ### Select (`components/ui/select.tsx`)
 - **Components**: `Select`, `SelectGroup`, `SelectValue`, `SelectTrigger`, `SelectContent`, `SelectLabel`, `SelectItem`, `SelectSeparator`, `SelectScrollUpButton`, `SelectScrollDownButton`.
 - **Exported Props**: Exported prop types for all 10 subcomponents (`SelectProps`, `SelectTriggerProps`, etc.).
-- **Trigger**: 44px minimum touch target, 10px radius, visible focus outline.
+- **Trigger**: 44px minimum touch target, 10px radius (`rounded-control`), visible focus outline.
 - **Keyboard Map**: Enter/Space to open, Arrow Down/Up to navigate items, Enter/Space to select, Escape to close.
 - **A11y**: Standard combobox and listbox ARIA semantics managed by Base UI.
 - **Slot**: `data-slot="select-trigger"`, `data-slot="select-content"`, `data-slot="select-item"`, etc.

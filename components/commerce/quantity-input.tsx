@@ -10,7 +10,6 @@ export interface QuantityInputProps extends Omit<React.ComponentProps<"div">, "o
   onValueChange?: (value: number) => void
   min?: number
   max?: number
-  step?: number
   name?: string
   disabled?: boolean
   readOnly?: boolean
@@ -28,7 +27,6 @@ export function QuantityInput({
   onValueChange,
   min = 1,
   max,
-  step = 1,
   name,
   disabled = false,
   readOnly = false,
@@ -40,6 +38,7 @@ export function QuantityInput({
   ref,
   ...props
 }: QuantityInputProps) {
+  const step = 1
   const isControlled = controlledValue !== undefined
   const [uncontrolledValue, setUncontrolledValue] = React.useState<number>(defaultValue)
   const currentValue = isControlled ? controlledValue : uncontrolledValue

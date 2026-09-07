@@ -115,7 +115,7 @@ export function ColorSwatch({ option, ref, className, ...props }: ColorSwatchPro
           >
             {state.pressed && (
               <CheckIcon
-                className="size-4 text-white drop-shadow-xs"
+                className="size-4 text-white drop-shadow-[0_0_2px_rgba(0,0,0,0.9)]"
                 aria-hidden="true"
               />
             )}

@@ -148,7 +148,15 @@ export default function DesignSystemPage() {
                 <Field>
                   <FieldLabel htmlFor="specimen-name">Full name</FieldLabel>
                   <Input id="specimen-name" placeholder="E.g. Eleanor Vance" autoComplete="name" />
-                  <FieldDescription>Required for order delivery confirmation.</FieldDescription>
+                  <FieldDescription>Optional preferred name for greeting.</FieldDescription>
+                </Field>
+
+                <Field>
+                  <FieldLabel htmlFor="specimen-phone">
+                    Phone number <span className="text-destructive" aria-hidden="true">*</span>
+                  </FieldLabel>
+                  <Input id="specimen-phone" type="tel" required aria-required="true" placeholder="(555) 000-0000" />
+                  <FieldDescription>Required for delivery dispatch SMS notifications.</FieldDescription>
                 </Field>
 
                 <Field data-invalid="true">
@@ -204,6 +212,10 @@ export default function DesignSystemPage() {
                 <div>
                   <span className="block text-xs text-muted-foreground">Thousands:</span>
                   <Money amountCents={245000} className="text-lg" />
+                </div>
+                <div>
+                  <span className="block text-xs text-muted-foreground">Negative:</span>
+                  <Money amountCents={-1500} className="text-lg" />
                 </div>
               </Cluster>
             </Stack>

@@ -56,7 +56,7 @@ export function InteractiveSpecimens() {
       <div
         aria-live="polite"
         aria-atomic="true"
-        className="rounded-[10px] border border-border bg-muted/40 p-4 text-sm font-medium text-foreground"
+        className="rounded-control border border-border bg-muted/40 p-4 text-sm font-medium text-foreground"
       >
         <span className="text-muted-foreground font-normal">Specimen log: </span>
         {log}
