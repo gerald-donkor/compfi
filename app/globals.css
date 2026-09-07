@@ -131,6 +131,9 @@
   --duration-fast: 140ms;
   --duration-standard: 220ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --chrome-page-hero-banner-height: 19.6875rem;
+  --chrome-page-hero-breadcrumb-height: 11.25rem;
+  --chrome-benefits-block-padding: 6.75rem;
   /* shadcn semantic role mappings to Compfi design tokens */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);

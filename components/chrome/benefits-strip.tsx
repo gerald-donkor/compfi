@@ -13,7 +13,7 @@ const benefits: readonly Benefit[] = [
 
 export function BenefitsStrip() {
   return (
-    <aside className="surface-benefit py-12 lg:py-[6.75rem]" aria-label="Shopping with Compfi" data-slot="benefits-strip">
+    <aside className="surface-benefit py-12 lg:py-(--chrome-benefits-block-padding)" aria-label="Shopping with Compfi" data-slot="benefits-strip">
       <Container className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
         {benefits.map(({ icon: Icon, title, description }) => (
           <div key={title} className="flex items-start gap-4">

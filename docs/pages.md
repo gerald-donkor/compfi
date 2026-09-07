@@ -18,8 +18,10 @@ committed with the implementation.
 
 - `SiteHeader` is server-rendered; `HeaderControls` is the small client boundary
   for pathname semantics, the mobile disclosure, and the cart leaf.
-- `PageHero` accepts `title` and a small breadcrumb record (`label`, optional
-  `href`), with a non-link current page and wrapping trail.
+- `PageHero` accepts `title`, a small breadcrumb record (`label`, optional
+  `href`), and one semantic `size` choice: the default `banner` is 315px while
+  `breadcrumb` is 180px. Its current page is a non-link `aria-current` span,
+  never a fake disabled link.
 - `BenefitsStrip` owns a typed four-item local record. Its Lucide icons are
   decorative and hidden from assistive technology.
 - `SiteFooter` contains only approved, non-claiming Compfi copy and route
@@ -57,5 +59,10 @@ Self-verification on 2026-09-07:
 | browser reflow | no document overflow at 1024, 390, and 320 CSS px (`scrollWidth === clientWidth`) |
 | screenshots | inspected temporary desktop, small-desktop, mobile, and narrow-mobile screenshots under `/tmp/compfi-phase3-*.png`; visual hierarchy and responsive stacking match the measured chrome evidence, with documented intentional deltas |
 | Web Interface Guidelines | reviewed against the fresh Vercel rule set; no unresolved finding after using a real link for the browse action and adding sheet overscroll containment |
+
+Initial independent review found and resolved two Spec issues (PageHero height
+and fake current-page link) and four Standards issues (semantic scrim/motion and
+named chrome geometry tokens). The review-fix commit and re-review results are
+recorded after they complete.
 
 The required independent review follows the implementation commit.

@@ -15,7 +15,8 @@ This document owns the public component contracts, APIs, states, and accessibili
   semantics, mobile menu state, Escape/focus-return behavior, and composes the
   cart drawer. Desktop navigation is hidden rather than duplicated on mobile.
 - **`PageHero`**: Server-safe title/breadcrumb block with the explicit
-  `BreadcrumbItemData` record (`label`, optional internal `href`). The final
+  `BreadcrumbItemData` record (`label`, optional internal `href`) and one
+  semantic `size`: `banner` (315px default) or `breadcrumb` (180px). The final
   item is non-interactive and has `aria-current="page"`.
 - **`BenefitsStrip`**: Server-safe four-item content block. Icons are
   decorative; content records use an icon component, title, and description.

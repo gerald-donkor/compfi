@@ -64,7 +64,8 @@ describe("Compfi chrome", () => {
     )
 
     expect(screen.getByRole("navigation", { name: "breadcrumb" })).toBeInTheDocument()
-    expect(screen.getByRole("link", { name: "Shop", current: "page" })).toBeInTheDocument()
+    expect(container.querySelector("[data-slot='breadcrumb-page']")).toHaveAttribute("aria-current", "page")
+    expect(screen.queryByRole("link", { name: "Shop", current: "page" })).not.toBeInTheDocument()
     expect(screen.getByRole("complementary", { name: "Shopping with Compfi" })).toBeInTheDocument()
     expect(screen.getByRole("contentinfo")).toBeInTheDocument()
 
