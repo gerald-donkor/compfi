@@ -1,7 +1,7 @@
 # Establish the Compfi design system
 
-Status: approved and implemented in local commits; third-review fixes are
-verified and awaiting final cumulative re-review.
+Status: approved and implemented in local commits; closure-review fixes are
+verified and awaiting final cumulative review.
 
 ## Goal and dependency
 

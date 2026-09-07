@@ -109,6 +109,29 @@ export default function DesignSystemPage() {
             </div>
           </div>
         </section>
+
+        <section className={styles.section} aria-labelledby="geometry-title">
+          <div className={styles.sectionHeader}>
+            <h2 id="geometry-title" className="type-heading-lg">Borders, radii, and grid</h2>
+            <p className="text-muted">
+              Measured geometry stays quiet while the demonstration grid reduces
+              columns at tablet, mobile, and narrow-mobile widths.
+            </p>
+          </div>
+          <div className={styles.geometryGrid} aria-label="Border and radius samples">
+            <GeometrySample className={styles.squareGeometry} label="Square action · 0" />
+            <GeometrySample className={styles.controlGeometry} label="Control · 10px" />
+            <GeometrySample className={styles.imageGeometry} label="Image · 10px" />
+            <GeometrySample className={styles.roundGeometry} label="Round badge · circular" />
+          </div>
+          <h3 className={`${styles.gridTitle} type-heading-sm`}>Responsive grid</h3>
+          <div className={styles.responsiveGrid} aria-label="Responsive four-item grid">
+            <div className={styles.gridCell}>Item 1</div>
+            <div className={styles.gridCell}>Item 2</div>
+            <div className={styles.gridCell}>Item 3</div>
+            <div className={styles.gridCell}>Item 4</div>
+          </div>
+        </section>
       </Container>
 
       <section className={`${styles.section} ${styles.containerDemo}`} aria-labelledby="layout-title">
@@ -197,4 +220,8 @@ function StateSample({ children, title }: { children: React.ReactNode; title: st
       <p className="type-body-sm text-muted mt-2">{children}</p>
     </div>
   );
+}
+
+function GeometrySample({ className, label }: { className: string; label: string }) {
+  return <div className={`${styles.geometrySample} ${className}`}>{label}</div>;
 }

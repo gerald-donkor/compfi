@@ -1,6 +1,6 @@
 # Compfi design system
 
-Status: implemented; third-review fixes verified, final re-review pending.
+Status: implemented; closure-review fixes verified, final review pending.
 
 This document owns Compfi's measured visual tokens and responsive foundation.
 The implementation authority is `app/globals.css`; this record explains the
@@ -69,6 +69,14 @@ the 2× conversion. Text raster edges and export antialiasing make type size and
 tracking medium-confidence observations. The production scale uses rem and
 fluid clamps while preserving those endpoints.
 
+Only auditable observations use the `--reference-*` namespace: sampled colors;
+the 52/65 hero display metric confirmed by the font crop; the 32 px Shop grid
+gap; 1240 px container; 44 px control target; square/10 px radii; 1 px border;
+and flat elevation. The remaining type scale, the constructed 4 px spacing
+scale, responsive interpolation, focus geometry, and motion constants are
+production semantic decisions. They deliberately do not claim screenshot
+provenance.
+
 ## Typography
 
 The PNGs do not identify their typeface. Poppins is a deliberate, high-confidence
@@ -127,7 +135,7 @@ Ratios were calculated with WCAG relative luminance.
 | product ink | `#3A3A3A` | same | on product gray: 10.43:1 |
 | brand accent | `#B88E2F` | same | dark ink on gold: 5.14:1; white is only 3.02:1 and is prohibited for normal text |
 | filled action | `#B88E2F` | `#8A681A` | white on action gold: 5.15:1 |
-| focus | not shown | `#765A16` | white: 6.47:1; hero cream: 5.91:1 |
+| focus | not shown | `#765A16` | white: 6.47:1; hero cream: 5.91:1; product surface: 5.93:1 |
 | muted text | `#898989` | `#686868` | white 5.57:1; hero 5.09:1; wash 4.98:1; benefit 5.06:1; product 5.11:1. Reference muted is only 3.50/3.20/3.13/3.18/3.21:1 on those surfaces |
 | control boundary | `#D9D9D9` | `#898989` | white: 3.50:1; structural separators retain the lighter reference border |
 | discount | `#E97171` | `#8D3333` when carrying white text | white: 7.91:1; reference was 2.97:1 |
@@ -160,7 +168,9 @@ were supplied:
 | 390–768 px | fluid 20–32 px | stack primary groups; wrap control rows |
 | 320–390 px | fluid 16–20 px | single-column samples; labels wrap without overflow |
 
-The spacing scale is 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96, and 120 px.
+The production spacing scale is 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96,
+and 120 px. Its 32 px step maps to the measured Shop grid gap; the other steps
+form the selected coherent 4 px scale rather than claiming individual crops.
 Prefer 24–32 px card/grid gaps, 64–96 px section gaps, and 120 px only for the
 largest desktop intervals. All controls have a 44 × 44 px minimum target.
 
@@ -172,11 +182,14 @@ an established primitive in the component phase.
 ## Borders, radii, elevation, and motion
 
 - Structural separator border: 1 px `#D9D9D9`; essential control boundaries use
-  `#898989` to reach 3:1 against white.
+  `#898989` to reach 3:1 against white. The specimen's emphasized geometry rule
+  is the production-selected 2 px accent border.
 - Buttons in the references are predominantly square; field and image roles use
-  a 10 px radius. Circular badges use the round token.
+  a 10 px radius. Circular badges use the 999 px round token.
 - Measured surfaces are flat, so the panel-shadow role is `none`; cards do not
-  receive invented elevation.
+  receive invented elevation. At Home y=4100, x=198–203 remains white before
+  the product surface starts at x=204; at x=400 the surface ends at y=4271 and
+  returns directly to white at y=4272, with no intervening shadow run.
 - The product-card overlay is product ink at 72%; the cart scrim is a separate
   20% black role. The coordinate evidence and blend derivation are above.
 - Focus rings are 3 px wide with a 3 px offset; the one-pixel active offset is
@@ -225,13 +238,14 @@ Self-verification on 2026-09-07:
 | `npm run build -- --webpack` | passed; `/` and `/design-system` prerendered as static content |
 | default `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind an internal port in the restricted sandbox; installed Next 16 documentation identifies `--webpack` as the supported fallback |
 | compiled CSS/fonts | four local Poppins faces emitted; reference, semantic, framework-alias and full typography token layers plus responsive and reduced-motion rules present |
-| browser geometry | no horizontal overflow at 1440, 1200, 1025, 1024, 768, 390, or 320 px; measured gutters progressed continuously as 100, 81, 32, 32, 32, 20, and 16 px respectively |
+| browser geometry | no horizontal overflow at 1440, 1200, 1025, 1024, 768, 600, 390, or 320 px; measured gutters progressed continuously as 100, 81, 32, 32, 32, 27, 20, and 16 px respectively |
+| responsive specimen | explicit grid rendered four columns on desktop/small desktop, three at 768 px, two at 600 px, and one at 390/320 px |
 | font/runtime | `document.fonts.status` was `loaded` at every width; no application console, hydration, CSS, or font errors observed |
 | keyboard | skip link, 44 px home link, enabled buttons, labeled search field, and motion disclosure followed DOM order; disabled button was skipped; focus outlines were visible and unclipped |
 | reflow | 320 px viewport retained `scrollWidth === clientWidth` at default sizing and after 200% root text sizing |
 | controls and motion | search boundary computed to `rgb(137, 137, 137)` (3.50:1 on white); native disclosure toggled open and produced the intended 16 px transform |
 | reduced motion | with the disclosure open, media query matched, root scroll behavior became `auto`, transition duration collapsed to 0.01 ms, and the transform was removed |
-| screenshots | inspected desktop, small desktop, tablet, mobile, and narrow-mobile captures in `/tmp`, including post-review desktop/mobile captures; source references remained unchanged |
+| screenshots | inspected desktop, small desktop, tablet, mobile, and narrow-mobile captures in `/tmp`, including closure desktop/mobile geometry captures; source references remained unchanged |
 | Web Interface Guidelines | fresh 2026-09-07 rules reviewed; skip navigation, heading anchor offsets, theme color, autocomplete, ellipsis, touch treatment, hover, long-word wrapping, and reduced motion verified; no remaining finding |
 
 The required `agent-browser` executable was not installed. Automatic npm
@@ -322,3 +336,23 @@ verified against the repository contract:
 These fixes pass lint, standalone TypeScript checking, the webpack production
 build, and the full browser matrix. Another cumulative re-review remains pending
 because they change a shared public prop type and the token contract.
+
+## Closure review
+
+The subsequent cumulative review reported one Standards finding (worst
+severity High) and three Spec findings (worst severity Medium):
+
+- Both axes correctly found that the constructed spacing/type choices still
+  carried `--reference-*` names without individual measurement evidence. Only
+  auditable observed values now remain in that namespace; selected production
+  scales and interaction choices are explicitly semantic.
+- Spec correctly found the visual specimen lacked labeled border/radius and
+  responsive-grid demonstrations. The specimen now exposes four geometry roles
+  and a four-to-three-to-two-to-one content-pressure grid.
+- Spec correctly requested exact shadow scanlines and the product-surface focus
+  ratio. Both are now recorded with coordinates and repeatable commands.
+- The low `agent-browser` tooling exception remains unchanged and disclosed.
+
+These changes pass lint, standalone TypeScript checking, the webpack production
+build, the expanded eight-width browser matrix, and desktop/mobile visual
+inspection. One final cumulative review remains pending.

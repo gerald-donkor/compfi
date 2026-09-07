@@ -146,6 +146,58 @@
   margin-bottom: var(--space-2);
 }
 
+.geometryGrid,
+.responsiveGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.geometrySample,
+.gridCell {
+  display: grid;
+  min-width: 0;
+  min-height: var(--space-24);
+  align-content: end;
+  border: var(--border-thin) solid var(--color-control-border);
+  padding: var(--space-4);
+  background: var(--color-product);
+  overflow-wrap: anywhere;
+}
+
+.squareGeometry {
+  border-radius: var(--radius-button);
+}
+
+.controlGeometry {
+  border-radius: var(--radius-control);
+}
+
+.imageGeometry {
+  border-width: var(--border-accent);
+  border-radius: var(--radius-image);
+}
+
+.roundGeometry {
+  width: var(--space-24);
+  min-height: var(--space-24);
+  align-content: center;
+  border-radius: var(--radius-round);
+  text-align: center;
+}
+
+.gridTitle {
+  margin-top: var(--space-10);
+}
+
+.gridCell {
+  min-height: var(--space-16);
+  align-content: center;
+  background: var(--color-wash);
+  text-align: center;
+}
+
 .controlStack {
   display: flex;
   flex-wrap: wrap;
@@ -221,7 +273,9 @@
 }
 
 @media (max-width: 63.999rem) {
-  .swatches {
+  .swatches,
+  .geometryGrid,
+  .responsiveGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -248,7 +302,9 @@
   .swatches,
   .spacingGrid,
   .surfaceGrid,
-  .stateGrid {
+  .stateGrid,
+  .geometryGrid,
+  .responsiveGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -262,7 +318,9 @@
   .swatches,
   .spacingGrid,
   .surfaceGrid,
-  .stateGrid {
+  .stateGrid,
+  .geometryGrid,
+  .responsiveGrid {
     grid-template-columns: 1fr;
   }
 

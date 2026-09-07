@@ -41,12 +41,17 @@ magick "design/2-Shop.png" \
   -format '%[pixel:p{1100,1450}] %[pixel:p{1100,2420}]\n' info:
 magick "design/2-Shop.png" \
   -format '%[pixel:p{900,1300}] %[pixel:p{900,2270}]\n' info:
+magick "design/1-Home.png" \
+  -format '%[pixel:p{203,4100}] %[pixel:p{204,4100}] %[pixel:p{400,4271}] %[pixel:p{400,4272}]\n' info:
 ```
 
 The cart command yields `#CCCCCC` outside and `#FFFFFF` inside the sheet. The
 Shop pairs compare the hovered and plain copies of the same image. Solve each
 channel with `output = alpha × overlay + (1 − alpha) × source`; both samples
 round to a 72% `#3A3A3A` overlay.
+The Home edge samples move directly from white to `#F4F5F7` at the left and
+from `#F4F5F7` to white at the bottom, without a repeated intermediate shadow
+band.
 
 For overview-only location work, resize into the temporary directory. Do not use
 the quantized overview as exact palette evidence.
