@@ -122,7 +122,7 @@
 .spaceBar {
   width: var(--sample-space);
   max-width: 100%;
-  height: 0.5rem;
+  height: var(--space-2);
   margin-top: var(--space-5);
   background: var(--color-brand);
 }
@@ -184,13 +184,13 @@
   min-height: var(--control-min);
   align-items: center;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--type-heading-md-weight);
   touch-action: manipulation;
 }
 
 .motionDot {
-  width: 3rem;
-  height: 3rem;
+  width: var(--space-12);
+  height: var(--space-12);
   border-radius: var(--radius-round);
   margin: var(--space-6) auto;
   background: var(--color-brand);
@@ -198,7 +198,7 @@
 }
 
 .motionSample[open] .motionDot {
-  transform: translateX(1rem);
+  transform: translateX(var(--space-4));
 }
 
 .containerDemo {
@@ -208,14 +208,14 @@
 
 .containerInner {
   min-height: 7rem;
-  border-inline: 2px solid var(--color-brand-action);
+  border-inline: var(--border-accent) solid var(--color-brand-action);
   padding: var(--space-5);
   background: var(--color-canvas);
 }
 
 .note {
   margin-top: var(--space-8);
-  border-left: 0.25rem solid var(--color-brand);
+  border-left: var(--space-1) solid var(--color-brand);
   padding: var(--space-4) var(--space-5);
   background: var(--color-hero);
 }

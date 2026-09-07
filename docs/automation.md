@@ -38,6 +38,32 @@ When measuring a scanline, preserve the native coordinate and record the CSS
 interpretation separately. A two-raster-pixel run maps to one CSS pixel only
 under the documented 2× working interpretation.
 
+## Font specimen comparison
+
+Reproduce the three reference samples without copying them into the repository:
+
+```bash
+work_dir="$(mktemp -d /tmp/compfi-font.XXXXXX)"
+magick "design/1-Home.png" -crop 1150x260+1520+690 +repage \
+  "$work_dir/heading.png"
+magick "design/1-Home.png" -crop 1200x120+1520+980 +repage \
+  "$work_dir/body.png"
+magick "design/2-Shop.png" -crop 230x80+285+1925 +repage \
+  "$work_dir/numerals.png"
+```
+
+For the heading, split the temporary crop into `1150x115+0+0` and
+`1150x130+0+130`; for body use its first `1200x48+0+0`. Make the measured cream
+or product-gray background transparent with 8% fuzz, trim, and divide the
+resulting native bounds by two. Render `Discover Our` and `New Collection` at
+52 px Bold, the visible first body line (`Lorem ipsum dolor sit amet,
+consectetur adipiscing elit. Ut`) at 18 px Medium, and the cropped numeral run
+`2.500.000` at 20 px Semibold. Compare the committed Poppins files with local
+Noto Sans and Liberation Sans faces at the same size and closest available
+weight. The expected bounds are preserved in `docs/design-system.md`; a changed
+ImageMagick/font environment should be reported rather than silently replacing
+that evidence.
+
 ## Static checks
 
 ```bash

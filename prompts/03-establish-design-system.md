@@ -1,7 +1,7 @@
 # Establish the Compfi design system
 
-Status: approved and implemented in a local commit; accepted independent-review
-fixes are verified and awaiting re-review.
+Status: approved and implemented in local commits; second-review fixes are
+verified and awaiting final re-review.
 
 ## Goal and dependency
 

@@ -1,6 +1,6 @@
 # Compfi design system
 
-Status: implemented; accepted initial-review fixes verified, re-review pending.
+Status: implemented; second-review fixes verified, final re-review pending.
 
 This document owns Compfi's measured visual tokens and responsive foundation.
 The implementation authority is `app/globals.css`; this record explains the
@@ -64,14 +64,16 @@ records the family, designers, source commit, filenames, and copyright; `OFL.txt
 contains the SIL Open Font License 1.1. The downloaded files were retrieved from
 `https://github.com/google/fonts/tree/main/ofl/poppins` on 2026-09-07.
 
-The comparison used three locally available, openly licensed candidates and
-preserved the raster dimensions of the same strings at the same nominal sizes:
+The comparison used three locally available, openly licensed candidates. Each
+row below pairs a native reference crop with the same text rendered at its 2×
+CSS interpretation. Dimensions are trimmed ink bounds, except where the label
+canvas and ink bounds are identical to the reported precision.
 
-| specimen | Poppins | Noto Sans | Liberation Sans |
-| --- | --- | --- | --- |
-| Bold 52 px, `Discover Our New Collection` | 754 × 75 px | 738 × 73 px | 717 × 61 px |
-| Regular 16 px, `Furniture for everyday rituals.` | 233 × 24 px | 225 × 24 px | 210 × 20 px |
-| Semibold/Bold 24 px, `$1,249.00 0123456789` | 262 × 36 px | 255 × 35 px | 248 × 29 px |
+| specimen and reproducible source crop | reference at CSS scale | Poppins | Noto Sans | Liberation Sans |
+| --- | --- | --- | --- | --- |
+| Bold 52 px hero line 1/2; Home `1150×260+1520+690`, split at y 115/130 | 339 × 42.5 / 393 × 42.5 px | 339 × 43 / 393 × 43 px | 330 × 41 / 382 × 41 px | 323 × 39 / 367 × 39 px |
+| Medium 18 px first body line; Home `1200×120+1520+980`, first 48 raster px | 524.5 × 19 px | 525 × 19 px | 502 × 18 px | 461 × 17 px |
+| Semibold 20 px price-numeral run; Shop `230×80+285+1925` | 97.5 × 15.5 px | 99 × 15 px | 91 × 14 px | 89 × 14 px |
 
 Poppins retained the closest combined proportions and the geometric,
 single-storey lowercase forms visible across the references. Noto Sans and
@@ -104,10 +106,10 @@ Ratios were calculated with WCAG relative luminance.
 | canvas | `#FFFFFF` | same | primary page surface |
 | primary ink | `#242424` / `#333333` | same | `#242424` on benefit: 14.10:1 |
 | product ink | `#3A3A3A` | same | on product gray: 10.43:1 |
-| brand accent | `#B88E2F` | same | dark ink on gold: 5.14:1; decoration and large accents |
+| brand accent | `#B88E2F` | same | dark ink on gold: 5.14:1; white is only 3.02:1 and is prohibited for normal text |
 | filled action | `#B88E2F` | `#8A681A` | white on action gold: 5.15:1 |
 | focus | not shown | `#765A16` | white: 6.47:1; hero cream: 5.91:1 |
-| muted text | `#898989` | `#686868` | white: 5.57:1; reference was 3.50:1 |
+| muted text | `#898989` | `#686868` | white 5.57:1; hero 5.09:1; wash 4.98:1; benefit 5.06:1; product 5.11:1. Reference muted is only 3.50/3.20/3.13/3.18/3.21:1 on those surfaces |
 | control boundary | `#D9D9D9` | `#898989` | white: 3.50:1; structural separators retain the lighter reference border |
 | discount | `#E97171` | `#8D3333` when carrying white text | white: 7.91:1; reference was 2.97:1 |
 | new badge | `#2EC1AC` | same | dark ink: 6.90:1 |
@@ -234,10 +236,40 @@ overlapped across six underlying concerns:
   height was below the target. Accepted: gutters interpolate continuously and
   the link has a 44 px minimum height.
 - Font comparison was described but its evidence was not preserved. Accepted:
-  candidate strings and raster dimensions are recorded above.
+  source crops, candidate strings, and raster dimensions are recorded above.
 
 No smell-baseline violations were reported. The accepted fixes passed lint,
 standalone TypeScript checking, the webpack production build, browser geometry,
 keyboard, state, reflow, reduced-motion, and screenshot checks. The required
 full two-axis re-review remains pending because the fixes affect shared tokens,
 responsive behavior, and interaction.
+
+## Second independent review
+
+The full re-review from the same base reported three Standards findings (worst
+severity High) and three Spec findings (worst severity High). Each finding was
+checked against the cumulative diff, prompt, and repository rules:
+
+- Standards correctly found that only colors completed the required
+  reference-to-semantic token layering. Typography, spacing, geometry, shadow,
+  and motion now have measured reference constants and semantic roles.
+- Standards correctly found reusable button typography/spacing and specimen
+  border geometry bypassing tokens. Existing semantic tokens now own those
+  values, with new border, focus, radius, and active-offset roles where needed.
+- Both axes correctly found that candidate-only font dimensions did not make
+  the claimed match auditable. The table above now records exact source crop
+  coordinates, source bounds at CSS scale, matching candidate bounds, and the
+  repeatable method in `docs/automation.md`.
+- Spec correctly found missing gold/white and muted-on-cream evidence. The
+  contrast record now includes the prohibited 3.02:1 gold/white pair and muted
+  ratios across every shipped foundation surface.
+- Spec correctly noted that the approved prompt named `agent-browser`
+  specifically. Its executable is absent, and an automatic npm download was
+  denied by the environment's supply-chain review. Installing a global tool or
+  adding an unapproved dependency would violate task scope. This remains a
+  disclosed tooling exception; installed Chromium/CDP supplied the required
+  behavioral evidence instead.
+
+The code and evidence fixes again pass lint, standalone TypeScript checking,
+the webpack production build, and the full browser matrix. A final two-axis
+re-review is pending because token architecture changed materially.

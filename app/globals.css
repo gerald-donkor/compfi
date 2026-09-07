@@ -17,6 +17,60 @@
   --reference-border: #d9d9d9;
   --reference-discount: #e97171;
   --reference-new: #2ec1ac;
+  --reference-type-display-size: clamp(2.5rem, 2.05rem + 1.75vw, 3.25rem);
+  --reference-type-display-weight: 700;
+  --reference-type-display-leading: 1.25;
+  --reference-type-display-tracking: -0.02em;
+  --reference-type-heading-xl-size: clamp(2rem, 1.7rem + 1.15vw, 3rem);
+  --reference-type-heading-xl-weight: 600;
+  --reference-type-heading-xl-leading: 1.25;
+  --reference-type-heading-xl-tracking: -0.015em;
+  --reference-type-heading-lg-size: clamp(1.75rem, 1.6rem + 0.55vw, 2rem);
+  --reference-type-heading-lg-weight: 700;
+  --reference-type-heading-lg-leading: 1.2;
+  --reference-type-tracking-default: 0;
+  --reference-type-heading-md-size: 1.5rem;
+  --reference-type-heading-md-weight: 600;
+  --reference-type-heading-md-leading: 1.35;
+  --reference-type-heading-sm-size: 1.25rem;
+  --reference-type-heading-sm-weight: 600;
+  --reference-type-heading-sm-leading: 1.4;
+  --reference-type-body-lg-size: 1.125rem;
+  --reference-type-body-weight: 400;
+  --reference-type-body-lg-leading: 1.6;
+  --reference-type-body-size: 1rem;
+  --reference-type-body-leading: 1.5;
+  --reference-type-body-sm-size: 0.875rem;
+  --reference-type-body-sm-leading: 1.5;
+  --reference-type-label-size: 0.875rem;
+  --reference-type-label-weight: 500;
+  --reference-type-label-leading: 1.4;
+  --reference-space-1: 0.25rem;
+  --reference-space-2: 0.5rem;
+  --reference-space-3: 0.75rem;
+  --reference-space-4: 1rem;
+  --reference-space-5: 1.25rem;
+  --reference-space-6: 1.5rem;
+  --reference-space-8: 2rem;
+  --reference-space-10: 2.5rem;
+  --reference-space-12: 3rem;
+  --reference-space-16: 4rem;
+  --reference-space-20: 5rem;
+  --reference-space-24: 6rem;
+  --reference-space-30: 7.5rem;
+  --reference-container-max: 77.5rem;
+  --reference-container-gutter-desktop: 6.25rem;
+  --reference-control-min: 2.75rem;
+  --reference-radius-button: 0;
+  --reference-radius-control: 0.625rem;
+  --reference-radius-image: 0.625rem;
+  --reference-radius-round: 999px;
+  --reference-border-thin: 1px;
+  --reference-border-accent: 0.125rem;
+  --reference-shadow-panel: 0 0.25rem 1.5rem rgb(36 36 36 / 8%);
+  --reference-duration-fast: 140ms;
+  --reference-duration-standard: 220ms;
+  --reference-ease-standard: cubic-bezier(0.2, 0, 0, 1);
 
   /* Production semantic roles */
   --color-canvas: var(--reference-canvas);
@@ -39,68 +93,81 @@
 
   /* Typography */
   --font-family-body: var(--font-poppins), Arial, sans-serif;
-  --type-display-size: clamp(2.5rem, 2.05rem + 1.75vw, 3.25rem);
-  --type-display-weight: 700;
-  --type-display-leading: 1.25;
-  --type-display-tracking: -0.02em;
-  --type-heading-xl-size: clamp(2rem, 1.7rem + 1.15vw, 3rem);
-  --type-heading-xl-weight: 600;
-  --type-heading-xl-leading: 1.25;
-  --type-heading-xl-tracking: -0.015em;
-  --type-heading-lg-size: clamp(1.75rem, 1.6rem + 0.55vw, 2rem);
-  --type-heading-lg-weight: 700;
-  --type-heading-lg-leading: 1.2;
-  --type-heading-lg-tracking: 0;
-  --type-heading-md-size: 1.5rem;
-  --type-heading-md-weight: 600;
-  --type-heading-md-leading: 1.35;
-  --type-heading-md-tracking: 0;
-  --type-heading-sm-size: 1.25rem;
-  --type-heading-sm-weight: 600;
-  --type-heading-sm-leading: 1.4;
-  --type-heading-sm-tracking: 0;
-  --type-body-lg-size: 1.125rem;
-  --type-body-lg-weight: 400;
-  --type-body-lg-leading: 1.6;
-  --type-body-lg-tracking: 0;
-  --type-body-size: 1rem;
-  --type-body-weight: 400;
-  --type-body-leading: 1.5;
-  --type-body-tracking: 0;
-  --type-body-sm-size: 0.875rem;
-  --type-body-sm-weight: 400;
-  --type-body-sm-leading: 1.5;
-  --type-body-sm-tracking: 0;
-  --type-label-size: 0.875rem;
-  --type-label-weight: 500;
-  --type-label-leading: 1.4;
-  --type-label-tracking: 0;
+  --type-display-size: var(--reference-type-display-size);
+  --type-display-weight: var(--reference-type-display-weight);
+  --type-display-leading: var(--reference-type-display-leading);
+  --type-display-tracking: var(--reference-type-display-tracking);
+  --type-heading-xl-size: var(--reference-type-heading-xl-size);
+  --type-heading-xl-weight: var(--reference-type-heading-xl-weight);
+  --type-heading-xl-leading: var(--reference-type-heading-xl-leading);
+  --type-heading-xl-tracking: var(--reference-type-heading-xl-tracking);
+  --type-heading-lg-size: var(--reference-type-heading-lg-size);
+  --type-heading-lg-weight: var(--reference-type-heading-lg-weight);
+  --type-heading-lg-leading: var(--reference-type-heading-lg-leading);
+  --type-heading-lg-tracking: var(--reference-type-tracking-default);
+  --type-heading-md-size: var(--reference-type-heading-md-size);
+  --type-heading-md-weight: var(--reference-type-heading-md-weight);
+  --type-heading-md-leading: var(--reference-type-heading-md-leading);
+  --type-heading-md-tracking: var(--reference-type-tracking-default);
+  --type-heading-sm-size: var(--reference-type-heading-sm-size);
+  --type-heading-sm-weight: var(--reference-type-heading-sm-weight);
+  --type-heading-sm-leading: var(--reference-type-heading-sm-leading);
+  --type-heading-sm-tracking: var(--reference-type-tracking-default);
+  --type-body-lg-size: var(--reference-type-body-lg-size);
+  --type-body-lg-weight: var(--reference-type-body-weight);
+  --type-body-lg-leading: var(--reference-type-body-lg-leading);
+  --type-body-lg-tracking: var(--reference-type-tracking-default);
+  --type-body-size: var(--reference-type-body-size);
+  --type-body-weight: var(--reference-type-body-weight);
+  --type-body-leading: var(--reference-type-body-leading);
+  --type-body-tracking: var(--reference-type-tracking-default);
+  --type-body-sm-size: var(--reference-type-body-sm-size);
+  --type-body-sm-weight: var(--reference-type-body-weight);
+  --type-body-sm-leading: var(--reference-type-body-sm-leading);
+  --type-body-sm-tracking: var(--reference-type-tracking-default);
+  --type-label-size: var(--reference-type-label-size);
+  --type-label-weight: var(--reference-type-label-weight);
+  --type-label-leading: var(--reference-type-label-leading);
+  --type-label-tracking: var(--reference-type-tracking-default);
 
   /* Spacing and geometry */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-  --space-20: 5rem;
-  --space-24: 6rem;
-  --space-30: 7.5rem;
-  --container-max: 77.5rem;
-  --container-gutter: clamp(2rem, calc(16.35vw - 8.46rem), 6.25rem);
-  --control-min: 2.75rem;
-  --radius-control: 0.625rem;
-  --radius-image: 0.625rem;
-  --radius-round: 999px;
-  --border-thin: 1px;
-  --shadow-panel: 0 0.25rem 1.5rem rgb(36 36 36 / 8%);
-  --duration-fast: 140ms;
-  --duration-standard: 220ms;
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --space-1: var(--reference-space-1);
+  --space-2: var(--reference-space-2);
+  --space-3: var(--reference-space-3);
+  --space-4: var(--reference-space-4);
+  --space-5: var(--reference-space-5);
+  --space-6: var(--reference-space-6);
+  --space-8: var(--reference-space-8);
+  --space-10: var(--reference-space-10);
+  --space-12: var(--reference-space-12);
+  --space-16: var(--reference-space-16);
+  --space-20: var(--reference-space-20);
+  --space-24: var(--reference-space-24);
+  --space-30: var(--reference-space-30);
+  --container-max: var(--reference-container-max);
+  --container-gutter-desktop: var(--reference-container-gutter-desktop);
+  --container-gutter-tablet: 2rem;
+  --container-gutter-mobile: 1.25rem;
+  --container-gutter-narrow: 1rem;
+  --container-gutter: clamp(
+    var(--container-gutter-tablet),
+    calc(16.35vw - 8.46rem),
+    var(--container-gutter-desktop)
+  );
+  --control-min: var(--reference-control-min);
+  --radius-button: var(--reference-radius-button);
+  --radius-control: var(--reference-radius-control);
+  --radius-image: var(--reference-radius-image);
+  --radius-round: var(--reference-radius-round);
+  --border-thin: var(--reference-border-thin);
+  --border-accent: var(--reference-border-accent);
+  --focus-ring-width: 0.1875rem;
+  --focus-ring-offset: 0.1875rem;
+  --active-offset: 1px;
+  --shadow-panel: var(--reference-shadow-panel);
+  --duration-fast: var(--reference-duration-fast);
+  --duration-standard: var(--reference-duration-standard);
+  --ease-standard: var(--reference-ease-standard);
 }
 
 @theme inline {
@@ -176,8 +243,8 @@ textarea {
 }
 
 :focus-visible {
-  outline: 0.1875rem solid var(--color-brand-focus);
-  outline-offset: 0.1875rem;
+  outline: var(--focus-ring-width) solid var(--color-brand-focus);
+  outline-offset: var(--focus-ring-offset);
 }
 
 ::selection {
@@ -311,11 +378,11 @@ textarea {
   align-items: center;
   justify-content: center;
   border: var(--border-thin) solid transparent;
-  border-radius: 0;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.25;
+  border-radius: var(--radius-button);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-heading-md-weight);
+  line-height: var(--type-label-leading);
   text-decoration: none;
 }
 
@@ -329,7 +396,7 @@ textarea {
 }
 
 .button-primary:active {
-  translate: 0 1px;
+  translate: 0 var(--active-offset);
 }
 
 .button-outline {
@@ -351,7 +418,11 @@ textarea {
 
 @media (max-width: 48rem) {
   :root {
-    --container-gutter: clamp(1.25rem, calc(3.1746vw + 0.4762rem), 2rem);
+    --container-gutter: clamp(
+      var(--container-gutter-mobile),
+      calc(3.1746vw + 0.4762rem),
+      var(--container-gutter-tablet)
+    );
   }
 
   .type-display {
@@ -361,7 +432,11 @@ textarea {
 
 @media (max-width: 24.375rem) {
   :root {
-    --container-gutter: clamp(1rem, calc(5.7143vw - 0.1429rem), 1.25rem);
+    --container-gutter: clamp(
+      var(--container-gutter-narrow),
+      calc(5.7143vw - 0.1429rem),
+      var(--container-gutter-mobile)
+    );
   }
 }
 
