@@ -71,4 +71,7 @@ inconsistency; Spec re-review initially reported no remaining finding. The next
 full review accepted a docs-lifecycle correction, intermediate breadcrumb
 semantics, 44px text-link target fixes, drawer insets on both narrow sides, and
 the certified sheet's public props export. Final cumulative re-review from the
-original base is pending this narrow fix commit.
+original base reported zero Standards findings. Its final Spec pass found the
+benefit heading at 20px rather than the required 24px; that one-line,
+behavior-preserving typography correction is committed separately after the
+same test, lint, and TypeScript checks passed.
