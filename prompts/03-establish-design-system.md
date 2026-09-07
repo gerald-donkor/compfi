@@ -1,7 +1,7 @@
 # Establish the Compfi design system
 
-Status: approved and implemented in local commits; the sign-off review fix is
-verified and awaiting final cumulative review.
+Status: approved and implemented in local commits; the final sign-off fix is
+verified and awaiting cumulative review.
 
 ## Goal and dependency
 

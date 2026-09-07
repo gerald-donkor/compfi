@@ -233,7 +233,7 @@ textarea {
   text-decoration: underline;
 }
 
-.container {
+.compfi-container {
   width: min(100% - (2 * var(--container-gutter)), var(--container-max));
   margin-inline: auto;
 }

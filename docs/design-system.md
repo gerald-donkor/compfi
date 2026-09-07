@@ -1,6 +1,6 @@
 # Compfi design system
 
-Status: implemented; sign-off review fix verified, final review pending.
+Status: implemented; final sign-off fix verified, cumulative review pending.
 
 This document owns Compfi's measured visual tokens and responsive foundation.
 The implementation authority is `app/globals.css`; this record explains the
@@ -153,7 +153,9 @@ normal-size customer copy; the sampled muted value remains evidence only.
 
 `Container` is the shared layout component. It renders a div, accepts native div
 props, composes children, merges its base class before a caller class, and keeps
-`data-slot="container"` stable. The base class owns width and centering. A caller
+`data-slot="container"` stable. The scoped `.compfi-container` base class owns
+width and centering without colliding with Tailwind's built-in `container`
+utility. A caller
 class is an additive styling hook; any intentional layout override must be a
 later unlayered rule with adequate specificity. At desktop the container is
 77.5rem (1240 px) wide with 6.25rem nominal gutters on a 1440 px viewport.
@@ -238,7 +240,7 @@ Self-verification on 2026-09-07:
 | `npm run build -- --webpack` | passed; `/` and `/design-system` prerendered as static content |
 | default `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind an internal port in the restricted sandbox; installed Next 16 documentation identifies `--webpack` as the supported fallback |
 | compiled CSS/fonts | four local Poppins faces emitted; reference, semantic, framework-alias and full typography token layers plus responsive and reduced-motion rules present |
-| browser geometry | no horizontal overflow at 1440, 1200, 1025, 1024, 768, 600, 390, or 320 px; measured gutters progressed continuously as 100, 81, 32, 32, 32, 27, 20, and 16 px respectively |
+| browser geometry | no horizontal overflow at 1440, 1200, 1025, 1024, 768, 600, 390, or 320 px; measured gutters progressed continuously as 100, 61, 32, 32, 32, 27, 20, and 16 px respectively |
 | responsive specimen | explicit grid rendered four columns on desktop/small desktop, three at 768 px, two at 600 px, and one at 390/320 px |
 | font/runtime | `document.fonts.status` was `loaded` at every width; no application console, hydration, CSS, or font errors observed |
 | keyboard | skip link, 44 px home link, enabled buttons, labeled search field, and motion disclosure followed DOM order; disabled button was skipped; focus outlines were visible and unclipped |
@@ -367,3 +369,14 @@ only the 72% product overlay had a token. The verified finding is accepted;
 color specimen. Lint, standalone TypeScript checking, the webpack production
 build, and the eight-width browser matrix pass. Final cumulative review remains
 pending.
+
+## Final sign-off review
+
+Standards again passed with zero findings. Spec reported one Low evidence
+discrepancy: the recorded 81 px supplemental gutter at 1200 px did not match the
+authored fluid formula. Investigation found Tailwind's generated `container`
+utility was applying an unintended 64rem max-width alongside the global class.
+The shared component now uses the collision-free `.compfi-container` name, and
+the record reflects the measured 61 px interpolated gutter. Lint, standalone
+TypeScript checking, the webpack production build, and the eight-width browser
+matrix pass. Final cumulative review is pending.
