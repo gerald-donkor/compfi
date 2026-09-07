@@ -39,7 +39,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
                 href={item.href}
                 variant="default"
                 aria-current={pathname === item.href ? "page" : undefined}
-                className="min-h-11 px-1 no-underline"
+                className="min-h-11 min-w-11 px-1 no-underline"
               >
                 {item.label}
               </Link>
@@ -75,7 +75,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
                 href={item.href}
                 variant="default"
                 aria-current={pathname === item.href ? "page" : undefined}
-                className="min-h-11 w-full px-1 no-underline"
+                className="min-h-11 min-w-11 w-full px-1 no-underline"
                 onClick={() => setMenuOpen(false)}
               >
                 {item.label}

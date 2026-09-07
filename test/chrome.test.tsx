@@ -57,7 +57,7 @@ describe("Compfi chrome", () => {
   it("renders semantic breadcrumbs, benefits, and footer links", async () => {
     const { container } = render(
       <>
-        <PageHero title="Shop" breadcrumbs={[{ label: "Home", href: "/" }, { label: "Shop" }]} />
+        <PageHero title="Shop" breadcrumbs={[{ label: "Home" }, { label: "Shop" }]} />
         <BenefitsStrip />
         <SiteFooter />
       </>
@@ -66,6 +66,7 @@ describe("Compfi chrome", () => {
     expect(screen.getByRole("navigation", { name: "breadcrumb" })).toBeInTheDocument()
     expect(container.querySelector("[data-slot='breadcrumb-page']")).toHaveAttribute("aria-current", "page")
     expect(screen.queryByRole("link", { name: "Shop", current: "page" })).not.toBeInTheDocument()
+    expect(container.querySelector("[data-slot='breadcrumb-item'] span")).not.toHaveAttribute("aria-current")
     expect(screen.getByRole("complementary", { name: "Shopping with Compfi" })).toBeInTheDocument()
     expect(screen.getByRole("contentinfo")).toBeInTheDocument()
 

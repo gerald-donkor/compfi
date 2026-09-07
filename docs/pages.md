@@ -67,5 +67,7 @@ Initial independent review found and resolved two Spec issues (PageHero height
 and fake current-page link) and four Standards issues (semantic scrim/motion and
 named chrome geometry tokens). The subsequent Standards re-review found and
 resolved the remaining geometry/wordmark token gaps and documentation-status
-inconsistency; Spec re-review reported no remaining finding. The final re-review
-results are recorded after that fix commit.
+inconsistency; Spec re-review initially reported no remaining finding. The next
+full review accepted a docs-lifecycle correction, intermediate breadcrumb
+semantics, and 44px text-link target fixes. Final cumulative re-review from
+the original base is pending this narrow fix commit.

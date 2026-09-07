@@ -41,8 +41,10 @@ export function PageHero({ title, breadcrumbs, size = "banner" }: PageHeroProps)
               return (
                 <React.Fragment key={`${item.label}-${index}`}>
                   <BreadcrumbItem>
-                    {isCurrent || !item.href ? (
+                    {isCurrent ? (
                       <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    ) : !item.href ? (
+                      <span className="text-foreground">{item.label}</span>
                     ) : (
                       <BreadcrumbLink render={<Link href={item.href} variant="default" />}>{item.label}</BreadcrumbLink>
                     )}

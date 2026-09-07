@@ -22,7 +22,7 @@ export function SiteFooter() {
               <ul className="mt-5 flex flex-col gap-3">
                 {group.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} variant="default" className="min-h-11 no-underline">{link.label}</Link>
+                    <Link href={link.href} variant="default" className="min-h-11 min-w-11 no-underline">{link.label}</Link>
                   </li>
                 ))}
               </ul>
