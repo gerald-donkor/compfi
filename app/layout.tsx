@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 
+import { SiteFooter } from "@/components/chrome/site-footer";
+import { SiteHeader } from "@/components/chrome/site-header";
+
 import "./globals.css";
 
 const poppins = localFont({
@@ -50,7 +53,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a className="skip-link" href="#main-content">
           Skip to main content
         </a>
+        <SiteHeader />
         {children}
+        <SiteFooter />
       </body>
     </html>
   );

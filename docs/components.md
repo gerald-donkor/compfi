@@ -8,6 +8,25 @@ This document owns the public component contracts, APIs, states, and accessibili
 
 ## 1. Scope & Audit Status
 
+### Phase 3 Shared Chrome Blocks
+
+- **`SiteHeader` / `HeaderControls`**: The server-safe header owns brand and
+  desktop structure. The focused client controls leaf owns current-route
+  semantics, mobile menu state, Escape/focus-return behavior, and composes the
+  cart drawer. Desktop navigation is hidden rather than duplicated on mobile.
+- **`PageHero`**: Server-safe title/breadcrumb block with the explicit
+  `BreadcrumbItemData` record (`label`, optional internal `href`). The final
+  item is non-interactive and has `aria-current="page"`.
+- **`BenefitsStrip`**: Server-safe four-item content block. Icons are
+  decorative; content records use an icon component, title, and description.
+- **`SiteFooter`**: Server-safe navigation block with non-claiming Compfi copy
+  and 44px minimum link targets. It does not model newsletter submission.
+- **`CartDrawer`**: Focused client leaf with controlled open state only. It
+  composes Base UI's modal Sheet; title and descriptive empty state are always
+  present. The audited Sheet adaptation uses a 20% scrim, flat 550px maximum
+  side sheet, viewport-safe width, overscroll containment, reduced-motion-safe
+  transition, focus trapping, Escape/backdrop dismissal, and focus return.
+
 ### Certified Phase 2 Components
 The following components have been fully audited, styled to Compfi's measured design tokens, verified for accessibility (WCAG 2.2 AA floor), and tested in automated JSDOM suites and real-browser rendering:
 

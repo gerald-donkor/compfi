@@ -166,7 +166,7 @@ implementation evidence.
 | `CONTEXT.md` | canonical Compfi domain glossary | planned; create lazily when the first domain term is resolved |
 | `docs/design-system.md` | measured tokens and responsive foundations | current; implemented and reviewed |
 | `docs/components.md` | component inventory, APIs, states, and accessibility | current; implemented and verified in Phase 2 |
-| `docs/pages.md` | route-by-route build record and reference deltas | planned with page phases |
+| `docs/pages.md` | route-by-route build record and reference deltas | current; shared chrome implemented and verified in Phase 3 |
 | `docs/automation.md` | repeatable measurement and screenshot-diff procedure | current |
 | `docs/auth.md` | Clerk setup, protected surfaces, and verification | planned when authentication is needed |
 
