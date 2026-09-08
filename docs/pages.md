@@ -67,9 +67,14 @@ and two Spec findings (incomplete Shop-state coverage and absent completion
 record). All four were accepted. The review-fix commit restores native pagination
 link semantics, expands model/loading/empty/error/pagination coverage, and
 documents the Shop contracts and measured component tokens. The Standards
-review's duplicate ProductGrid breakpoint observation was rejected as
-pre-existing outside this completion scope; its centralized sort conditional is
-also a deferred low-risk heuristic, not a documented violation.
+review's duplicate ProductGrid breakpoint observation was accepted and
+consolidated; its centralized sort conditional is a deferred low-risk heuristic,
+not a documented violation.
+
+The implementation is `696c8e1`; the completion and review-fix commits are
+`9d29ddb` and `a70e7a3`. The headless fallback did not provide an interactive
+400% reflow or reduced-motion assertion, so those remain explicitly unverified
+rather than inferred from the desktop references.
 and editorial gallery remain intentionally unbuilt.
 
 ## Home commerce foundation

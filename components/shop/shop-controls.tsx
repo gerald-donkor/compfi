@@ -21,7 +21,7 @@ export function ShopControls({ options, totalCount }: ShopControlsProps) {
   const navigate = (href: string) => startTransition(() => router.push(href))
 
   return (
-    <section className="shop-controls surface-wash" aria-label="Shop controls" data-slot="shop-controls" data-loading={isPending || undefined}>
+    <section className="shop-controls surface-wash" aria-label="Shop controls" aria-busy={isPending} data-slot="shop-controls" data-loading={isPending || undefined}>
       <div className="compfi-container shop-controls__inner">
         <div className="shop-controls__primary">
           <details className="shop-controls__filter" data-slot="shop-filter">
@@ -36,6 +36,7 @@ export function ShopControls({ options, totalCount }: ShopControlsProps) {
             <ToggleGroupItem value="list" aria-label="List view" data-composite-item-active={options.view === "list" ? "" : undefined} disabled={isPending}><ListIcon aria-hidden="true" /></ToggleGroupItem>
           </ToggleGroup>
           <p className="shop-controls__count" aria-live="polite">{totalCount} {totalCount === 1 ? "product" : "products"}</p>
+          <p className="sr-only" aria-live="polite">{isPending ? "Updating products…" : ""}</p>
         </div>
         <div className="shop-controls__selects">
           <label>Show
