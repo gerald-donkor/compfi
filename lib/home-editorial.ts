@@ -1,4 +1,4 @@
-export const editorialPlacements = [
+export const editorialPlacements = Object.freeze([
   "shelf",
   "workspace",
   "nook",
@@ -8,7 +8,7 @@ export const editorialPlacements = [
   "tables",
   "art",
   "kitchen",
-] as const
+] as const)
 
 export type EditorialPlacement = (typeof editorialPlacements)[number]
 
@@ -19,7 +19,6 @@ export type EditorialImage = Readonly<{
   width: number
   height: number
   placement: EditorialPlacement
-  focalPosition?: "center" | "left" | "right"
 }>
 
 export type InspirationSlide = Readonly<{
@@ -33,7 +32,6 @@ export type InspirationSlide = Readonly<{
     alt: string
     width: number
     height: number
-    focalPosition?: "center" | "left" | "right"
   }>
 }>
 

@@ -1,13 +1,17 @@
+import type * as React from "react"
 import NextLink from "next/link"
+import { cn } from "cn"
 
 import { Container } from "@/components/layout/container"
 import { Button } from "@/components/ui/button"
 import { inspirationSlides } from "@/lib/home-editorial"
 import { InspirationCarousel } from "./inspiration-carousel"
 
-export function InspirationSection() {
+export type InspirationSectionProps = React.ComponentProps<"section">
+
+export function InspirationSection({ className, ...props }: InspirationSectionProps) {
   return (
-    <section className="home-inspiration" aria-labelledby="home-inspiration-heading" data-slot="inspiration-section">
+    <section className={cn("home-inspiration", className)} aria-labelledby="home-inspiration-heading" data-slot="inspiration-section" {...props}>
       <Container className="home-inspiration__inner">
         <div className="home-inspiration__copy">
           <h2 id="home-inspiration-heading" className="type-heading-lg">Rooms to make your own</h2>

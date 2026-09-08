@@ -36,10 +36,20 @@ uses links, state changes use buttons, icon controls are named, image loading
 and dimensions are explicit, focus is visible, and reduced motion is honored.
 
 Self-verification on 2026-09-08: focused Home/editorial/carousel tests passed
-(3 files, 7 tests); the complete suite passed (15 files, 65 tests); lint and
+(3 files, 8 tests); the complete suite passed (15 files, 66 tests); lint and
 `npx tsc --noEmit` passed. Turbopack failed only at its known restricted
 PostCSS worker port bind (`Operation not permitted`); the required webpack
 fallback compiled, type-checked, and prerendered `/` successfully.
+
+The first two-axis review from the immutable base reported three Standards
+findings (two documented violations and one smell) and three Spec findings.
+All were accepted: Home blocks now forward native props, responsive component
+contracts are documented, unused focal-position fields were removed, 390px
+keeps a varied two-column mosaic with accurate image sizing, carousel tests
+cover all destinations plus first/middle/last controls, reduced motion,
+rerendering, and listener cleanup, and full verbatim generation prompts are
+preserved. No scope creep was found. The worst Standards issue was the missing
+native-prop contract; the worst Spec issue was the incorrect 390px layout.
 
 ## Shop commerce browsing
 

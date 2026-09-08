@@ -2,12 +2,13 @@
 
 import * as React from "react"
 import Image from "next/image"
+import { cn } from "cn"
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, useCarousel, type CarouselApi } from "@/components/ui/carousel"
 import { Link } from "@/components/ui/link"
 import type { InspirationSlide } from "@/lib/home-editorial"
 
-export type InspirationCarouselProps = Readonly<{ slides: readonly InspirationSlide[] }>
+export type InspirationCarouselProps = Omit<React.ComponentProps<"div">, "children"> & Readonly<{ slides: readonly InspirationSlide[] }>
 
 function CarouselControls({ slides }: InspirationCarouselProps) {
   const { api } = useCarousel()
@@ -52,11 +53,11 @@ function CarouselControls({ slides }: InspirationCarouselProps) {
   )
 }
 
-export function InspirationCarousel({ slides }: InspirationCarouselProps) {
+export function InspirationCarousel({ slides, className, ...props }: InspirationCarouselProps) {
   if (slides.length === 0) return null
 
   return (
-    <Carousel className="home-inspiration__carousel" aria-label="Room inspiration" opts={{ align: "start", containScroll: "trimSnaps", watchDrag: true }}>
+    <Carousel className={cn("home-inspiration__carousel", className)} aria-label="Room inspiration" opts={{ align: "start", containScroll: "trimSnaps", watchDrag: true }} {...props}>
       <CarouselContent className="home-inspiration__track">
         {slides.map((slide, index) => (
           <CarouselItem key={slide.id} className="home-inspiration__slide" aria-label={`${index + 1} of ${slides.length}`}>

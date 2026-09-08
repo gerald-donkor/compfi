@@ -129,3 +129,85 @@ exact unique request/composition clauses and selected finals are:
 No output required regeneration: all selected finals were distinct,
 border-free, text/logo-free at inspection scale, geometrically coherent, and
 retained useful focal areas for their assigned responsive crops.
+
+### Exact Home editorial generation prompts
+
+The four carousel calls used these complete prompts (one call per block):
+
+```text
+Use case: photorealistic-natural
+Asset type: project-bound Compfi Home inspiration carousel image
+Primary request: an original quiet contemporary residential bedroom in warm ivory, sand, and pale oak
+Scene/backdrop: upholstered bed below abstract unlettered framed art, low oak nightstand, layered ivory linen
+Style/medium: photorealistic natural-light interior editorial photography
+Composition/framing: portrait 404:582 ratio, calm eye-level framing, bed and nightstand center-safe for responsive cropping
+Lighting/mood: soft natural daylight, calm and spacious
+Materials/textures: honest linen, pale oak, ceramic
+Constraints: no people, text, logo, watermark, trademark, product label, embedded UI, brand-specific furniture, social-media chrome, collage, or border
+Avoid: uncanny geometry, duplicated furniture, impossible windows, warped legs, illegible pseudo-text
+```
+
+```text
+Use case: photorealistic-natural
+Asset type: project-bound Compfi Home inspiration carousel image
+Primary request: an original bright contemporary dining room in warm ivory, sand, and pale oak
+Scene/backdrop: pale-oak dining table and exactly four sculptural upholstered chairs with a simple ceramic centerpiece
+Style/medium: photorealistic natural-light interior editorial photography
+Composition/framing: portrait 404:582 ratio, open daylight framing, table and chairs center-safe for responsive cropping
+Lighting/mood: clear soft natural daylight, welcoming and quiet
+Materials/textures: pale oak, woven upholstery, handmade ceramic
+Constraints: no people, text, logo, watermark, trademark, product label, embedded UI, brand-specific furniture, social-media chrome, collage, or border
+Avoid: uncanny geometry, duplicated chairs, extra chairs, impossible windows, warped legs, illegible pseudo-text
+```
+
+```text
+Use case: photorealistic-natural
+Asset type: project-bound Compfi Home inspiration carousel image
+Primary request: an original quiet contemporary living room in warm ivory, sand, and pale oak
+Scene/backdrop: low linen sofa, textured rug, oak coffee table, and one sculptural lounge chair
+Style/medium: photorealistic natural-light interior editorial photography
+Composition/framing: portrait 404:582 ratio, balanced architectural framing, sofa group center-safe for responsive cropping
+Lighting/mood: diffused natural daylight, softly grounded and restful
+Materials/textures: honest linen, wool-like textured rug, pale oak, ceramic
+Constraints: no people, text, logo, watermark, trademark, product label, embedded UI, brand-specific furniture, social-media chrome, collage, or border
+Avoid: uncanny geometry, duplicated furniture, impossible windows, warped legs, illegible pseudo-text
+```
+
+```text
+Use case: photorealistic-natural
+Asset type: project-bound Compfi Home inspiration carousel image
+Primary request: an original intimate contemporary reading corner in warm ivory, sand, and pale oak
+Scene/backdrop: enveloping neutral lounge chair, slim floor lamp, small oak table, quiet shelving with book spines turned away or blank
+Style/medium: photorealistic natural-light interior editorial photography
+Composition/framing: portrait 404:582 ratio, intimate eye-level framing, chair and lamp center-safe for responsive cropping
+Lighting/mood: gentle natural daylight, contemplative and calm
+Materials/textures: woven upholstery, pale oak, matte ceramic
+Constraints: no people, text, logo, watermark, trademark, product label, embedded UI, brand-specific furniture, social-media chrome, collage, or border
+Avoid: uncanny geometry, duplicated furniture, impossible windows, warped legs, readable or pseudo-text
+```
+
+Each of the nine mosaic calls used this exact common prefix, followed without
+other text by its exact suffix in the table below:
+
+```text
+Use case: photorealistic-natural
+Asset type: project-bound Compfi Home editorial mosaic image
+Style/medium: original photorealistic natural-light interior editorial photography
+Color palette: warm ivory, sand, pale oak
+Lighting/mood: soft natural daylight, quiet contemporary residential interior
+Materials/textures: honest linen, wood, and ceramic
+Constraints: no people, text, logo, watermark, trademark, product label, embedded UI, brand-specific furniture, social-media chrome, collage, or border
+Avoid: uncanny geometry, duplicated furniture, impossible windows, warped legs, illegible pseudo-text
+```
+
+| asset | exact appended suffix |
+| --- | --- |
+| open shelving | `Primary request: tall open shelving vignette with handmade ceramics and one leafy plant`<br>`Composition/framing: narrow portrait, shelving remains useful in center crop` |
+| quiet workspace | `Primary request: wide quiet home workspace with a pale-oak desk and an unbranded closed laptop`<br>`Composition/framing: landscape, desk scene balanced across the frame with useful center crop` |
+| dining nook | `Primary request: tall compact dining nook under one simple pendant`<br>`Composition/framing: portrait, intimate dining arrangement center-safe` |
+| upholstered bedroom | `Primary request: wide upholstered bedroom with layered neutral bedding`<br>`Composition/framing: landscape, bed and textiles across the frame with useful center crop` |
+| sunlit dining corner | `Primary request: tall sunlit dining corner against textured pale brick`<br>`Composition/framing: tall portrait, table corner and chairs centered with daylight across brick` |
+| vintage lounge chair | `Primary request: vintage-inspired neutral lounge chair against a plain warm wall`<br>`Composition/framing: portrait, full chair silhouette with breathing room and no cropped legs` |
+| oak tables | `Primary request: pair of small pale-oak tables with handmade ceramics and foliage`<br>`Composition/framing: wide landscape still life, both tables fully visible` |
+| art and vase | `Primary request: framed abstract-art and sculptural-vase vignette with no legible text`<br>`Composition/framing: narrow tall portrait, art and vase aligned vertically` |
+| kitchen shelf | `Primary request: kitchen shelf vignette with handmade ceramics and hanging unbranded utensils`<br>`Composition/framing: wide landscape, shelf and utensils arranged clearly with no labels` |

@@ -1087,6 +1087,19 @@ textarea {
 
   .home-inspiration__controls { align-items: flex-start; flex-direction: column; }
 
+  .home-editorial__mosaic { height: 72rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-editorial__item[data-placement="shelf"] { grid-area: 1 / 1 / 4 / 2; }
+  .home-editorial__item[data-placement="workspace"] { grid-area: 1 / 2 / 3 / 3; }
+  .home-editorial__item[data-placement="nook"] { grid-area: 3 / 2 / 6 / 3; }
+  .home-editorial__item[data-placement="bedroom"] { grid-area: 4 / 1 / 6 / 2; }
+  .home-editorial__item[data-placement="dining"] { grid-area: 6 / 1 / 9 / 2; }
+  .home-editorial__item[data-placement="chair"] { grid-area: 6 / 2 / 9 / 3; }
+  .home-editorial__item[data-placement="tables"] { grid-area: 9 / 1 / 11 / 3; }
+  .home-editorial__item[data-placement="art"] { grid-area: 11 / 1 / 14 / 2; }
+  .home-editorial__item[data-placement="kitchen"] { grid-area: 11 / 2 / 14 / 3; }
+}
+
+@media (max-width: 20rem) {
   .home-editorial__mosaic {
     height: auto;
     grid-template-columns: 1fr;
@@ -1094,10 +1107,7 @@ textarea {
     padding-inline: var(--container-gutter);
   }
 
-  .home-editorial__item[data-placement] {
-    grid-area: auto;
-    aspect-ratio: 4 / 3;
-  }
+  .home-editorial__item[data-placement] { grid-area: auto; aspect-ratio: 4 / 3; }
 }
 
 @media (prefers-reduced-motion: reduce) {
