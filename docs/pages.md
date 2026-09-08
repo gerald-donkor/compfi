@@ -51,6 +51,14 @@ rerendering, and listener cleanup, and full verbatim generation prompts are
 preserved. No scope creep was found. The worst Standards issue was the missing
 native-prop contract; the worst Spec issue was the incorrect 390px layout.
 
+The first re-review reported two Standards findings, one optional smell, and
+two Spec findings. All were accepted: the caption contract now says overlay,
+owned slots/heading relationships cannot be overwritten by forwarded props,
+shared media fields have one type, every gallery placement has a breakpoint-
+accurate `sizes` hint, and tests prove the final disabled boundary plus the
+reduced-motion jump path. The worst Standards issue was stale caption
+documentation; the worst Spec issue was underestimating wide mosaic images.
+
 ## Shop commerce browsing
 
 `/shop` is a request-time Server Component. Its allowlisted URL state resolves

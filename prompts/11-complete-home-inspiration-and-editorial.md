@@ -3,8 +3,8 @@
 ## Status and authorization boundary
 
 Approved with `y` on 2026-09-08. Implemented from immutable base
-`3b8ea03b5b0e0295146048fda8d7b8cfcbbf0382`; initial two-axis findings were
-resolved and the required re-review is pending.
+`3b8ea03b5b0e0295146048fda8d7b8cfcbbf0382`; initial review and first
+re-review findings were resolved, with final re-review pending.
 
 ## Goal and why this is next
 

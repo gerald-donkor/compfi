@@ -11,7 +11,7 @@ export type InspirationSectionProps = React.ComponentProps<"section">
 
 export function InspirationSection({ className, ...props }: InspirationSectionProps) {
   return (
-    <section className={cn("home-inspiration", className)} aria-labelledby="home-inspiration-heading" data-slot="inspiration-section" {...props}>
+    <section {...props} className={cn("home-inspiration", className)} aria-labelledby="home-inspiration-heading" data-slot="inspiration-section">
       <Container className="home-inspiration__inner">
         <div className="home-inspiration__copy">
           <h2 id="home-inspiration-heading" className="type-heading-lg">Rooms to make your own</h2>

@@ -108,11 +108,11 @@ function Carousel({
       }}
     >
       <div
+        {...props}
         className={cn("relative", className)}
         role="region"
         aria-roledescription="carousel"
         data-slot="carousel"
-        {...props}
       >
         {children}
       </div>

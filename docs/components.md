@@ -74,7 +74,7 @@ The following components have been fully audited, styled to Compfi's measured de
   motion uses Embla's jump path. An empty collection renders no carousel.
   At desktop each slide is capped at 404px and the locally clipped viewport
   shows the next slide; tablet/mobile use an 84% basis for a meaningful peek.
-  Captions remain in-flow within each figure and all controls retain 44px hits.
+  Captions are HTML overlays inside each figure and all controls retain 44px hits.
 - **`EditorialGallery`**: Server block rendering a semantic nine-image list
   and visible `#CompfiAtHome` heading. Closed `data-placement` values drive the
   full-bleed CSS mosaic; no JavaScript or social integration is present.

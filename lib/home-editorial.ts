@@ -12,12 +12,15 @@ export const editorialPlacements = Object.freeze([
 
 export type EditorialPlacement = (typeof editorialPlacements)[number]
 
-export type EditorialImage = Readonly<{
-  id: string
+export type EditorialMedia = Readonly<{
   src: `/images/home/editorial/${string}.webp`
   alt: string
   width: number
   height: number
+}>
+
+export type EditorialImage = EditorialMedia & Readonly<{
+  id: string
   placement: EditorialPlacement
 }>
 
@@ -27,12 +30,7 @@ export type InspirationSlide = Readonly<{
   title: string
   actionLabel: string
   href: "/shop?category=bedroom" | "/shop?category=dining" | "/shop?category=living"
-  image: Readonly<{
-    src: `/images/home/editorial/${string}.webp`
-    alt: string
-    width: number
-    height: number
-  }>
+  image: EditorialMedia
 }>
 
 function freezeRecord<const T extends Record<string, unknown>>(record: T): Readonly<T> {

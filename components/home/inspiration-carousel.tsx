@@ -53,11 +53,11 @@ function CarouselControls({ slides }: InspirationCarouselProps) {
   )
 }
 
-export function InspirationCarousel({ slides, className, ...props }: InspirationCarouselProps) {
+export function InspirationCarousel({ slides, className, "aria-label": accessibleLabel = "Room inspiration", ...props }: InspirationCarouselProps) {
   if (slides.length === 0) return null
 
   return (
-    <Carousel className={cn("home-inspiration__carousel", className)} aria-label="Room inspiration" opts={{ align: "start", containScroll: "trimSnaps", watchDrag: true }} {...props}>
+    <Carousel {...props} className={cn("home-inspiration__carousel", className)} aria-label={accessibleLabel} opts={{ align: "start", containScroll: "trimSnaps", watchDrag: true }}>
       <CarouselContent className="home-inspiration__track">
         {slides.map((slide, index) => (
           <CarouselItem key={slide.id} className="home-inspiration__slide" aria-label={`${index + 1} of ${slides.length}`}>
