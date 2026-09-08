@@ -24,10 +24,13 @@ function assertCatalogProduct(product: CatalogProduct): void {
     throw new Error(`Catalog product ${product.id} needs a higher compare-at price`)
   }
 
+  const alt = product.media.alt.trim()
+
   if (
     !product.media.path.startsWith("/images/") ||
-    !product.media.alt ||
-    /^image of\b/i.test(product.media.alt) ||
+    !alt ||
+    /^image of\b/i.test(alt) ||
+    alt.toLocaleLowerCase("en-US") === product.name.trim().toLocaleLowerCase("en-US") ||
     !Number.isSafeInteger(product.media.width) ||
     !Number.isSafeInteger(product.media.height) ||
     product.media.width <= 0 ||
