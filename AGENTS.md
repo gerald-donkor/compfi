@@ -163,7 +163,8 @@ implementation evidence.
 | file | purpose | status |
 | --- | --- | --- |
 | `AGENTS.md` | project, workflow, design, architecture, and verification contract | current |
-| `CONTEXT.md` | canonical Compfi domain glossary | planned; create lazily when the first domain term is resolved |
+| `CONTEXT.md` | canonical Compfi domain glossary | current; catalog vocabulary established in Phase 4 |
+| `docs/catalog.md` | static catalog fixture, media, and provenance contract | current; established in Phase 4 |
 | `docs/design-system.md` | measured tokens and responsive foundations | current; implemented and reviewed |
 | `docs/components.md` | component inventory, APIs, states, and accessibility | current; implemented and verified in Phase 2 |
 | `docs/pages.md` | route-by-route build record and reference deltas | current; shared chrome implemented and verified in Phase 3 |
