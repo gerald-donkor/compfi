@@ -693,13 +693,16 @@ textarea {
   .home-campaign__panel {
     padding-inline: var(--container-gutter-tablet);
   }
-
-  .room-category-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 @media (min-width: 64rem) {
+  .room-category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.125rem;
+    max-width: 73.75rem;
+    margin-inline: auto;
+  }
+
   .home-campaign {
     height: var(--home-campaign-block-size);
   }

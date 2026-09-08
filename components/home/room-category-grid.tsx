@@ -61,7 +61,7 @@ export function RoomCategoryGrid() {
               alt={room.image.alt}
               width={room.image.width}
               height={room.image.height}
-              sizes="(min-width: 1024px) calc((100vw - (2 * clamp(32px, calc(16.35vw - 135.36px), 100px)) - 64px) / 3), (min-width: 768px) calc((100vw - 128px) / 3), (min-width: 640px) calc((100vw - 96px) / 2), calc(100vw - 40px)"
+              sizes="(min-width: 1024px) calc((min(100vw - (2 * clamp(32px, calc(16.35vw - 135.36px), 100px)), 1180px) - 36px) / 3), (min-width: 640px) calc((100vw - 96px) / 2), calc(100vw - 40px)"
               className="room-category-grid__image"
             />
             <span className="type-heading-md room-category-grid__label">{room.label}</span>
