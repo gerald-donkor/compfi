@@ -176,6 +176,12 @@ form the selected coherent 4 px scale rather than claiming individual crops.
 Prefer 24–32 px card/grid gaps, 64–96 px section gaps, and 120 px only for the
 largest desktop intervals. All controls have a 44 × 44 px minimum target.
 
+The Home room row has its own measured geometry roles:
+`--home-room-grid-max-width` is 1180 px and `--home-room-grid-gap` is 18 px,
+which yield the three approximately 381 × 480 px desktop crops. These values
+remain distinct from the general spacing scale because they preserve the
+reference composition rather than introduce a new global rhythm step.
+
 Future comparison tables may scroll horizontally within a named region rather
 than compressing unreadably. Cart tables become labeled stacked rows on mobile.
 Modal cart sheets use available viewport width with focus management supplied by

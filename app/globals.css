@@ -148,6 +148,8 @@
   --home-campaign-panel-block-size: 27.6875rem;
   --home-campaign-panel-inline-end: max(2rem, calc((100vw - var(--container-max)) / 2 - 2.625rem));
   --home-room-media-ratio: 381 / 480;
+  --home-room-grid-gap: 1.125rem;
+  --home-room-grid-max-width: 73.75rem;
   --home-product-media-ratio: 285 / 301;
   --home-section-block-padding: 6rem;
   --home-product-overlay: var(--color-overlay);
@@ -698,8 +700,8 @@ textarea {
 @media (min-width: 64rem) {
   .room-category-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.125rem;
-    max-width: 73.75rem;
+    gap: var(--home-room-grid-gap);
+    max-width: var(--home-room-grid-max-width);
     margin-inline: auto;
   }
 
