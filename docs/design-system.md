@@ -182,6 +182,13 @@ which yield the three approximately 381 × 480 px desktop crops. These values
 remain distinct from the general spacing scale because they preserve the
 reference composition rather than introduce a new global rhythm step.
 
+The Shop controls and result blocks likewise retain measured component geometry
+outside the global spacing rhythm: `--shop-controls-block-padding` is 28px, so
+the 44px controls create the 100px desktop control band; `--shop-results-block-
+padding` is 72px; the disclosure panel uses a 176px minimum inline size; and
+the desktop list media cap is 288px. These are named Shop component tokens,
+not general-purpose spacing values.
+
 Future comparison tables may scroll horizontally within a named region rather
 than compressing unreadably. Cart tables become labeled stacked rows on mobile.
 Modal cart sheets use available viewport width with focus management supplied by

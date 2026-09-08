@@ -32,6 +32,27 @@ This document owns the public component contracts, APIs, states, and accessibili
   unexamined generated components in this inventory. `SheetContentProps`
   exposes its `side` and `showCloseButton` API.
 
+### Phase 4 Shop Blocks
+
+- **`ShopControls`**: Client leaf for the normalized `CatalogViewOptions` and
+  `totalCount`; it owns only URL navigation and pending feedback, never catalog
+  records. Its stable slots are `shop-controls` and `shop-filter`. Native
+  `details` supplies room disclosure and local links; the selected Base UI view
+  toggle carries `data-composite-item-active`, making it the roving Tab entry
+  point while arrow keys move within the group. Native page-size and sort
+  controls are labelled, disabled during a transition, and rebuild canonical
+  local URLs. Real usage: `/shop`.
+- **`ShopResults`**: Server block accepting one resolved `CatalogViewModel`.
+  It owns the `shop-results` slot and `data-view` presentation boundary,
+  truthful result range, `ProductGrid` delegation, a recoverable empty state,
+  and real-link pagination with the active page exposed through
+  `aria-current="page"`. Grid/list styling is responsive; it has no client
+  state or catalog mutation. Real usage: `/shop`.
+- **`Pagination`**: Server-safe navigation composition. `PaginationLink`,
+  `PaginationPrevious`, and `PaginationNext` render native anchors styled with
+  the shared button variants; they never override link semantics. The active
+  page alone receives `aria-current="page"`. Real usage: Shop result pages.
+
 ### Certified Phase 2 Components
 The following components have been fully audited, styled to Compfi's measured design tokens, verified for accessibility (WCAG 2.2 AA floor), and tested in automated JSDOM suites and real-browser rendering:
 

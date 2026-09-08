@@ -60,6 +60,16 @@ focus styles use `focus-visible`. The completion pass also corrected an RSC
 boundary defect: `ShopControls` now receives only the normalized five-field
 options record rather than serializing the full catalog view model into its
 client leaf.
+
+Initial two-axis review from `5625e3c...9d29ddb` recorded two Standards
+findings (missing Shop component contracts and undocumented component geometry)
+and two Spec findings (incomplete Shop-state coverage and absent completion
+record). All four were accepted. The review-fix commit restores native pagination
+link semantics, expands model/loading/empty/error/pagination coverage, and
+documents the Shop contracts and measured component tokens. The Standards
+review's duplicate ProductGrid breakpoint observation was rejected as
+pre-existing outside this completion scope; its centralized sort conditional is
+also a deferred low-risk heuristic, not a documented violation.
 and editorial gallery remain intentionally unbuilt.
 
 ## Home commerce foundation

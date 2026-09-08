@@ -27,4 +27,23 @@ describe("catalog view", () => {
     expect(shopHref(view, { page: 1 })).toBe("/shop?view=list&pageSize=4")
     expect(shopHref(view, { category: undefined })).toBe("/shop?view=list&pageSize=4")
   })
+
+  it("accepts only the closed query unions and preserves every supported option", () => {
+    for (const sort of ["featured", "name", "price-low", "price-high"] as const) {
+      const view = resolveCatalogView(catalogProducts, { category: "dining", sort, view: "list", pageSize: "4", page: "2" })
+      expect(view.category).toBe("dining")
+      expect(view.sort).toBe(sort)
+      expect(view.view).toBe("list")
+      expect(view.pageSize).toBe(4)
+      expect(view.page).toBe(1)
+    }
+
+    const invalid = resolveCatalogView(catalogProducts, { category: "office", sort: ["name"], view: "table", pageSize: "0", page: "9007199254740992" })
+    expect(invalid).toMatchObject({ category: undefined, sort: "featured", view: "grid", pageSize: 8, page: 1 })
+  })
+
+  it("reports an empty catalog truthfully", () => {
+    const view = resolveCatalogView([], { page: "2", pageSize: "4" })
+    expect(view).toMatchObject({ totalCount: 0, totalPages: 1, page: 1, visibleStart: 0, visibleEnd: 0, visibleProducts: [] })
+  })
 })
