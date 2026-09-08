@@ -51,6 +51,8 @@ use instead of inferring them from a resized overview:
 | --- | --- | --- | --- |
 | Home room category | 762 × 960 at x 262–1023, y 2016–2975 | 381 × 480 px | 0.794:1 (portrait) |
 | Home product image | 570 × 602 within the 570 × 892 card run beginning at x 202, y 3380 | 285 × 301 px within a 285 × 446 card | 0.947:1 |
+| Home inspiration lead | 808 × 1164 at x 1128–1935, y 5614–6777 within `#FCF8F3` at y 5526–6865 | 404 × 582 px within a 670 px band and 44 px vertical inset | 0.694:1 |
+| Home editorial mosaic | repeated 32-raster-pixel gaps across irregular image runs near y 7300–8560 | 16 px full-bleed gaps and an approximately 720 px image field | varied |
 | Blog lead article | 1634 × 1000 at x 200–1833, y 1044–2043 | 817 × 500 px | 1.634:1 (landscape) |
 
 The cart-drawer reference changes a known white canvas pixel to `#CCCCCC`
@@ -144,6 +146,7 @@ Ratios were calculated with WCAG relative luminance.
 | wash | `#F9F1E7` | same | controls, breadcrumbs, totals |
 | benefit | `#FAF3EA` | same | benefits bands |
 | product | `#F4F5F7` | same | product information |
+| inspiration | `#FCF8F3` | same | Home room-inspiration band |
 
 White text must not be placed on the reference gold, coral, or teal. Gold may be
 used decoratively or with dark text. The stronger muted token is required for

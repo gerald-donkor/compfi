@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
 
-import { BenefitsStrip } from "@/components/chrome/benefits-strip"
 import { ProductGrid } from "@/components/commerce/product-grid"
 import { CampaignHero } from "@/components/home/campaign-hero"
+import { EditorialGallery } from "@/components/home/editorial-gallery"
+import { InspirationSection } from "@/components/home/inspiration-section"
 import { RoomCategoryGrid } from "@/components/home/room-category-grid"
 import { Container } from "@/components/layout/container"
 import { Link } from "@/components/ui/link"
@@ -44,7 +45,8 @@ export default function HomePage() {
             <ProductGrid products={catalogProducts} />
           </Container>
         </section>
-        <BenefitsStrip />
+        <InspirationSection />
+        <EditorialGallery />
       </main>
     </>
   )

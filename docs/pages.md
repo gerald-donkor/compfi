@@ -1,6 +1,45 @@
 # Compfi page build record
 
-Status: Phase 4 Home commerce foundation implemented; the inspiration carousel
+Status: Phase 4 Home and Shop implemented and verified through the Home editorial unit.
+
+## Home inspiration and editorial completion
+
+The reviewed Home foundation now continues with a 670px desktop inspiration
+band and a full-bleed nine-image editorial mosaic before the global footer.
+The shared `BenefitsStrip` remains certified and used by Shop but is absent
+from Home to match the reference. Copy uses `Rooms to make your own` and
+`#CompfiAtHome`; the hashtag is text, not a social link or submission claim.
+
+Native evidence confirms `#FCF8F3` from y=5526 through y=6865, an 808×1164
+raster lead image at x=1128, and 32-raster-pixel mosaic gutters. Compfi maps
+those to a 670px band, 404×582px lead frame, and 16px full-bleed grid gaps.
+Desktop shows a dominant and partial next slide; tablet stacks copy above a
+primary/peek carousel; 390px retains a varied mosaic; 320px uses readable
+single-column images.
+
+The carousel does not auto-rotate. Previous/next controls, four named dots,
+positional labels, `aria-current`, and one polite status provide non-drag
+navigation. The primitive releases both Embla listeners. Reduced-motion
+navigation jumps immediately, and nested links keep native arrow-key behavior.
+All thirteen original editorial WebPs are local, lazy, distinct, and rendered
+with exact intrinsic dimensions. Fixture, copy, gallery, and image composition
+stay server-owned; only the carousel wrapper enters the client graph.
+
+Evidence is retained in `/tmp/compfi-home11.bwIsT7`: native crops, contact
+sheet, five viewport screenshots, and full-height 1440/320 captures. Chromium
+CDP verified room 1→2 next navigation, dot navigation to room 4, disabled
+first/last boundaries, reduced motion, lazy gallery images, and zero horizontal
+overflow at 1440, 1024, 768, 390, and 320px. `agent-browser` was unavailable
+with `command not found`, so the approved Chromium fallback was used. The
+fresh Web Interface Guidelines review found no unresolved issue: navigation
+uses links, state changes use buttons, icon controls are named, image loading
+and dimensions are explicit, focus is visible, and reduced motion is honored.
+
+Self-verification on 2026-09-08: focused Home/editorial/carousel tests passed
+(3 files, 7 tests); the complete suite passed (15 files, 65 tests); lint and
+`npx tsc --noEmit` passed. Turbopack failed only at its known restricted
+PostCSS worker port bind (`Operation not permitted`); the required webpack
+fallback compiled, type-checked, and prerendered `/` successfully.
 
 ## Shop commerce browsing
 
@@ -75,15 +114,12 @@ The implementation is `696c8e1`; the completion and review-fix commits are
 `9d29ddb` and `a70e7a3`. The headless fallback did not provide an interactive
 400% reflow or reduced-motion assertion, so those remain explicitly unverified
 rather than inferred from the desktop references.
-and editorial gallery remain intentionally unbuilt.
-
 ## Home commerce foundation
 
 The Home route now renders the campaign, room navigation, all eight canonical
-catalog products, and the existing benefits strip inside its single
-`main#main-content` landmark. It remains a partial Phase 4 route: the reference
-inspiration carousel and editorial mosaic are deferred to the next approved
-Home unit rather than represented with placeholders or duplicate imagery.
+catalog products, inspiration carousel, and editorial gallery inside its single
+`main#main-content` landmark. The upper foundation remains unchanged; its
+lower-page completion is recorded above.
 
 ### Reference evidence and production interpretation
 
@@ -93,7 +129,7 @@ Home unit rather than represented with placeholders or duplicate imagery.
 | campaign panel | `1286 × 886 + 1478 + 506` raster `#FFF3E3` region | 643 × 443 CSS px cream panel, vertically centered and 58 CSS px from the 1440px viewport edge; it stacks below the image below 1024px |
 | room navigation | `762 × 960` raster room crop at x=262–1023, y=2016–2975 | Three 381 × 480 CSS px portrait crops in a 1180 CSS px row with 18 CSS px gaps at desktop; 3/2/1 columns at 1024/640/320px pressure points |
 | featured cards | `570 × 892` raster card, including a `570 × 602` image field; 64-raster-pixel column gap | Flat four-column desktop list within the 1240px container, with a 285:301 media field and 32 CSS px gaps; 3/2/1 columns at 1024/768/390px |
-| lower boundary | inspiration wash begins around y=5526 raster | This implementation stops after the featured list and continues directly to the shared benefits strip; no synthetic lower band is added |
+| lower boundary | inspiration wash begins around y=5526 raster | The completed inspiration band begins after featured products and the editorial mosaic transitions directly to the footer |
 
 ### Responsive and interaction decisions
 

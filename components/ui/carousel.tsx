@@ -9,12 +9,12 @@ import useEmblaCarousel, {
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
-type CarouselApi = UseEmblaCarouselType[1]
+export type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
 type CarouselOptions = UseCarouselParameters[0]
 type CarouselPlugin = UseCarouselParameters[1]
 
-type CarouselProps = {
+export type CarouselProps = React.ComponentProps<"div"> & {
   opts?: CarouselOptions
   plugins?: CarouselPlugin
   orientation?: "horizontal" | "vertical"
@@ -24,8 +24,8 @@ type CarouselProps = {
 type CarouselContextProps = {
   carouselRef: ReturnType<typeof useEmblaCarousel>[0]
   api: ReturnType<typeof useEmblaCarousel>[1]
-  scrollPrev: () => void
-  scrollNext: () => void
+  scrollPrev: (jump?: boolean) => void
+  scrollNext: (jump?: boolean) => void
   canScrollPrev: boolean
   canScrollNext: boolean
 } & CarouselProps
@@ -50,7 +50,7 @@ function Carousel({
   className,
   children,
   ...props
-}: React.ComponentProps<"div"> & CarouselProps) {
+}: CarouselProps) {
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
@@ -67,26 +67,13 @@ function Carousel({
     setCanScrollNext(api.canScrollNext())
   }, [])
 
-  const scrollPrev = React.useCallback(() => {
-    api?.scrollPrev()
+  const scrollPrev = React.useCallback((jump = false) => {
+    api?.scrollPrev(jump)
   }, [api])
 
-  const scrollNext = React.useCallback(() => {
-    api?.scrollNext()
+  const scrollNext = React.useCallback((jump = false) => {
+    api?.scrollNext(jump)
   }, [api])
-
-  const handleKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "ArrowLeft") {
-        event.preventDefault()
-        scrollPrev()
-      } else if (event.key === "ArrowRight") {
-        event.preventDefault()
-        scrollNext()
-      }
-    },
-    [scrollPrev, scrollNext]
-  )
 
   React.useEffect(() => {
     if (!api || !setApi) return
@@ -101,7 +88,8 @@ function Carousel({
     api.on("select", onSelect)
 
     return () => {
-      api?.off("select", onSelect)
+      api.off("select", onSelect)
+      api.off("reInit", onSelect)
     }
   }, [api, onSelect])
 
@@ -120,7 +108,6 @@ function Carousel({
       }}
     >
       <div
-        onKeyDownCapture={handleKeyDown}
         className={cn("relative", className)}
         role="region"
         aria-roledescription="carousel"
@@ -133,7 +120,9 @@ function Carousel({
   )
 }
 
-function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
+export type CarouselContentProps = React.ComponentProps<"div">
+
+function CarouselContent({ className, ...props }: CarouselContentProps) {
   const { carouselRef, orientation } = useCarousel()
 
   return (
@@ -154,7 +143,9 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
+export type CarouselItemProps = React.ComponentProps<"div">
+
+function CarouselItem({ className, ...props }: CarouselItemProps) {
   const { orientation } = useCarousel()
 
   return (
@@ -172,12 +163,16 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+export type CarouselControlProps = React.ComponentProps<typeof Button> & { jump?: boolean }
+
 function CarouselPrevious({
   className,
   variant = "outline",
   size = "icon-sm",
+  jump = false,
+  onClick,
   ...props
-}: React.ComponentProps<typeof Button>) {
+}: CarouselControlProps) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   return (
@@ -193,10 +188,13 @@ function CarouselPrevious({
         className
       )}
       disabled={!canScrollPrev}
-      onClick={scrollPrev}
+      onClick={(event) => {
+        scrollPrev(jump)
+        onClick?.(event)
+      }}
       {...props}
     >
-      <ChevronLeftIcon />
+      <ChevronLeftIcon aria-hidden="true" />
       <span className="sr-only">Previous slide</span>
     </Button>
   )
@@ -206,8 +204,10 @@ function CarouselNext({
   className,
   variant = "outline",
   size = "icon-sm",
+  jump = false,
+  onClick,
   ...props
-}: React.ComponentProps<typeof Button>) {
+}: CarouselControlProps) {
   const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   return (
@@ -223,17 +223,19 @@ function CarouselNext({
         className
       )}
       disabled={!canScrollNext}
-      onClick={scrollNext}
+      onClick={(event) => {
+        scrollNext(jump)
+        onClick?.(event)
+      }}
       {...props}
     >
-      <ChevronRightIcon />
+      <ChevronRightIcon aria-hidden="true" />
       <span className="sr-only">Next slide</span>
     </Button>
   )
 }
 
 export {
-  type CarouselApi,
   Carousel,
   CarouselContent,
   CarouselItem,

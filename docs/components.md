@@ -1,6 +1,6 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 2 certified; implemented, tested, and verified.
+Status: Phase 4 Home editorial components certified; implemented, tested, and verified.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 
@@ -61,8 +61,28 @@ The following components have been fully audited, styled to Compfi's measured de
 - **Layout**: `Section`, `Stack`, `Cluster`, `Container`
 - **Product Foundations**: `Money`, `QuantityInput`, `ColorSelector` / `ColorSwatch`, `SizeSelector`
 
+### Phase 4 Home Editorial Blocks
+
+- **`InspirationSection`**: Server block owning the cream band, concise Compfi
+  copy, and real `/shop` action. It passes only four serializable slide records
+  into the interactive leaf. Stable slot: `inspiration-section`.
+- **`InspirationCarousel`**: Client leaf accepting `readonly
+  InspirationSlide[]`. It composes the certified carousel primitive, tracks
+  `select` and `reInit`, exposes previous/next and four labelled dots, and
+  announces one polite atomic status. Dots carry `aria-current`; controls stay
+  mounted at disabled boundaries; nested links retain arrow keys. Reduced
+  motion uses Embla's jump path. An empty collection renders no carousel.
+- **`EditorialGallery`**: Server block rendering a semantic nine-image list
+  and visible `#CompfiAtHome` heading. Closed `data-placement` values drive the
+  full-bleed CSS mosaic; no JavaScript or social integration is present.
+- **Carousel primitive**: `Carousel`, `CarouselContent`, `CarouselItem`,
+  `CarouselPrevious`, and `CarouselNext` export native-compatible prop types
+  and stable kebab-case slots. The shadcn/Embla composition unsubscribes both
+  `select` and `reInit`; controls support immediate `jump` navigation. The
+  region and slides expose carousel/slide roledescriptions. Real usage: Home.
+
 ### Existing Uncertified Components
-Generated components outside this certified inventory (including accordion, alert-dialog, avatar, calendar, card, carousel, chart, checkbox, collapsible, combobox, command, context-menu, dialog, drawer, dropdown-menu, hover-card, input-group, input-otp, item, kbd, marker, menubar, message-scroller, message, native-select, navigation-menu, pagination, popover, progress, questionnaire, radio-group, resizable, scroll-area, sidebar, skeleton, slider, switch, table, tabs, tooltip) remain committed in the repository as pre-existing base files. They are **not yet certified** and will be audited and adapted as future owning phases require them.
+Generated components outside this certified inventory (including accordion, alert-dialog, avatar, calendar, card, chart, checkbox, collapsible, combobox, command, context-menu, dialog, drawer, dropdown-menu, hover-card, input-group, input-otp, item, kbd, marker, menubar, message-scroller, message, native-select, navigation-menu, pagination, popover, progress, questionnaire, radio-group, resizable, scroll-area, sidebar, skeleton, slider, switch, table, tabs, tooltip) remain committed in the repository as pre-existing base files. They are **not yet certified** and will be audited and adapted as future owning phases require them.
 
 ---
 

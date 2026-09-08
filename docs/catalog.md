@@ -1,6 +1,6 @@
 # Compfi catalog fixtures and local media
 
-Status: Phase 4 catalog foundation implemented; static fixture data and local
+Status: Phase 4 catalog and Home editorial media implemented; static fixture data and local
 media only.
 
 ## Contract
@@ -93,3 +93,39 @@ command results were:
 | `npx tsc --noEmit` | passed |
 | `npm run build` | environment-limited: Turbopack could not bind its PostCSS worker port (`Operation not permitted`) |
 | `npm run build -- --webpack` | passed; `/` and `/design-system` prerendered as static content |
+
+## Home editorial media
+
+Thirteen originals were generated with the built-in first-party image tool on
+2026-09-08, inspected individually and in
+`/tmp/compfi-home11.bwIsT7/mosaic-contact.png`, then converted
+non-destructively to WebP quality 84. They are editorial imagery, not licensed
+photography, customer submissions, or evidence of a social account.
+
+Every exact prompt used `photorealistic-natural`, identified a project-bound
+Compfi Home asset, requested warm ivory/sand/pale oak, natural daylight, and
+honest linen/wood/ceramic textures, and included: `no people, text, logo,
+watermark, trademark, product label, embedded UI, brand-specific furniture,
+social-media chrome, collage, or border`. Each also excluded uncanny geometry,
+duplicated furniture, impossible windows, warped legs, and pseudo-text. The
+exact unique request/composition clauses and selected finals are:
+
+| final path | source/final | exact unique clause | selected alt text |
+| --- | --- | --- | --- |
+| `/images/home/editorial/quiet-layers.webp` | 1045×1506 PNG/WebP | portrait bedroom; upholstered bed below abstract unlettered art, low oak nightstand, layered ivory linen; calm eye-level, center-safe | Ivory bed layered with linen beside a pale oak nightstand |
+| `/images/home/editorial/room-to-gather.webp` | 1045×1506 PNG/WebP | portrait bright dining room; pale-oak table, exactly four sculptural upholstered chairs, ceramic centerpiece; open, center-safe | Round oak dining table surrounded by four upholstered chairs |
+| `/images/home/editorial/softly-grounded.webp` | 1045×1506 PNG/WebP | portrait living room; low linen sofa, textured rug, oak table, one sculptural chair; balanced, center-safe | Low linen sofa and curved chair on a deeply textured rug |
+| `/images/home/editorial/place-to-pause.webp` | 1045×1506 PNG/WebP | portrait reading corner; enveloping chair, slim floor lamp, small oak table, blank-spine shelving; intimate, center-safe | Enveloping lounge chair beside a floor lamp and quiet shelving |
+| `/images/home/editorial/open-shelving.webp` | 1024×1536 PNG/WebP | narrow portrait open shelving with ceramics and one leafy plant; center-safe | Open oak shelving arranged with ceramics and trailing greenery |
+| `/images/home/editorial/quiet-workspace.webp` | 1536×1024 PNG/WebP | landscape quiet workspace with pale-oak desk and unbranded closed laptop; balanced center crop | Pale oak desk set against a calm, light-filled living space |
+| `/images/home/editorial/dining-nook.webp` | 1024×1536 PNG/WebP | portrait compact dining nook under one simple pendant; intimate, center-safe | Compact round dining nook beneath a sculptural pendant |
+| `/images/home/editorial/upholstered-bedroom.webp` | 1536×1024 PNG/WebP | landscape upholstered bedroom with layered neutral bedding; useful center crop | Upholstered bed dressed in layered sand and ivory textiles |
+| `/images/home/editorial/sunlit-dining-corner.webp` | 1024×1536 PNG/WebP | tall portrait dining corner against textured pale brick; daylight across brick | Sunlit oak dining corner against softly textured brick |
+| `/images/home/editorial/vintage-lounge-chair.webp` | 1024×1536 PNG/WebP | portrait vintage-inspired neutral chair against plain warm wall; full silhouette | Vintage-inspired lounge chair against a warm plaster wall |
+| `/images/home/editorial/oak-tables.webp` | 1536×1024 PNG/WebP | landscape pair of pale-oak tables with ceramics and foliage; both fully visible | Pair of low oak tables styled with ceramics and leafy branches |
+| `/images/home/editorial/art-vase.webp` | 941×1672 PNG/WebP | narrow tall abstract-art and sculptural-vase vignette; no legible text | Abstract framed artwork above a sculptural ceramic vase |
+| `/images/home/editorial/kitchen-shelf.webp` | 1536×1024 PNG/WebP | landscape kitchen shelf with ceramics and hanging unbranded utensils | Kitchen shelf with handmade ceramics and hanging utensils |
+
+No output required regeneration: all selected finals were distinct,
+border-free, text/logo-free at inspection scale, geometrically coherent, and
+retained useful focal areas for their assigned responsive crops.
