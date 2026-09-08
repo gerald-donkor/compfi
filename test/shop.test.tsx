@@ -13,6 +13,8 @@ describe("ShopPage", () => {
     expect(screen.getByText("Showing 1–8 of 8 products")).toBeInTheDocument()
     expect(screen.getAllByRole("article")).toHaveLength(8)
     expect(screen.queryByRole("navigation", { name: "pagination" })).not.toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Grid view" })).toHaveAttribute("tabindex", "0")
+    expect(screen.getByRole("button", { name: "List view" })).toHaveAttribute("tabindex", "-1")
     expect(await checkA11y(container)).toEqual([])
   })
 

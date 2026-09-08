@@ -32,9 +32,34 @@ and support claims.
 Verification on 2026-09-08: focused catalog/page tests passed (5 tests);
 `npm run test` passed (13 files, 55 tests); `npx tsc --noEmit` and `npm run
 lint` passed. Turbopack build remains sandbox-limited because its PostCSS worker
-cannot bind an internal port; webpack compiled and completed type checking in
-this environment. Browser and Web Interface Guidelines verification remain to
-be recorded after their required tools can run.
+cannot bind an internal port; the required `npm run build -- --webpack` fallback
+compiled and completed type checking. Fresh native crops confirmed the 630px
+hero, y=830px `#F9F1E7` control-band transition, 570px first-row cards, and
+64px gaps, interpreted at the established 2:1 raster-to-CSS scale.
+
+Chromium screenshots and crops are retained in
+`/tmp/compfi-shop-verify.FPTlQJ`: desktop, 1024px, 768px, 390px, and 320px
+grid captures plus a desktop list capture. The real-browser matrix
+verified one main landmark, four results and truthful `Showing 1–4 of 8
+products` on page size 4, and no horizontal overflow at 1440×1000, 1024×900,
+768×1024, 390×844, or 320×720. Direct URLs verified list view and page-two
+rendering. The `agent-browser` executable was still unavailable; an isolated
+Chromium/webpack fallback supplied the screenshots without changing production
+dependencies. The fallback server logged only Next's expected development-HMR
+origin warning. The view group now marks its selected item with Base UI's
+`data-composite-item-active` contract, giving Grid view the roving `tabindex=0`
+entry point and List view `tabindex=-1`; the focused Shop test verifies that
+contract. Arrow keys move between the two controls under Base UI's documented
+composite behavior.
+
+The fresh Web Interface Guidelines review found no unresolved Shop-page issue:
+navigation uses links, controls have accessible names, icons are hidden when
+decorative, loading state has `aria-busy`, product images carry intrinsic sizes
+and local alternatives, number/currency display uses the shared formatter, and
+focus styles use `focus-visible`. The completion pass also corrected an RSC
+boundary defect: `ShopControls` now receives only the normalized five-field
+options record rather than serializing the full catalog view model into its
+client leaf.
 and editorial gallery remain intentionally unbuilt.
 
 ## Home commerce foundation

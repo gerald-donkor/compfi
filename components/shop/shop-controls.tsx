@@ -32,8 +32,8 @@ export function ShopControls({ options, totalCount }: ShopControlsProps) {
             </div>
           </details>
           <ToggleGroup aria-label="Product view" value={[options.view]} onValueChange={(value) => { const view = value[0]; if (view === "grid" || view === "list") navigate(shopHref(options, { view })) }} variant="outline" spacing={0}>
-            <ToggleGroupItem value="grid" aria-label="Grid view" disabled={isPending}><Grid2X2Icon aria-hidden="true" /></ToggleGroupItem>
-            <ToggleGroupItem value="list" aria-label="List view" disabled={isPending}><ListIcon aria-hidden="true" /></ToggleGroupItem>
+            <ToggleGroupItem value="grid" aria-label="Grid view" data-composite-item-active={options.view === "grid" ? "" : undefined} disabled={isPending}><Grid2X2Icon aria-hidden="true" /></ToggleGroupItem>
+            <ToggleGroupItem value="list" aria-label="List view" data-composite-item-active={options.view === "list" ? "" : undefined} disabled={isPending}><ListIcon aria-hidden="true" /></ToggleGroupItem>
           </ToggleGroup>
           <p className="shop-controls__count" aria-live="polite">{totalCount} {totalCount === 1 ? "product" : "products"}</p>
         </div>

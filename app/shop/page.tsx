@@ -10,5 +10,13 @@ export const metadata: Metadata = { title: "Shop", description: "Browse Compfi f
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const view = resolveCatalogView(catalogProducts, await searchParams)
-  return <main id="main-content"><PageHero title="Shop" breadcrumbs={[{ label: "Home", href: "/" }, { label: "Shop" }]} /><ShopControls options={view} totalCount={view.totalCount} /><ShopResults view={view} /><BenefitsStrip /></main>
+  const options = {
+    category: view.category,
+    sort: view.sort,
+    view: view.view,
+    pageSize: view.pageSize,
+    page: view.page,
+  }
+
+  return <main id="main-content"><PageHero title="Shop" breadcrumbs={[{ label: "Home", href: "/" }, { label: "Shop" }]} /><ShopControls options={options} totalCount={view.totalCount} /><ShopResults view={view} /><BenefitsStrip /></main>
 }
