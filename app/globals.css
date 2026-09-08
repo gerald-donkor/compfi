@@ -580,6 +580,16 @@ textarea {
   position: relative;
   aspect-ratio: var(--home-product-media-ratio);
   overflow: hidden;
+  isolation: isolate;
+}
+
+.product-card__media:focus-within::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  border: var(--focus-ring-width) solid var(--color-brand-focus);
+  content: "";
 }
 
 .product-card__image-link,
@@ -617,6 +627,8 @@ textarea {
 }
 
 .product-card__overlay-link {
+  position: relative;
+  z-index: 3;
   justify-content: center;
   min-width: min(100%, 10rem);
   min-height: var(--control-min);

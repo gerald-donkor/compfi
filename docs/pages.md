@@ -26,7 +26,7 @@ Home unit rather than represented with placeholders or duplicate imagery.
 - The 1440px hierarchy uses a right-side cream campaign panel, three tall room crops, and four product columns. At 1024px, the campaign remains image-led and the product list reduces to three columns. At 768px it uses two product columns and the panel becomes normal-flow content; at 390px and 320px rooms and products each use one column.
 - The campaign image is decorative because its adjacent HTML copy carries the message. Room images have contextual alt text; product images retain the fixture alt unchanged.
 - The only preloaded image is the campaign hero. Room and catalog images use local paths, intrinsic dimensions, accurate responsive `sizes`, and default lazy loading.
-- Product actions are navigation only: image/name links are always available; the desktop overlay is a redundant `View product` link revealed by hover or `focus-within`. No cart, comparison, favorite, stock, rating, review, or purchase control was added.
+- Product actions are navigation only: image/name links are always available; the desktop overlay is a redundant `View product` link revealed by hover or `focus-within`. An inset media focus ring remains visible when the image link triggers the overlay. No cart, comparison, favorite, stock, rating, review, or purchase control was added.
 
 ### Reference deltas
 
@@ -45,6 +45,7 @@ Self-verification on 2026-09-08:
 | `npm run test` | passed: 11 files, 50 tests |
 | `npm run lint` | passed |
 | `npx tsc --noEmit` | passed |
+| `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind its internal port (`Operation not permitted`) |
 | `npm run build -- --webpack` | passed; `/` prerendered as static content |
 | browser rendering | local Chromium screenshots inspected at 1440, 1024, 768, 390, and 320 CSS px; hero, room, and product hierarchy matched the recorded responsive decisions without observed clipping or horizontal overflow |
 | browser tooling delta | the requested `agent-browser` executable was not installed. Its local Chromium fallback was used to inspect temporary screenshots under `/tmp/compfi-home-*.png`; no production dependency or asset was added. |

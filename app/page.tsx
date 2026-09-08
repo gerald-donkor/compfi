@@ -44,8 +44,8 @@ export default function HomePage() {
             <ProductGrid products={catalogProducts} />
           </Container>
         </section>
+        <BenefitsStrip />
       </main>
-      <BenefitsStrip />
     </>
   )
 }
