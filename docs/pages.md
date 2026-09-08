@@ -1,6 +1,40 @@
 # Compfi page build record
 
 Status: Phase 4 Home commerce foundation implemented; the inspiration carousel
+
+## Shop commerce browsing
+
+`/shop` is a request-time Server Component. Its allowlisted URL state resolves
+from the immutable catalog fixture through `lib/catalog-view.ts`: category,
+stable locale-aware/name or integer-cent price sort, grid/list presentation,
+page size, and clamped one-based page. The canonical helper omits defaults,
+retains supported state, and resets pagination whenever result shape changes.
+
+The native 2880 × 6948 Shop reference was rechecked with native crops. Its
+`#F9F1E7` controls band begins at y=830 raster (415 CSS px) beneath the 630
+raster-pixel hero; the four-card first row retains the established 570-raster
+pixel cards and 64-raster-pixel gaps (285/32 CSS px). Compfi renders its eight
+real products once, with page size 8 by default and real two-page pagination
+only at page size 4.
+
+The filter is a labelled native disclosure with ordinary local category links.
+Sort, page-size, and mutually exclusive view selection form the single small
+client leaf; all result data and cards stay server-rendered. At desktop the
+controls form a two-sided band and list view places existing card media beside
+existing content. Controls wrap at tablet, then stack; both views converge to
+one readable card column at narrow widths.
+
+Reference deltas: the page hero remains the approved tokenized wash because no
+licensed local hero photo exists. Compfi removes unbacked product actions and
+the reference's repeated template items, mixed currency, warranty, shipping,
+and support claims.
+
+Verification on 2026-09-08: focused catalog/page tests passed (5 tests);
+`npm run test` passed (13 files, 55 tests); `npx tsc --noEmit` and `npm run
+lint` passed. Turbopack build remains sandbox-limited because its PostCSS worker
+cannot bind an internal port; webpack compiled and completed type checking in
+this environment. Browser and Web Interface Guidelines verification remain to
+be recorded after their required tools can run.
 and editorial gallery remain intentionally unbuilt.
 
 ## Home commerce foundation
