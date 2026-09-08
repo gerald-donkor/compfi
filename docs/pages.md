@@ -1,7 +1,54 @@
 # Compfi page build record
 
-Status: Phase 3 shared chrome implemented and self-verified; this record is
-committed with the implementation.
+Status: Phase 4 Home commerce foundation implemented; the inspiration carousel
+and editorial gallery remain intentionally unbuilt.
+
+## Home commerce foundation
+
+The Home route now renders the campaign, room navigation, all eight canonical
+catalog products, and the existing benefits strip inside its single
+`main#main-content` landmark. It remains a partial Phase 4 route: the reference
+inspiration carousel and editorial mosaic are deferred to the next approved
+Home unit rather than represented with placeholders or duplicate imagery.
+
+### Reference evidence and production interpretation
+
+| surface | native reference measurement | Compfi production decision |
+| --- | --- | --- |
+| campaign band | Home image-led region begins beneath the 200-raster-pixel header and ends near y=1620 | 710 CSS px desktop campaign block below the existing 100 CSS px header; local 3:2 hero image fills it at large widths |
+| campaign panel | `1286 × 886 + 1478 + 506` raster `#FFF3E3` region | 643 × 443 CSS px cream panel, vertically centered and 58 CSS px from the 1440px viewport edge; it stacks below the image below 1024px |
+| room navigation | `762 × 960` raster room crop at x=262–1023, y=2016–2975 | Three 381 × 480 CSS px portrait crops at desktop; 3/2/1 columns at 768/640/320px pressure points |
+| featured cards | `570 × 892` raster card, including a `570 × 602` image field; 64-raster-pixel column gap | Flat four-column desktop list within the 1240px container, with a 285:301 media field and 32 CSS px gaps; 3/2/1 columns at 1024/768/390px |
+| lower boundary | inspiration wash begins around y=5526 raster | This implementation stops after the featured list and continues directly to the shared benefits strip; no synthetic lower band is added |
+
+### Responsive and interaction decisions
+
+- The 1440px hierarchy uses a right-side cream campaign panel, three tall room crops, and four product columns. At 1024px, the campaign remains image-led and the product list reduces to three columns. At 768px it uses two product columns and the panel becomes normal-flow content; at 390px and 320px rooms and products each use one column.
+- The campaign image is decorative because its adjacent HTML copy carries the message. Room images have contextual alt text; product images retain the fixture alt unchanged.
+- The only preloaded image is the campaign hero. Room and catalog images use local paths, intrinsic dimensions, accurate responsive `sizes`, and default lazy loading.
+- Product actions are navigation only: image/name links are always available; the desktop overlay is a redundant `View product` link revealed by hover or `focus-within`. No cart, comparison, favorite, stock, rating, review, or purchase control was added.
+
+### Reference deltas
+
+- Compfi copy, Poppins, local original WebP imagery, and coherent USD-cent fixtures replace the reference brand, template copy, unknown-source photography, and mixed-currency values.
+- `Shop the collection` is navigation to `/shop`, not an unsupported immediate-purchase claim.
+- The reference grid's add-to-cart/share/compare/like controls are omitted until their backed behavior exists. Sale badges use a calculated 15% discount from the fixture's integer cents; new products say `New`.
+- Tablet and mobile flows are responsive decisions derived from the desktop hierarchy; normal-flow campaign copy, focus treatment, 44px actions, and no-overflow layouts take precedence over desktop overlap.
+
+### Verification
+
+Self-verification on 2026-09-08:
+
+| check | result |
+| --- | --- |
+| focused Home/product tests | passed: 2 files, 3 tests; semantic landmarks, customer links, USD, badges, image alternatives, and axe checks covered |
+| `npm run test` | passed: 11 files, 50 tests |
+| `npm run lint` | passed |
+| `npx tsc --noEmit` | passed |
+| `npm run build -- --webpack` | passed; `/` prerendered as static content |
+| browser rendering | local Chromium screenshots inspected at 1440, 1024, 768, 390, and 320 CSS px; hero, room, and product hierarchy matched the recorded responsive decisions without observed clipping or horizontal overflow |
+| browser tooling delta | the requested `agent-browser` executable was not installed. Its local Chromium fallback was used to inspect temporary screenshots under `/tmp/compfi-home-*.png`; no production dependency or asset was added. |
+| Web Interface Guidelines | fresh rules reviewed against all new/changed Home UI files; no unresolved finding after verifying native navigation, focus-visible styles, decorative/meaningful image alternatives, dimensions, lazy loading, and reduced-motion handling |
 
 ## Shared storefront chrome
 

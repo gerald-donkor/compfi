@@ -192,6 +192,25 @@ Generated components outside this certified inventory (including accordion, aler
 - **Slot**: `data-slot="money"`.
 - **Real Usage**: Product price tags, discount comparisons, cart line totals, checkout summary.
 
+### ProductCard (`components/commerce/product-card.tsx`)
+- **Purpose**: Product-specific, flat semantic `article` for a single `CatalogProduct`; it deliberately does not reuse the uncertified generic `Card`.
+- **Server/Client**: Server component.
+- **Exported Props**: `ProductCardProps extends ComponentProps<"article"> { product: CatalogProduct }`.
+- **Slots**: `data-slot="product-card"`; its media, image link, badge, overlay, content, title, description, prices, and compare-at elements have stable component classes.
+- **Behavior**: Forwards valid article attributes, merges caller `className` through `cn`, links image and name to `/shop/[slug]`, uses fixture image metadata, formats cents through `Money`, and derives a rounded truthful discount percentage only from a valid higher compare-at amount. `new` renders visible text, while non-badged products reserve no badge node.
+- **Accessibility**: Image link has the fixture product name; media retains the fixture alt; title is an `h3`; previous price has a screen-reader label; the redundant desktop-only `View product` link appears on hover and `:focus-within`, never as the sole path to a product.
+- **Responsive/performance**: Reserves the measured 285:301 media field before image load, has responsive `sizes`, and remains lazy by default.
+- **Real Usage**: All eight Home featured products.
+
+### ProductGrid (`components/commerce/product-grid.tsx`)
+- **Purpose**: Reusable semantic product list that owns only layout and delegates each item to `ProductCard`.
+- **Server/Client**: Server component.
+- **Exported Props**: `ProductGridProps extends ComponentProps<"ul"> { products: readonly CatalogProduct[] }`.
+- **Slots**: `data-slot="product-grid"` and `data-slot="product-grid-item"`.
+- **Behavior**: Forwards valid list attributes, merges caller `className`, preserves the received immutable order, and renders each product identity as the list key.
+- **Responsive**: One column below 640px, two through 799px, three through 1199px, and four at 1200px and wider.
+- **Real Usage**: Home featured furniture; designed for later Shop reuse without adding mode flags or a provider.
+
 ### QuantityInput (`components/commerce/quantity-input.tsx`)
 - **Purpose**: Accessible stepper for line item and product quantity selection.
 - **Server/Client**: Client component.

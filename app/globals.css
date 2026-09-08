@@ -142,6 +142,15 @@
   --chrome-drawer-max-width: 34.375rem;
   --chrome-drawer-inline-inset: 1rem;
   --chrome-sheet-entry-offset: 2.5rem;
+  /* Home and product-card component geometry */
+  --home-campaign-block-size: 44.375rem;
+  --home-campaign-panel-inline-size: 40.1875rem;
+  --home-campaign-panel-block-size: 27.6875rem;
+  --home-campaign-panel-inline-end: max(2rem, calc((100vw - var(--container-max)) / 2 - 2.625rem));
+  --home-room-media-ratio: 381 / 480;
+  --home-product-media-ratio: 285 / 301;
+  --home-section-block-padding: 6rem;
+  --home-product-overlay: var(--color-overlay);
   /* shadcn semantic role mappings to Compfi design tokens */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);
@@ -438,6 +447,283 @@ textarea {
 
 .surface-product {
   background: var(--color-product);
+}
+
+.home-campaign {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  background: var(--color-hero);
+}
+
+.home-campaign__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: left center;
+}
+
+.home-campaign__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  padding: var(--space-8) var(--container-gutter-mobile);
+  background: var(--color-hero);
+}
+
+.home-campaign__label {
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.home-campaign__heading,
+.home-campaign__body {
+  margin: 0;
+}
+
+.home-campaign__body {
+  max-width: 37rem;
+}
+
+.home-campaign__action {
+  margin-top: var(--space-3);
+}
+
+.home-rooms,
+.home-featured {
+  padding-block: var(--home-section-block-padding);
+}
+
+.home-section-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 46rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.home-section-intro p {
+  margin: 0;
+}
+
+.room-category-grid,
+.product-grid {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.room-category-grid {
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+}
+
+.room-category-grid__link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+}
+
+.room-category-grid__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--home-room-media-ratio);
+  border-radius: var(--radius-image);
+  object-fit: cover;
+}
+
+.room-category-grid__label {
+  color: var(--color-product-ink);
+}
+
+.home-featured {
+  padding-top: 0;
+}
+
+.home-featured__heading-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-12);
+}
+
+.home-featured__all-link {
+  min-height: var(--control-min);
+}
+
+.product-grid {
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+.product-card {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: visible;
+  background: var(--color-product);
+}
+
+.product-card__media {
+  position: relative;
+  aspect-ratio: var(--home-product-media-ratio);
+  overflow: hidden;
+}
+
+.product-card__image-link,
+.product-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.product-card__image {
+  object-fit: cover;
+}
+
+.product-card__badge {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+.product-card__overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background: var(--home-product-overlay);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.product-card:focus-within .product-card__overlay,
+.product-card:hover .product-card__overlay {
+  opacity: 1;
+}
+
+.product-card__overlay-link {
+  justify-content: center;
+  min-width: min(100%, 10rem);
+  min-height: var(--control-min);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-canvas);
+  color: var(--color-brand-action);
+  text-decoration: none;
+}
+
+.product-card__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.product-card__title {
+  margin: 0;
+}
+
+.product-card__title-link {
+  color: var(--color-product-ink);
+  text-decoration: none;
+}
+
+.product-card__title-link:hover {
+  color: var(--color-brand-action);
+  text-decoration: underline;
+}
+
+.product-card__description,
+.product-card__prices {
+  margin: 0;
+}
+
+.product-card__prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-top: auto;
+}
+
+.product-card__compare-price {
+  color: var(--color-muted);
+}
+
+.product-card__compare-price [data-slot="money"] {
+  color: inherit;
+  font-weight: 400;
+}
+
+@media (min-width: 40rem) {
+  .room-category-grid,
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 48rem) {
+  .home-campaign__panel {
+    padding-inline: var(--container-gutter-tablet);
+  }
+
+  .room-category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .home-campaign {
+    height: var(--home-campaign-block-size);
+  }
+
+  .home-campaign__image {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+  }
+
+  .home-campaign__panel {
+    position: absolute;
+    top: 50%;
+    right: var(--home-campaign-panel-inline-end);
+    width: min(var(--home-campaign-panel-inline-size), calc(100% - (2 * var(--container-gutter-tablet))));
+    min-height: var(--home-campaign-panel-block-size);
+    justify-content: center;
+    padding: var(--space-12);
+    transform: translateY(-50%);
+  }
+
+  .product-card__overlay {
+    display: flex;
+  }
+}
+
+@media (min-width: 50rem) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 75rem) {
+  .product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 48rem) {
