@@ -91,6 +91,14 @@ fixes, focused tests passed 5 files / 27 tests, the full suite passed 18 files /
 restricted Turbopack worker-port failure, and the webpack build compiled,
 type-checked, and prerendered all eight slugs.
 
+Review fixes are committed as `1d8f5c3` (gallery/Tabs/contracts/tests) and
+`6577a17` (stale PageHero record and lead-ratio token). The complete Spec
+re-review from the original `f45c1e9c` base reported zero remaining findings.
+The complete Standards re-review initially found those last two documentation/
+token mismatches; after `6577a17`, its final confirmation reported zero
+documented violations and zero heuristic smells. No verified blocking issue
+remains, and nothing was pushed.
+
 ## Home inspiration and editorial completion
 
 The reviewed Home foundation now continues with a 670px desktop inspiration
