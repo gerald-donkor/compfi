@@ -169,6 +169,7 @@ implementation evidence.
 | `docs/components.md` | component inventory, APIs, states, and accessibility | current; implemented and verified in Phase 2 |
 | `docs/pages.md` | route-by-route build record and reference deltas | current; shared chrome implemented and verified in Phase 3 |
 | `docs/automation.md` | repeatable measurement and screenshot-diff procedure | current |
+| `docs/agent-browser.md` | project browser-automation installation, safety, and verification runbook | current; installed and verified locally |
 | `docs/auth.md` | Clerk setup, protected surfaces, and verification | planned when authentication is needed |
 
 Once a planned file exists, replace `planned` with a truthful status and read it
@@ -233,6 +234,8 @@ thing once does not satisfy an ALWAYS rule.
 | 2026-09-06 | Always commit each approved implementation locally after self-verification, and never push it unless a later standalone uppercase `P` passes the guarded push protocol. | Makes build state recoverable from Git while keeping remote changes separately authorized. |
 | 2026-09-07 | Treat the word “always” as a durable-rule trigger in all cases, regardless of capitalization. | Ensures durable instructions are recorded whether the user types `always`, `ALWAYS`, or a mixed-case form. |
 | 2026-09-07 | Always use every required skill; when a capability is missing from `.agents/skills`, use `find-skills` before selecting and installing the minimum suitable skill. | Keeps task execution aligned with current specialized guidance while the detailed discovery, vetting, and installation procedure remains in Section 3.6. |
+| 2026-09-09 | Always use your own named `agent-browser` session for the whole task. | Prevents the shared persistent default browser from hijacking another agent's page or user state. |
+| 2026-09-09 | Always use the `agent-browser` usage documentation when needed. | Keeps browser automation commands and safety guidance aligned with the installed CLI version. |
 
 ## 3.2 Implementation workflow
 
