@@ -316,6 +316,27 @@ Self-verification on 2026-09-08:
 
 ## Shared storefront chrome
 
+## Cart
+
+`/cart` is a server-rendered route shell with a focused client content leaf.
+It uses the approved banner `PageHero`, the shared benefits strip, and footer.
+The current tab's transient cart synchronizes product-detail additions, header
+count, drawer rows, and this route; it deliberately resets on reload.
+
+The 2880px Cart reference places its table from approximately x=196 to 1837
+and its `#F9F1E7` totals block at approximately x=1900 with a 900 × 850px
+native field. Compfi maps that evidence to the established 1240px container,
+a desktop two-column grid, and a 450px maximum warm subtotal block. The Cart
+Sidebar reference's 1100px native sheet remains the existing 550px maximum
+with a 20% scrim. At `768px` the table intentionally becomes labelled line
+item cards, avoiding horizontal overflow.
+
+Reference deltas: fixture local WebP media and integer USD cents replace
+template imagery and mixed currencies. The reference's unsupported total,
+comparison, and checkout controls are omitted; checkout is clearly unavailable
+because no route or order flow has been approved. The cart has no persistence,
+tax, shipping, discount, payment, inventory, or delivery claim.
+
 ### Reference evidence and production interpretation
 
 | surface | native reference measurement | Compfi production decision |

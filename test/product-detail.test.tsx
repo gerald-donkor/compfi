@@ -88,7 +88,7 @@ describe("product detail route", () => {
 })
 
 describe("product detail interactions", () => {
-  it("keeps options independent and cart action inert while comparison navigates", async () => {
+  it("keeps options independent while comparison navigates", async () => {
     const user = userEvent.setup()
     const product = catalogProducts[4]
     const { container } = render(
@@ -113,7 +113,7 @@ describe("product detail interactions", () => {
     expect(screen.getByRole("button", { name: "Increase quantity" })).toBeDisabled()
     expect(screen.getByRole("button", { name: "Add to cart" })).toBeDisabled()
     expect(screen.getByRole("link", { name: "Compare" })).toHaveAttribute("href", "/comparison?product=atlas-bed")
-    expect(screen.getByText("Online ordering is not available in this preview.")).toBeVisible()
+    expect(screen.getByText("Quantity is limited to 10 per selection.")).toBeVisible()
     expect(await checkA11y(container)).toEqual([])
   })
 

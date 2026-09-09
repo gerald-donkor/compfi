@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 
 import { SiteFooter } from "@/components/chrome/site-footer";
 import { SiteHeader } from "@/components/chrome/site-header";
+import { CartProvider } from "@/components/cart/cart-provider";
 
 import "./globals.css";
 
@@ -53,8 +54,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a className="skip-link" href="#main-content">
           Skip to main content
         </a>
+        <CartProvider>
         <SiteHeader />
         {children}
+        </CartProvider>
         <SiteFooter />
       </body>
     </html>

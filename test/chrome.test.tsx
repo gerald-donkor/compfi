@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { BenefitsStrip } from "@/components/chrome/benefits-strip"
 import { CartDrawer } from "@/components/chrome/cart-drawer"
+import { CartProvider } from "@/components/cart/cart-provider"
 import { HeaderControls } from "@/components/chrome/header-controls"
 import { PageHero } from "@/components/chrome/page-hero"
 import { SiteFooter } from "@/components/chrome/site-footer"
@@ -15,7 +16,7 @@ vi.mock("next/navigation", () => ({ usePathname: () => "/" }))
 describe("Compfi chrome", () => {
   it("renders labelled primary navigation and identifies the current page", async () => {
     const { container } = render(
-      <HeaderControls navigation={[{ href: "/", label: "Home" }, { href: "/shop", label: "Shop" }]} />
+      <CartProvider><HeaderControls navigation={[{ href: "/", label: "Home" }, { href: "/shop", label: "Shop" }]} /></CartProvider>
     )
 
     expect(screen.getAllByRole("navigation", { name: "Primary" })).toHaveLength(1)
@@ -27,7 +28,7 @@ describe("Compfi chrome", () => {
 
   it("opens and closes the mobile menu with Escape and restores focus", async () => {
     const user = userEvent.setup()
-    render(<HeaderControls navigation={[{ href: "/", label: "Home" }]} />)
+    render(<CartProvider><HeaderControls navigation={[{ href: "/", label: "Home" }]} /></CartProvider>)
 
     const menu = screen.getByRole("button", { name: "Open menu" })
     await user.click(menu)
@@ -41,7 +42,7 @@ describe("Compfi chrome", () => {
 
   it("opens an accessible empty cart and closes it with Escape", async () => {
     const user = userEvent.setup()
-    render(<CartDrawer />)
+    render(<CartProvider><CartDrawer /></CartProvider>)
 
     const trigger = screen.getByRole("button", { name: "Open cart" })
     await user.click(trigger)

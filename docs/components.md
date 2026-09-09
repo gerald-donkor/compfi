@@ -117,6 +117,22 @@ The following components have been fully audited, styled to Compfi's measured de
 - **Layout**: `Section`, `Stack`, `Cluster`, `Container`
 - **Product Foundations**: `Money`, `QuantityInput`, `ColorSelector` / `ColorSwatch`, `SizeSelector`
 
+### Phase 5 Cart blocks
+
+- **`CartProvider` / `useCart`**: Narrow client state boundary mounted inside
+  the root layout. It holds only the current tab's cart lines and exposes
+  `add`, `setQuantity`, and `remove`; catalog product details and integer-cent
+  totals are derived from immutable fixtures. Its polite live region announces
+  ordinary cart changes. Reloading deliberately starts a new empty cart.
+- **`CartDrawer`**: Client leaf built on the existing named Base UI Sheet.
+  Empty and populated states retain the primitive's modal focus mechanics. A
+  populated drawer renders local product media, configured selection labels,
+  product links, removal controls, an integer-cent subtotal, and a real Cart
+  link. Checkout is visibly unavailable until the route exists.
+- **`CartContent`**: Client route content that uses a semantic desktop table
+  and labelled mobile line-item groups below `768px`. Both use the certified
+  controlled `QuantityInput`; removal returns focus to its cart-items heading.
+
 ### Phase 4 Home Editorial Blocks
 
 - **`InspirationSection`**: Server block owning the cream band, concise Compfi

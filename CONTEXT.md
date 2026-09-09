@@ -19,3 +19,8 @@ _Avoid_: asset URL, image metadata
 **Display Price**:
 A non-negative USD amount represented as an integer number of cents for presentation only.
 _Avoid_: sale price, offer
+
+**Cart Line**:
+A transient, configured catalog product selection. Its identity is the catalog
+slug with its selected size and finish; its quantity is a whole number from one
+through ten. Cart Lines hold no mutable product, price, or inventory data.

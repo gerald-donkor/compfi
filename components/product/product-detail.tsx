@@ -30,6 +30,7 @@ export function ProductDetail({ product, className, ...props }: ProductDetailPro
           </div>
 
           <ProductOptions
+            product={product}
             sizes={product.sizes}
             defaultSize={product.defaultSize}
             finishes={product.finishes}
