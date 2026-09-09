@@ -51,13 +51,23 @@ describe("comparison page", () => {
 
   it("renders useful empty and full states", async () => {
     const empty = await ComparisonPage({ searchParams: Promise.resolve({ product: "" }) })
-    const { rerender } = render(empty)
+    const { container, rerender } = render(empty)
     expect(screen.getByText("Choose products to compare")).toBeVisible()
     expect(screen.queryByRole("table")).not.toBeInTheDocument()
     expect(screen.getByRole("link", { name: "Browse products" })).toHaveAttribute("href", "/shop")
+    expect(await checkA11y(container)).toEqual([])
     rerender(<ProductComparison comparison={resolveComparison({ product: ["atlas-bed", "haven-sectional", "cove-media-console"] })} />)
     expect(screen.getByText("Comparison is full. Remove a product to add another.")).toBeVisible()
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument()
+    expect(await checkA11y(container)).toEqual([])
+  })
+
+  it("normalizes invalid query state and exposes table headers", async () => {
+    const page = await ComparisonPage({ searchParams: Promise.resolve({ product: ["missing", "atlas-bed", "atlas-bed"] }) })
+    render(page)
+    expect(screen.getByRole("columnheader", { name: "Atlas Bed" })).toHaveAttribute("scope", "col")
+    expect(screen.getByRole("rowheader", { name: "Price" })).toHaveAttribute("scope", "row")
+    expect(screen.queryByText("missing")).not.toBeInTheDocument()
   })
 
   it("guides a customer with one selected product", () => {

@@ -23,6 +23,12 @@ removal links. The responsive block moves from three columns to two and one,
 while the fixed comparison table remains in its named, focusable horizontal
 scroll region. Real usage: `/comparison`.
 
+The comparison block intentionally uses direct semantic table markup rather
+than `components/ui/table.tsx`: that generic wrapper is a client component and
+does not expose props for the labelled focusable overflow region required here.
+Creating a second generic table primitive would duplicate it; the domain block
+therefore owns this one fully documented table composition.
+
 ---
 
 ## 1. Scope & Audit Status
