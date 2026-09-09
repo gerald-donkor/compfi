@@ -2,10 +2,25 @@
 
 ## Status and authorization boundary
 
-Approved by the single-letter `y` workflow on 2026-09-09. Execution is in
-progress; local commits and the required review remain pending.
+Approved and executed by the single-letter `y` workflow on 2026-09-09.
 
 Execution base: `764a7012449a4bbd2f6116ac630de09bb50dcd21`.
+
+Self-verification: focused comparison/product-detail tests (14 tests), full
+Vitest (90 tests), ESLint, and TypeScript passed. Browser screenshots were
+inspected at `/tmp/compfi-comparison-{desktop,1024x900,768x1024,390x844,320x720}.png`;
+the isolated named session reported zero axe violations. Webpack compiled, but
+its final production verification was blocked by the existing dev-server lock.
+
+Review: initial Standards found two documentation defects and one unused-model
+API; initial Spec found category-label duplication, absent table group headings,
+partial test coverage, stale docs, and one rejected tab-stop concern (the
+fixed-width table always overflows its 1240px region). Valid items were fixed in
+`ae52f5b`. Cumulative Standards re-review found zero findings; Spec re-review
+found one-product guidance and stale-record defects, pending this final fix.
+
+Commits so far: `bbdf7e8` implementation; `ae52f5b` review fixes. Nothing has
+been pushed.
 
 Planning-time repository state is clean on `main` at
 `764a701d1b224b7a1cc488fbd5b0dc55b88efbf6`. Reconfirm the current branch,

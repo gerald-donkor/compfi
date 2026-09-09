@@ -672,6 +672,7 @@ textarea {
 .product-comparison { padding-block: var(--space-16); }
 .product-comparison__intro { max-width: 38rem; margin-bottom: var(--space-10); }
 .product-comparison__intro p { margin: var(--space-3) 0 0; }
+.product-comparison__guidance { margin: 0 0 var(--space-6); color: var(--color-muted); }
 .product-comparison__summaries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); align-items: start; margin-bottom: var(--space-12); }
 .comparison-summary { min-width: 0; }
 .comparison-summary__image-link { display: block; height: var(--comparison-product-frame-height); overflow: hidden; background: var(--color-wash); }

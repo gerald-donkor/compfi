@@ -60,6 +60,11 @@ describe("comparison page", () => {
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument()
   })
 
+  it("guides a customer with one selected product", () => {
+    render(<ProductComparison comparison={resolveComparison({ product: "atlas-bed" })} />)
+    expect(screen.getByText("Add another product to compare their catalog details side by side.")).toBeVisible()
+  })
+
   it("provides safe loading and error recovery", () => {
     const reset = () => undefined
     const { rerender } = render(<ComparisonLoading />)

@@ -44,10 +44,10 @@ separation. Product information uses two 605×348px landscape frames with a
 
 The gallery is the only image-state client leaf. Product options compose the
 existing certified size, finish, and quantity controls; their selections are
-demonstrative and local. Add-to-cart and comparison are visibly disabled with
-the explanation that online ordering and comparison are unavailable in this
-preview. No stock, delivery, review, rating, warranty, cart, comparison store,
-or transient success claim was introduced. Information tabs expose only
+demonstrative and local. Add-to-cart is visibly disabled with an online-ordering
+explanation, while comparison is a shareable catalog-browsing link. No stock,
+delivery, review, rating, warranty, cart, comparison store, or transient
+success claim was introduced. Information tabs expose only
 catalog-backed description, ID, category, and configured choices.
 
 The first browser run identified the selected lead as the route's LCP image and
@@ -70,7 +70,7 @@ and its exact prompt/provenance contract are recorded in `docs/catalog.md`.
 Reference deltas are deliberate: three truthful unique images replace the
 reference's four-thumbnail repetition; Compfi USD fixtures and copy replace
 the template brand and mixed locale; low-contrast reference gray is replaced
-by semantic accessible muted text; unsupported purchasing/comparison controls
+by semantic accessible muted text; unsupported purchasing controls
 are honest disabled controls; and responsive layouts are derived because no
 mobile comp was supplied.
 
