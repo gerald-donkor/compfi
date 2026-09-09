@@ -17,10 +17,12 @@ API; initial Spec found category-label duplication, absent table group headings,
 partial test coverage, stale docs, and one rejected tab-stop concern (the
 fixed-width table always overflows its 1240px region). Valid items were fixed in
 `ae52f5b`. Cumulative Standards re-review found zero findings; Spec re-review
-found one-product guidance and stale-record defects, pending this final fix.
+found one-product guidance and stale-record defects, fixed in `195424c`.
+The final Spec pass found test/doc omissions, fixed in `7f03b88`; its closure
+review found zero remaining findings.
 
-Commits so far: `bbdf7e8` implementation; `ae52f5b` review fixes. Nothing has
-been pushed.
+Commits: `bbdf7e8` implementation; `ae52f5b`, `195424c`, and `7f03b88` review
+fixes. The worktree is clean and nothing has been pushed.
 
 Planning-time repository state is clean on `main` at
 `764a701d1b224b7a1cc488fbd5b0dc55b88efbf6`. Reconfirm the current branch,
