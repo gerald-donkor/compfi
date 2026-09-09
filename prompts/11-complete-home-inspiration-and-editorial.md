@@ -2,9 +2,10 @@
 
 ## Status and authorization boundary
 
-Approved with `y` on 2026-09-08. Implemented from immutable base
-`3b8ea03b5b0e0295146048fda8d7b8cfcbbf0382`; initial review and two
-re-review rounds were resolved, with the final clean re-review pending.
+Complete and reviewed. Approved with `y` on 2026-09-08 and implemented from
+immutable base `3b8ea03b5b0e0295146048fda8d7b8cfcbbf0382`. Initial review and two
+re-review rounds were resolved; the final cumulative re-review returned zero
+Standards findings and zero Spec findings on 2026-09-09.
 
 ## Goal and why this is next
 
