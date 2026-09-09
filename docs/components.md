@@ -13,6 +13,16 @@ and a named removal link. `ComparisonTable` uses semantic headers and labelled
 row groups, with a keyboard-focusable overflow region. `ProductOptions` now
 accepts an allowlisted `comparisonHref`; its cart action remains disabled.
 
+`ProductComparisonProps`, `ComparisonProductSummaryProps`, and
+`ComparisonTableProps` extend their native section/article props and expose the
+stable `product-comparison`, `comparison-product-summary`, and
+`comparison-table` slots. The picker is a labelled native GET form with only
+server-derived hidden selections and unselected choices; it is required while
+space remains. Empty state provides Shop navigation; full state supplies named
+removal links. The responsive block moves from three columns to two and one,
+while the fixed comparison table remains in its named, focusable horizontal
+scroll region. Real usage: `/comparison`.
+
 ---
 
 ## 1. Scope & Audit Status
@@ -77,8 +87,8 @@ accepts an allowlisted `comparisonHref`; its cart action remains disabled.
   section props and accessible naming remain customizable in every state.
 - **`ProductOptions`**: Focused client leaf composing the certified size,
   finish, and quantity controls. Optional groups render only when data exists.
-  Quantity is bounded 1–10. Add-to-cart and comparison remain truthfully
-  disabled and share a visible explanatory description.
+  Quantity is bounded 1–10. Add-to-cart remains disabled with cart-only copy;
+  an optional allowlisted `comparisonHref` renders the real Compare link.
 - **`ProductInformation`**: Server block composing certified Base UI Tabs.
   Description is selected initially; Details reports only product ID,
   category, and configured options. Two generated detail images reuse catalog

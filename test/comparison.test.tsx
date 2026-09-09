@@ -12,7 +12,6 @@ describe("comparison resolver", () => {
   it("uses a deterministic default and canonical URLs", () => {
     const comparison = resolveComparison()
     expect(comparison.products.map((product) => product.slug)).toEqual(comparisonDefaultSlugs)
-    expect(comparison.addHref("alder-dining-chair")).toBe("/comparison?product=atlas-bed&product=haven-sectional&product=alder-dining-chair")
     expect(comparison.removeHref("atlas-bed")).toBe("/comparison?product=haven-sectional")
   })
 
@@ -39,6 +38,13 @@ describe("comparison page", () => {
     expect(screen.getByRole("table")).toHaveAccessibleName(/compare selected compfi products/i)
     expect(screen.getByRole("link", { name: "Remove Atlas Bed from comparison" })).toHaveAttribute("href", "/comparison?product=haven-sectional")
     expect(screen.getByRole("combobox", { name: "Add a product" })).toBeRequired()
+    expect(screen.getByRole("combobox", { name: "Add a product" })).toHaveTextContent("Alder Dining Chair")
+    expect(screen.getByRole("combobox", { name: "Add a product" })).not.toHaveTextContent("Atlas Bed")
+    expect(screen.getByRole("combobox", { name: "Add a product" }).closest("form")).toHaveAttribute("method", "get")
+    expect(screen.getByRole("combobox", { name: "Add a product" }).closest("form")).toHaveAttribute("action", "/comparison")
+    expect(screen.getAllByDisplayValue(/atlas-bed|haven-sectional/)).toHaveLength(2)
+    expect(screen.getByText("Overview")).toBeInTheDocument()
+    expect(screen.getByText("Options")).toBeInTheDocument()
     expect(screen.queryByText(/warranty|rating|stock|add to cart/i)).not.toBeInTheDocument()
     expect(await checkA11y(container)).toEqual([])
   })

@@ -11,8 +11,6 @@ export interface ComparisonViewModel {
   choices: readonly CatalogProduct[]
   count: number
   capacity: number
-  isDefault: boolean
-  addHref: (slug: string) => string
   removeHref: (slug: string) => string
 }
 
@@ -49,10 +47,6 @@ export function resolveComparison(
     choices: Object.freeze(catalog.filter((product) => !selected.has(product.slug))),
     count: products.length,
     capacity: comparisonCapacity,
-    isDefault: values === undefined,
-    addHref: (slug) => known.has(slug) && !selected.has(slug) && products.length < comparisonCapacity
-      ? comparisonHref([...selectedSlugs, slug])
-      : comparisonHref(selectedSlugs),
     removeHref: (slug) => comparisonHref(selectedSlugs.filter((current) => current !== slug)),
   }
 }

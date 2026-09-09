@@ -39,6 +39,7 @@ describe("product detail route", () => {
     expect(screen.getByText("$1,599.00")).toBeInTheDocument()
     expect(screen.queryByText(/\breviews?\b|\brating\b|\bstock\b|\bwarranty\b/i)).not.toBeInTheDocument()
     expect(screen.getAllByRole("link", { name: "Morrow Dining Table" })[0]).toHaveAttribute("href", "/shop/morrow-dining-table")
+    expect(screen.getByRole("link", { name: "Compare" })).toHaveAttribute("href", "/comparison?product=atlas-bed")
   })
 
   it("renders every slug with unique metadata and catalog-backed content", async () => {

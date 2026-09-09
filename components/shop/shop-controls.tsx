@@ -7,8 +7,8 @@ import { useTransition } from "react"
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { catalogCategories, type CatalogViewOptions, shopHref } from "@/lib/catalog-view"
+import { catalogCategoryLabels } from "@/lib/catalog-view"
 
-const categoryLabels = { dining: "Dining", living: "Living", bedroom: "Bedroom" } as const
 
 export interface ShopControlsProps {
   options: CatalogViewOptions
@@ -28,7 +28,7 @@ export function ShopControls({ options, totalCount }: ShopControlsProps) {
             <summary aria-label="Filter products by room"><SlidersHorizontalIcon aria-hidden="true" />Filter</summary>
             <div className="shop-controls__filter-options" aria-label="Room categories">
               <a aria-current={!options.category ? "page" : undefined} href={shopHref(options, { category: undefined })}>All rooms</a>
-              {catalogCategories.map((category) => <a key={category} aria-current={options.category === category ? "page" : undefined} href={shopHref(options, { category })}>{categoryLabels[category]}</a>)}
+              {catalogCategories.map((category) => <a key={category} aria-current={options.category === category ? "page" : undefined} href={shopHref(options, { category })}>{catalogCategoryLabels[category]}</a>)}
             </div>
           </details>
           <ToggleGroup aria-label="Product view" value={[options.view]} onValueChange={(value) => { const view = value[0]; if (view === "grid" || view === "list") navigate(shopHref(options, { view })) }} variant="outline" spacing={0}>

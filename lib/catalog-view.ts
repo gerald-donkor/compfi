@@ -4,6 +4,11 @@ export const catalogCategories = ["dining", "living", "bedroom"] as const
 export const catalogSorts = ["featured", "name", "price-low", "price-high"] as const
 export const catalogViews = ["grid", "list"] as const
 export const catalogPageSizes = [4, 8] as const
+export const catalogCategoryLabels: Record<ProductCategory, string> = {
+  dining: "Dining",
+  living: "Living",
+  bedroom: "Bedroom",
+}
 
 export type CatalogSort = (typeof catalogSorts)[number]
 export type CatalogView = (typeof catalogViews)[number]

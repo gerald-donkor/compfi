@@ -691,6 +691,7 @@ textarea {
 .comparison-table caption { padding-block: var(--space-3); text-align: left; color: var(--color-muted); font-size: var(--type-body-sm-size); }
 .comparison-table th, .comparison-table td { min-width: var(--comparison-table-product-width); padding: var(--space-4); border: var(--border-thin) solid var(--color-border); vertical-align: top; text-align: left; overflow-wrap: anywhere; }
 .comparison-table th:first-child { width: var(--comparison-table-attribute-width); min-width: var(--comparison-table-attribute-width); font-weight: var(--type-label-weight); }
+.comparison-table__group th { background: var(--color-wash); }
 
 @media (max-width: 768px) {
   .product-comparison { padding-block: var(--space-12); }

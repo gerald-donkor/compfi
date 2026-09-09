@@ -6,16 +6,11 @@ import { Container } from "@/components/layout/container"
 import { ProductGallery } from "@/components/product/product-gallery"
 import { ProductOptions } from "@/components/product/product-options"
 import { Separator } from "@/components/ui/separator"
+import { catalogCategoryLabels } from "@/lib/catalog-view"
 import type { CatalogProduct } from "@/types/commerce"
 
 export interface ProductDetailProps extends ComponentProps<"section"> {
   product: CatalogProduct
-}
-
-const categoryLabels: Record<CatalogProduct["category"], string> = {
-  dining: "Dining",
-  living: "Living",
-  bedroom: "Bedroom",
 }
 
 export function ProductDetail({ product, className, ...props }: ProductDetailProps) {
@@ -47,7 +42,7 @@ export function ProductDetail({ product, className, ...props }: ProductDetailPro
             <dt>Product ID</dt>
             <dd>{product.id}</dd>
             <dt>Category</dt>
-            <dd>{categoryLabels[product.category]}</dd>
+            <dd>{catalogCategoryLabels[product.category]}</dd>
           </dl>
         </div>
       </Container>
