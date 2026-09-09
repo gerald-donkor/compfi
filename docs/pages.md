@@ -26,14 +26,18 @@ with exact intrinsic dimensions. Fixture, copy, gallery, and image composition
 stay server-owned; only the carousel wrapper enters the client graph.
 
 Evidence is retained in `/tmp/compfi-home11.bwIsT7`: native crops, contact
-sheet, five viewport screenshots, and full-height 1440/320 captures. Chromium
-CDP verified room 1→2 next navigation, dot navigation to room 4, disabled
-first/last boundaries, reduced motion, lazy gallery images, and zero horizontal
-overflow at 1440, 1024, 768, 390, and 320px. `agent-browser` was unavailable
-with `command not found`, so the approved Chromium fallback was used. The
-fresh Web Interface Guidelines review found no unresolved issue: navigation
-uses links, state changes use buttons, icon controls are named, image loading
-and dimensions are explicit, focus is visible, and reduced motion is honored.
+sheet, five viewport screenshots, and full-height 1440/390/320 captures.
+Chromium CDP verified real pointer and Space-key room 1→2 navigation, retained
+keyboard focus, pointer dot navigation to room 4, disabled first/last
+boundaries, native Enter-key link navigation to `/shop`, refresh reset, no
+auto-rotation before or after refresh, reduced-motion selection, lazy gallery
+images, zero horizontal overflow at 1440, 1024, 768, 390, and 320px, and
+visible in-viewport controls with no overflow at 200% text. `agent-browser` was
+unavailable with `command not found`, so the approved Chromium fallback was
+used. The fresh Web Interface Guidelines review found no unresolved issue:
+navigation uses links, state changes use buttons, icon controls are named,
+image loading and dimensions are explicit, focus is visible, and reduced
+motion is honored.
 
 Self-verification on 2026-09-08: focused Home/editorial/carousel tests passed
 (3 files, 8 tests); the complete suite passed (15 files, 66 tests); lint and
@@ -58,6 +62,14 @@ shared media fields have one type, every gallery placement has a breakpoint-
 accurate `sizes` hint, and tests prove the final disabled boundary plus the
 reduced-motion jump path. The worst Standards issue was stale caption
 documentation; the worst Spec issue was underestimating wide mosaic images.
+
+The second re-review reported one Standards finding and one Spec finding. Both
+were accepted: carousel items and controls now protect their owned slots,
+roles, and boundary-disabled state while preserving caller props, and the
+expanded Chromium run now covers actual pointer/keyboard input, link
+activation, focus persistence, refresh/no-auto behavior, reduced motion, and
+200% text. The Standards finding was an owned-state override risk; the Spec
+finding was incomplete real-browser interaction evidence.
 
 ## Shop commerce browsing
 

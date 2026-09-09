@@ -150,6 +150,7 @@ function CarouselItem({ className, ...props }: CarouselItemProps) {
 
   return (
     <div
+      {...props}
       role="group"
       aria-roledescription="slide"
       data-slot="carousel-item"
@@ -158,7 +159,6 @@ function CarouselItem({ className, ...props }: CarouselItemProps) {
         orientation === "horizontal" ? "pl-4" : "pt-4",
         className
       )}
-      {...props}
     />
   )
 }
@@ -171,12 +171,14 @@ function CarouselPrevious({
   size = "icon-sm",
   jump = false,
   onClick,
+  disabled,
   ...props
 }: CarouselControlProps) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   return (
     <Button
+      {...props}
       data-slot="carousel-previous"
       variant={variant}
       size={size}
@@ -187,12 +189,11 @@ function CarouselPrevious({
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
-      disabled={!canScrollPrev}
+      disabled={disabled || !canScrollPrev}
       onClick={(event) => {
         scrollPrev(jump)
         onClick?.(event)
       }}
-      {...props}
     >
       <ChevronLeftIcon aria-hidden="true" />
       <span className="sr-only">Previous slide</span>
@@ -206,12 +207,14 @@ function CarouselNext({
   size = "icon-sm",
   jump = false,
   onClick,
+  disabled,
   ...props
 }: CarouselControlProps) {
   const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   return (
     <Button
+      {...props}
       data-slot="carousel-next"
       variant={variant}
       size={size}
@@ -222,12 +225,11 @@ function CarouselNext({
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
-      disabled={!canScrollNext}
+      disabled={disabled || !canScrollNext}
       onClick={(event) => {
         scrollNext(jump)
         onClick?.(event)
       }}
-      {...props}
     >
       <ChevronRightIcon aria-hidden="true" />
       <span className="sr-only">Next slide</span>
