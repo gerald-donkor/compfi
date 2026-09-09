@@ -173,6 +173,11 @@
   /* Shop browsing geometry */
   --shop-controls-block-padding: 1.75rem;
   --shop-results-block-padding: 4.5rem;
+  /* Product comparison geometry */
+  --comparison-table-max-width: 83.25rem;
+  --comparison-product-frame-height: 11.25rem;
+  --comparison-table-attribute-width: 22.1875rem;
+  --comparison-table-product-width: 21.5rem;
   /* shadcn semantic role mappings to Compfi design tokens */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);
@@ -662,6 +667,41 @@ textarea {
 .home-rooms,
 .home-featured {
   padding-block: var(--home-section-block-padding);
+}
+
+.product-comparison { padding-block: var(--space-16); }
+.product-comparison__intro { max-width: 38rem; margin-bottom: var(--space-10); }
+.product-comparison__intro p { margin: var(--space-3) 0 0; }
+.product-comparison__summaries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); align-items: start; margin-bottom: var(--space-12); }
+.comparison-summary { min-width: 0; }
+.comparison-summary__image-link { display: block; height: var(--comparison-product-frame-height); overflow: hidden; background: var(--color-wash); }
+.comparison-summary__image { display: block; width: 100%; height: 100%; object-fit: contain; }
+.comparison-summary__content { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); padding-top: var(--space-4); }
+.comparison-summary__remove { min-height: var(--control-min); margin-top: var(--space-2); font-size: var(--type-body-sm-size); }
+.comparison-picker { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); padding: var(--space-4); background: var(--color-wash); }
+.comparison-picker__field { gap: var(--space-2); }
+.comparison-picker__select { min-width: 15.125rem; min-height: var(--control-min); }
+.comparison-picker__select [data-slot="native-select"] { min-height: var(--control-min); }
+.product-comparison__full { margin: 0; padding: var(--space-4); color: var(--color-muted); }
+.product-comparison__empty { display: grid; gap: var(--space-8); max-width: 32rem; }
+.comparison-table { max-width: var(--comparison-table-max-width); margin-inline: auto; border-top: var(--border-thin) solid var(--color-border); }
+.comparison-table__hint { margin: var(--space-4) 0; color: var(--color-muted); font-size: var(--type-body-sm-size); }
+.comparison-table__scroll { overflow-x: auto; overscroll-behavior-inline: contain; padding: var(--focus-ring-width); }
+.comparison-table table { width: var(--comparison-table-max-width); min-width: 100%; border-collapse: collapse; table-layout: fixed; }
+.comparison-table caption { padding-block: var(--space-3); text-align: left; color: var(--color-muted); font-size: var(--type-body-sm-size); }
+.comparison-table th, .comparison-table td { min-width: var(--comparison-table-product-width); padding: var(--space-4); border: var(--border-thin) solid var(--color-border); vertical-align: top; text-align: left; overflow-wrap: anywhere; }
+.comparison-table th:first-child { width: var(--comparison-table-attribute-width); min-width: var(--comparison-table-attribute-width); font-weight: var(--type-label-weight); }
+
+@media (max-width: 768px) {
+  .product-comparison { padding-block: var(--space-12); }
+  .product-comparison__summaries { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .comparison-picker { grid-column: 1 / -1; }
+}
+
+@media (max-width: 480px) {
+  .product-comparison__summaries { grid-template-columns: minmax(0, 1fr); }
+  .comparison-picker { width: 100%; }
+  .comparison-picker__select { width: 100%; min-width: 0; }
 }
 
 .home-section-intro {

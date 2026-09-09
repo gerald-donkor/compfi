@@ -6,6 +6,14 @@ This document owns Compfi's measured visual tokens and responsive foundation.
 The implementation authority is `app/globals.css`; this record explains the
 evidence, semantic roles, and deliberate departures from the references.
 
+## Comparison geometry
+
+The comparison block uses `--comparison-table-max-width` (1332 CSS px from the
+reference's 2664-raster-pixel rule), a 355px attribute column, 344px product
+columns, and 180px product-media frames. The table is a fixed-layout semantic
+table in a labelled, focusable horizontal-scroll region; only that region may
+overflow at narrow widths.
+
 ## Reference scale and measurement confidence
 
 All nine supplied PNGs are 2880 pixels wide and contain no embedded scale or

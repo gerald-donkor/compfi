@@ -3,6 +3,15 @@
 Status: Phase 4 catalog, Home editorial, and product-detail media implemented;
 static fixture data and local media only.
 
+## Comparison projection
+
+`lib/comparison.ts` projects catalog records into the shareable `/comparison`
+state. Repeated `product` values accept only known slugs, preserve first
+occurrence order, deduplicate, and cap at three selections. A missing parameter
+uses the presentation defaults `atlas-bed` and `haven-sectional`; an explicit
+empty value is an empty comparison. The projection exposes only catalog price,
+category, descriptions, sizes, finishes, and local lead media.
+
 ## Contract
 
 `lib/catalog.ts` is the sole typed source of Compfi catalog display data. It

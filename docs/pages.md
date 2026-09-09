@@ -2,6 +2,29 @@
 
 Status: Phase 4 Home, Shop, and product-detail browsing implemented and verified.
 
+## Product comparison (`/comparison`)
+
+Implemented 2026-09-09. Missing `product` query state presents Atlas Bed and
+Haven Sectional; repeated known `product` values provide shareable selection
+state up to three products, while an explicit empty value renders the empty
+state. The native GET picker preserves selected allowlisted values and remove
+links construct only fixed internal comparison URLs. The table compares only
+fixture-backed price, category, descriptions, sizes, and finishes.
+
+The reference's unknown-provenance photographic hero is represented by the
+approved wash. Unsupported material, dimensions, rating, warranty, shipping,
+support, inventory, and cart actions are omitted, so the page is intentionally
+shorter. Desktop uses its quiet product-summary row and wide table; tablet and
+mobile stack summaries while preserving a labelled table scroll region.
+
+Verification: focused tests, full Vitest suite, ESLint, and TypeScript passed.
+Local browser inspection covered 1440, 1024, 768, 390, and 320 CSS px; axe
+reported zero violations after the semantic table adjustment. Screenshots are
+temporary at `/tmp/compfi-comparison-*.png`.
+The webpack production build compiled successfully, but its final verification
+could not run while the existing development server retained `.next/dev/lock`;
+this is an environment limitation, not a passing build result.
+
 ## Product-detail commerce browsing
 
 All eight `/shop/[slug]` routes resolve from the immutable catalog fixture,

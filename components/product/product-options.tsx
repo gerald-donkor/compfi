@@ -7,6 +7,7 @@ import { ColorSelector } from "@/components/commerce/color-swatch"
 import { QuantityInput } from "@/components/commerce/quantity-input"
 import { SizeSelector } from "@/components/commerce/size-selector"
 import { Button } from "@/components/ui/button"
+import { Link } from "@/components/ui/link"
 import type { ColorOption, SizeOption } from "@/types/commerce"
 
 export interface ProductOptionsProps extends React.ComponentProps<"section"> {
@@ -14,6 +15,7 @@ export interface ProductOptionsProps extends React.ComponentProps<"section"> {
   defaultSize?: string
   finishes?: readonly ColorOption[]
   defaultFinish?: string
+  comparisonHref?: string
 }
 
 export function ProductOptions({
@@ -21,6 +23,7 @@ export function ProductOptions({
   defaultSize,
   finishes,
   defaultFinish,
+  comparisonHref,
   className,
   "aria-label": ariaLabel = "Product options",
   ...props
@@ -67,15 +70,13 @@ export function ProductOptions({
 
       <div className="flex flex-col gap-3" data-slot="product-actions">
         <p className="type-body-sm text-muted-foreground" id={actionsNoteId}>
-          Online ordering and comparison are not available in this preview.
+          Online ordering is not available in this preview.
         </p>
         <div className="flex flex-wrap gap-3">
           <Button disabled aria-describedby={actionsNoteId} className="max-sm:w-full">
             Add to cart
           </Button>
-          <Button disabled variant="outline" aria-describedby={actionsNoteId} className="max-sm:w-full">
-            Compare
-          </Button>
+          {comparisonHref ? <Link href={comparisonHref} className="min-h-11 min-w-11 border border-compfi-ink px-6 py-3 text-sm hover:border-primary hover:text-primary max-sm:w-full">Compare</Link> : null}
         </div>
       </div>
     </section>

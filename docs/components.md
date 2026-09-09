@@ -4,6 +4,15 @@ Status: Phase 4 product-detail components certified; implemented, tested, and ve
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 
+## Product comparison
+
+`ProductComparison` is a server-safe block that receives a resolved comparison
+model, renders summaries, a native GET picker, empty/full guidance, and the
+table. `ComparisonProductSummary` uses linked local `next/image` media, price,
+and a named removal link. `ComparisonTable` uses semantic headers and labelled
+row groups, with a keyboard-focusable overflow region. `ProductOptions` now
+accepts an allowlisted `comparisonHref`; its cart action remains disabled.
+
 ---
 
 ## 1. Scope & Audit Status

@@ -39,6 +39,7 @@ export function ProductDetail({ product, className, ...props }: ProductDetailPro
             defaultSize={product.defaultSize}
             finishes={product.finishes}
             defaultFinish={product.defaultFinish}
+            comparisonHref={`/comparison?product=${product.slug}`}
           />
 
           <Separator />
