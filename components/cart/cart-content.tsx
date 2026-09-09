@@ -22,15 +22,22 @@ export function CartContent() {
   if (!lines.length) return <Container className="py-16 sm:py-24"><CartEmpty /></Container>
 
   const removeAndFocus = (line: CartLine) => {
+    const hasSurvivingLine = lines.length > 1
     remove(line)
-    requestAnimationFrame(() => document.getElementById("cart-content-heading")?.focus())
+    requestAnimationFrame(() => {
+      if (hasSurvivingLine) {
+        document.querySelector<HTMLButtonElement>("[aria-label^='Remove ']")?.focus()
+      } else {
+        document.getElementById("cart-content-heading")?.focus()
+      }
+    })
   }
   return <Container className="grid gap-10 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] lg:items-start sm:py-24">
     <div><h2 id="cart-content-heading" tabIndex={-1} className="sr-only">Cart items</h2>
       <Table className="hidden min-[769px]:table"><TableHeader className="bg-secondary"><TableRow><TableHead className="px-6">Product</TableHead><TableHead>Price</TableHead><TableHead>Quantity</TableHead><TableHead>Subtotal</TableHead><TableHead><span className="sr-only">Remove</span></TableHead></TableRow></TableHeader><TableBody>{lines.map((line) => <DesktopLine key={`${line.slug}-${line.size}-${line.finish}`} line={line} onRemove={removeAndFocus} />)}</TableBody></Table>
       <div className="flex flex-col gap-5 min-[769px]:hidden">{lines.map((line) => <MobileLine key={`${line.slug}-${line.size}-${line.finish}`} line={line} onRemove={removeAndFocus} />)}</div>
     </div>
-    <aside aria-labelledby="cart-subtotal" className="surface-wash p-8 sm:p-12"><h2 id="cart-subtotal" className="type-heading-lg">Cart subtotal</h2><div className="mt-10 flex items-baseline justify-between gap-4"><span className="type-body">Subtotal</span><Money amountCents={subtotalCents} className="type-heading-md text-primary" /></div><div className="mt-5 flex items-baseline justify-between gap-4"><span className="type-body">Order total</span><Money amountCents={subtotalCents} className="type-heading-md text-primary" /></div><p className="mt-8 type-body-sm text-muted-foreground">Checkout is not available yet.</p><Button disabled className="mt-6 w-full">Checkout unavailable</Button></aside>
+    <aside aria-labelledby="cart-subtotal" className="surface-wash p-8 sm:p-12"><h2 id="cart-subtotal" className="type-heading-lg">Cart subtotal</h2><div className="mt-10 flex items-baseline justify-between gap-4"><span className="type-body">Subtotal</span><Money amountCents={subtotalCents} className="type-heading-md text-primary" /></div><p className="mt-8 type-body-sm text-muted-foreground">Checkout is not available yet.</p><Button disabled className="mt-6 w-full">Checkout unavailable</Button></aside>
   </Container>
 }
 
@@ -41,5 +48,5 @@ function DesktopLine({ line, onRemove }: { line: CartLine; onRemove: (line: Cart
 
 function MobileLine({ line, onRemove }: { line: CartLine; onRemove: (line: CartLine) => void }) {
   const { productFor, setQuantity } = useCart(); const product = productFor(line); if (!product) return null
-  return <article className="border border-compfi-border p-5" aria-label={product.name}><div className="flex gap-4"><Image src={product.media.path} alt={product.media.alt} width={product.media.width} height={product.media.height} sizes="96px" className="size-24 rounded-control object-cover" /><div className="min-w-0 flex-1"><Link href={`/shop/${product.slug}`} className="no-underline">{product.name}</Link>{cartLineSelectionLabel(line) ? <p className="type-body-sm text-muted-foreground">{cartLineSelectionLabel(line)}</p> : null}<Money amountCents={product.priceCents} className="mt-2 block" /></div><Button variant="ghost" size="icon" onClick={() => onRemove(line)} aria-label={`Remove ${product.name}`}><Trash2Icon aria-hidden="true" /></Button></div><div className="mt-5 flex items-center justify-between gap-4"><QuantityInput value={line.quantity} onValueChange={(quantity) => setQuantity(line, quantity)} min={1} max={10} aria-label={`Quantity for ${product.name}`} /><div className="text-right"><p className="type-body-sm text-muted-foreground">Subtotal</p><Money amountCents={product.priceCents * line.quantity} /></div></div></article>
+  return <article className="border border-compfi-border p-5" aria-label={product.name}><div className="flex gap-4"><Image src={product.media.path} alt={product.media.alt} width={product.media.width} height={product.media.height} sizes="96px" className="size-24 rounded-control object-cover" /><div className="min-w-0 flex-1"><Link href={`/shop/${product.slug}`} className="no-underline">{product.name}</Link>{cartLineSelectionLabel(line) ? <p className="type-body-sm text-muted-foreground">{cartLineSelectionLabel(line)}</p> : null}<p className="mt-2 type-body-sm text-muted-foreground">Price</p><Money amountCents={product.priceCents} /></div><Button variant="ghost" size="icon" onClick={() => onRemove(line)} aria-label={`Remove ${product.name}`}><Trash2Icon aria-hidden="true" /></Button></div><div className="mt-5 flex items-center justify-between gap-4"><QuantityInput value={line.quantity} onValueChange={(quantity) => setQuantity(line, quantity)} min={1} max={10} aria-label={`Quantity for ${product.name}`} /><div className="text-right"><p className="type-body-sm text-muted-foreground">Subtotal</p><Money amountCents={product.priceCents * line.quantity} /></div></div></article>
 }

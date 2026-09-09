@@ -45,7 +45,7 @@ separation. Product information uses two 605×348px landscape frames with a
 The gallery is the only image-state client leaf. Product options compose the
 existing certified size, finish, and quantity controls; their selections are
 demonstrative and local. Add-to-cart now sends a valid configured selection to
-the transient tab-local cart model;
+the transient tab-local cart model, with restrained live feedback.
 explanation, while comparison is a shareable catalog-browsing link. No stock,
 delivery, review, rating, warranty, cart, comparison store, or transient
 success claim was introduced. Information tabs expose only
