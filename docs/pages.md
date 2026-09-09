@@ -44,7 +44,8 @@ separation. Product information uses two 605×348px landscape frames with a
 
 The gallery is the only image-state client leaf. Product options compose the
 existing certified size, finish, and quantity controls; their selections are
-demonstrative and local. Add-to-cart is visibly disabled with an online-ordering
+demonstrative and local. Add-to-cart now sends a valid configured selection to
+the transient tab-local cart model;
 explanation, while comparison is a shareable catalog-browsing link. No stock,
 delivery, review, rating, warranty, cart, comparison store, or transient
 success claim was introduced. Information tabs expose only
@@ -373,9 +374,10 @@ wordmark tokens documented in `docs/design-system.md`.
 
 - The Shop title band is a tokenized wash instead of an image because no
   licensed local image exists.
-- The reference's populated cart, template footer contact data, policy claims,
+- The reference's template footer contact data, policy claims,
   newsletter form, warranty, support hours, and shipping offer are intentionally
-  absent. The cart is an accessible empty state until a cart model is built.
+  absent. Cart data is intentionally transient and has no unapproved commerce
+  claims.
 - Keyboard focus, 44px targets, motion reduction, responsive navigation, and
   no-overflow mobile behavior are deliberate accessibility additions not proven
   by the desktop references.

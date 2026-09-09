@@ -21,6 +21,7 @@ const CartContext = React.createContext<CartContextValue | null>(null)
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = React.useState<CartState>([])
+  const linesRef = React.useRef<CartState>([])
   const [liveMessage, setLiveMessage] = React.useState("")
 
   const add = React.useCallback((product: CatalogProduct, selection: Omit<CartSelection, "slug">, quantity: number) => {
@@ -28,26 +29,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!canonicalProduct) return
     const line = createCartLine(canonicalProduct, selection, quantity)
     if (!line) return
-    setLiveMessage(`${canonicalProduct.name} added to cart.`)
-    setLines((current) => {
-      return addCartLine(current, line)
-    })
+    const next = addCartLine(linesRef.current, line)
+    linesRef.current = next
+    setLines(next)
+    const resultingLine = next.find((candidate) => candidate.slug === line.slug && candidate.size === line.size && candidate.finish === line.finish)
+    setLiveMessage(`${canonicalProduct.name} added to cart. Quantity ${resultingLine?.quantity ?? line.quantity}.`)
   }, [])
 
   const setQuantity = React.useCallback((selection: CartSelection, quantity: number) => {
     const product = getCatalogProductBySlug(selection.slug)
     setLiveMessage(`${product?.name ?? "Item"} quantity updated.`)
-    setLines((current) => {
-      return setCartLineQuantity(current, selection, quantity)
-    })
+    const next = setCartLineQuantity(linesRef.current, selection, quantity)
+    linesRef.current = next
+    setLines(next)
   }, [])
 
   const remove = React.useCallback((selection: CartSelection) => {
     const product = getCatalogProductBySlug(selection.slug)
     setLiveMessage(`${product?.name ?? "Item"} removed from cart.`)
-    setLines((current) => {
-      return removeCartLine(current, selection)
-    })
+    const next = removeCartLine(linesRef.current, selection)
+    linesRef.current = next
+    setLines(next)
   }, [])
 
   const value = React.useMemo<CartContextValue>(() => ({

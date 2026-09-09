@@ -53,6 +53,11 @@ export function cartLineKey(line: CartSelection): string {
   return [line.slug, line.size ?? "", line.finish ?? ""].join("::")
 }
 
+export function cartLineSelectionLabel(line: CartSelection): string | undefined {
+  const label = [line.size, line.finish].filter(Boolean).join(" · ")
+  return label || undefined
+}
+
 export function addCartLine(state: CartState, line: CartLine): CartState {
   const key = cartLineKey(line)
   const existing = state.find((candidate) => cartLineKey(candidate) === key)

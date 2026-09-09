@@ -11,7 +11,8 @@ model, renders summaries, a native GET picker, empty/full guidance, and the
 table. `ComparisonProductSummary` uses linked local `next/image` media, price,
 and a named removal link. `ComparisonTable` uses semantic headers and labelled
 row groups, with a keyboard-focusable overflow region. `ProductOptions` now
-accepts an allowlisted `comparisonHref`; its cart action remains disabled.
+accepts an allowlisted `comparisonHref`; its cart action is enabled only when
+the caller supplies a canonical catalog product inside `CartProvider`.
 
 `ProductComparisonProps`, `ComparisonProductSummaryProps`, and
 `ComparisonTableProps` extend their native section/article props and expose the
@@ -49,7 +50,8 @@ therefore owns this one fully documented table composition.
   decorative; content records use an icon component, title, and description.
 - **`SiteFooter`**: Server-safe navigation block with non-claiming Compfi copy
   and 44px minimum link targets. It does not model newsletter submission.
-- **`CartDrawer`**: Focused client leaf with controlled open state only. It
+- **`CartDrawer`**: Focused client leaf with controlled open state and a narrow
+  cart-context subscription. It
   composes Base UI's modal Sheet; title and descriptive empty state are always
   present. The audited Sheet adaptation uses a 20% scrim, flat 550px maximum
   side sheet, viewport-safe width, overscroll containment, reduced-motion-safe
@@ -93,7 +95,8 @@ therefore owns this one fully documented table composition.
   section props and accessible naming remain customizable in every state.
 - **`ProductOptions`**: Focused client leaf composing the certified size,
   finish, and quantity controls. Optional groups render only when data exists.
-  Quantity is bounded 1–10. Add-to-cart remains disabled with cart-only copy;
+  Quantity is bounded 1–10. Add-to-cart submits the valid configured catalog
+  selection to the cart provider and its result is announced politely;
   an optional allowlisted `comparisonHref` renders the real Compare link.
 - **`ProductInformation`**: Server block composing certified Base UI Tabs.
   Description is selected initially; Details reports only product ID,

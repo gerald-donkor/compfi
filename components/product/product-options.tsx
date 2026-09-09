@@ -39,7 +39,6 @@ export function ProductOptions({
   const [size, setSize] = React.useState(defaultSize)
   const [finish, setFinish] = React.useState(defaultFinish)
   const [quantity, setQuantity] = React.useState(1)
-  const [message, setMessage] = React.useState("")
 
   return (
     <section
@@ -83,13 +82,12 @@ export function ProductOptions({
       <div className="flex flex-col gap-3" data-slot="product-actions">
         <p className="type-body-sm text-muted-foreground" id={actionsNoteId}>Quantity is limited to 10 per selection.</p>
         <div className="flex flex-wrap gap-3">
-          <Button disabled={!product || !cart} aria-describedby={actionsNoteId} className="max-sm:w-full" onClick={() => { if (!product || !cart) return; cart.add(product, { size, finish }, quantity); setMessage(`${product.name} added to cart.`) }}>
+          <Button disabled={!product || !cart} aria-describedby={actionsNoteId} className="max-sm:w-full" onClick={() => { if (!product || !cart) return; cart.add(product, { size, finish }, quantity) }}>
             Add to cart
           </Button>
           {comparisonHref ? <Link href={comparisonHref} className="min-h-11 min-w-11 border border-compfi-ink px-6 py-3 text-sm hover:border-primary hover:text-primary max-sm:w-full">Compare</Link> : null}
         </div>
       </div>
-      <p className="sr-only" aria-live="polite">{message}</p>
     </section>
   )
 }
