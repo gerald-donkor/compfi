@@ -144,6 +144,7 @@
   --product-detail-summary-padding-top: 2.1875rem;
   --product-detail-gallery-lead-width: 26.4375rem;
   --product-detail-gallery-lead-height: 31.25rem;
+  --product-detail-gallery-lead-ratio: 423 / 500;
   --product-detail-gallery-thumb-width: 4.75rem;
   --product-detail-gallery-thumb-height: 5rem;
   --product-detail-gallery-gap: 1.875rem;
@@ -326,7 +327,7 @@
 
   .product-detail-gallery__lead {
     height: auto;
-    aspect-ratio: 423 / 500;
+    aspect-ratio: var(--product-detail-gallery-lead-ratio);
   }
 
   .product-detail-gallery__thumbs {

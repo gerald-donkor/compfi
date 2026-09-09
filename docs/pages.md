@@ -290,7 +290,7 @@ Self-verification on 2026-09-08:
 | surface | native reference measurement | Compfi production decision |
 | --- | --- | --- |
 | Header | repeated 200 raster px bar across Home, Shop, Product, and Cart Sidebar | 100 CSS px white header; 1240 CSS px container; brand, centered desktop navigation, and right utility actions |
-| Page hero | Shop photo/title area is 630 raster px tall; Product breadcrumb wash is 360 raster px | reusable 315 CSS px generic title band and 180 CSS px compact breadcrumb basis, rendered as the existing wash token pending a licensed local image |
+| Page hero | Shop photo/title area is 630 raster px tall; the later exact Product scan corrected its breadcrumb wash to y=228–421, or 194 raster px | reusable 315 CSS px generic title band plus a product-specific 97 CSS px compact breadcrumb wash |
 | Benefits | Contact benefit band is 550 raster px tall | 275 CSS px desktop band with four item groups; responsive 2-column then 1-column flow |
 | Cart drawer | 1100 raster px sheet from x=1780; background white changed to `#CCCCCC` | 550 CSS px maximum right sheet and 20% black scrim; narrow viewports preserve a 16 CSS px inset on each side |
 
@@ -301,10 +301,11 @@ wordmark tokens documented in `docs/design-system.md`.
 
 - `SiteHeader` is server-rendered; `HeaderControls` is the small client boundary
   for pathname semantics, the mobile disclosure, and the cart leaf.
-- `PageHero` accepts `title`, a small breadcrumb record (`label`, optional
-  `href`), and one semantic `size` choice: the default `banner` is 315px while
-  `breadcrumb` is 180px. Its current page is a non-link `aria-current` span,
-  never a fake disabled link.
+- `PageHero` accepts a small breadcrumb record (`label`, optional `href`) and a
+  discriminated variant. The default `banner` requires its 315px title; the
+  `compact-breadcrumb` variant forbids a title and uses the measured 97px
+  product wash. Its current page is a non-link `aria-current` span, never a
+  fake disabled link.
 - `BenefitsStrip` owns a typed four-item local record. Its Lucide icons are
   decorative and hidden from assistive technology.
 - `SiteFooter` contains only approved, non-claiming Compfi copy and route
