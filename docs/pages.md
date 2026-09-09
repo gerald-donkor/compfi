@@ -1,6 +1,64 @@
 # Compfi page build record
 
-Status: Phase 4 Home and Shop implemented and verified through the Home editorial unit.
+Status: Phase 4 Home, Shop, and product-detail browsing implemented and verified.
+
+## Product-detail commerce browsing
+
+All eight `/shop/[slug]` routes resolve from the immutable catalog fixture,
+await Next.js 16 promised params, prerender known slugs through
+`generateStaticParams`, and provide product-specific title and description
+metadata. Unknown slugs terminate through `notFound()` and render the local
+recoverable not-found state with `noindex`. Colocated loading and safe error
+boundaries preserve the route hierarchy without exposing exception details.
+
+The native 2880×6214 reference was opened and measured before implementation.
+Its compact wash is exactly `#F9F1E7` from raster y=228–421 (194px, interpreted
+as 97 CSS px); the global reviewed header remains 100 CSS px despite this
+export's 228px raster discrepancy. The desktop summary uses the measured
+76×80px thumbnail rail, 423×500px lead frame, and approximately 106px column
+separation. Product information uses two 605×348px landscape frames with a
+29px gap, and related products reuse the existing four-column card grid.
+
+The gallery is the only image-state client leaf. Product options compose the
+existing certified size, finish, and quantity controls; their selections are
+demonstrative and local. Add-to-cart and comparison are visibly disabled with
+the explanation that online ordering and comparison are unavailable in this
+preview. No stock, delivery, review, rating, warranty, cart, comparison store,
+or transient success claim was introduced. Information tabs expose only
+catalog-backed description, ID, category, and configured choices.
+
+Desktop retains the reference's image-led side-by-side summary. At 1024px the
+same hierarchy remains compact; below 800px the gallery and summary stack, the
+thumbnail rail becomes horizontal, information media stacks at mobile, and
+related cards follow the certified 3/2/1-column grid. Generated detail imagery
+and its exact prompt/provenance contract are recorded in `docs/catalog.md`.
+
+Reference deltas are deliberate: three truthful unique images replace the
+reference's four-thumbnail repetition; Compfi USD fixtures and copy replace
+the template brand and mixed locale; low-contrast reference gray is replaced
+by semantic accessible muted text; unsupported purchasing/comparison controls
+are honest disabled controls; and responsive layouts are derived because no
+mobile comp was supplied.
+
+Verification on 2026-09-09:
+
+| check | result |
+| --- | --- |
+| focused product-detail tests | passed: 4 files, 20 tests; catalog integrity, related order, PageHero contract, gallery state/announcement/empty state, options, tabs, route states, USD, and axe coverage |
+| `npm run test` | passed: 17 files, 77 tests |
+| `npm run lint` | passed |
+| `npx tsc --noEmit` | passed |
+| `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind its internal port (`Operation not permitted`) |
+| `npm run build -- --webpack` | passed; compiled, type-checked, and prerendered all eight `/shop/[slug]` paths |
+| direct route matrix | all eight catalog URLs rendered one product-specific `h1`, matching Compfi metadata, one `main`, and zero horizontal overflow; unknown slug rendered `Product not found`, `/shop` recovery, and `noindex` |
+| browser navigation | product-card click, back, forward, and reload retained the correct Alder route and heading |
+| browser interaction/accessibility | gallery selection, size, finish, quantity, tabs, and keyboard focus exercised; final axe audit reported 0 violations and 0 incomplete results |
+| browser reflow/motion | zero horizontal overflow at 1440, 1024, 768, 390, and 320px; 200% root text showed no overflow; 320px supplied the WCAG 400% reflow equivalent; reduced-motion matched and collapsed transitions to 0.01ms |
+| screenshots | inspected `/tmp/compfi-product-detail-{1440,1024,768,390,320}.png`; hierarchy and responsive stacking matched the recorded decisions; `/tmp/compfi-product-detail-contact-sheet.webp` records all 16 selected generated images |
+| Web Interface Guidelines | fresh official rules reviewed; inactive tab contrast and an invalid naming target were found in-browser, corrected, and re-audited with no unresolved issue |
+
+The implementation commit and independent-review outcomes are appended after
+those workflow stages complete.
 
 ## Home inspiration and editorial completion
 

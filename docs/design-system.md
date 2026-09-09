@@ -192,6 +192,14 @@ padding` is 72px; the disclosure panel uses a 176px minimum inline size; and
 the desktop list media cap is 288px. These are named Shop component tokens,
 not general-purpose spacing values.
 
+Product detail uses a separate measured geometry layer. The reference's exact
+`#F9F1E7` breadcrumb run is 194 raster px, interpreted as the
+`--product-detail-breadcrumb-height` 97 CSS px basis. The desktop lead frame is
+423×500px, thumbnail frames are 76×80px, the thumbnail gap is 32px, the
+summary columns are separated by 106px, and the information media grid uses
+605×348px frames with a 29px gap. These purpose-named product tokens preserve
+reference evidence without expanding the global spacing scale.
+
 Future comparison tables may scroll horizontally within a named region rather
 than compressing unreadably. Cart tables become labeled stacked rows on mobile.
 Modal cart sheets use available viewport width with focus management supplied by
@@ -222,8 +230,8 @@ an established primitive in the component phase.
 
 Phase 3 owns a small chrome layer rather than scattering measured values in
 component utilities. `--chrome-header-height` is the 100 px desktop header;
-`--chrome-page-hero-banner-height` and
-`--chrome-page-hero-breadcrumb-height` are the 315 px and 180 px wash regions;
+`--chrome-page-hero-banner-height` is the 315 px generic title wash;
+`--product-detail-breadcrumb-height` is the measured 97 px compact product wash;
 `--chrome-benefits-block-padding` produces the 275 px benefits band around its
 content. The drawer layer records the measured 550 px maximum, 16 px narrow
 insets, and 40 px entry offset as `--chrome-drawer-max-width`,

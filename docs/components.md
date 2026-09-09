@@ -1,6 +1,6 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 4 Home editorial components certified; implemented, tested, and verified.
+Status: Phase 4 product-detail components certified; implemented, tested, and verified.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 
@@ -15,9 +15,11 @@ This document owns the public component contracts, APIs, states, and accessibili
   semantics, mobile menu state, Escape/focus-return behavior, and composes the
   cart drawer. Desktop navigation is hidden rather than duplicated on mobile.
 - **`PageHero`**: Server-safe title/breadcrumb block with the explicit
-  `BreadcrumbItemData` record (`label`, optional internal `href`) and one
-  semantic `size`: `banner` (315px default) or `breadcrumb` (180px). The final
-  item is non-interactive and has `aria-current="page"`.
+  `BreadcrumbItemData` record (`label`, optional internal `href`) and a
+  discriminated variant: `banner` requires its own `h1`; `compact-breadcrumb`
+  forbids a title so a product summary can own the page heading. The final item
+  is non-interactive and has `aria-current="page"`. Native section props and
+  caller classes are forwarded.
 - **`BenefitsStrip`**: Server-safe four-item content block. Icons are
   decorative; content records use an icon component, title, and description.
 - **`SiteFooter`**: Server-safe navigation block with non-claiming Compfi copy
@@ -52,6 +54,31 @@ This document owns the public component contracts, APIs, states, and accessibili
   `PaginationPrevious`, and `PaginationNext` render native anchors styled with
   the shared button variants; they never override link semantics. The active
   page alone receives `aria-current="page"`. Real usage: Shop result pages.
+
+### Phase 4 Product Detail Blocks
+
+- **`ProductDetail`**: Server block for the two-column summary. It composes the
+  gallery, one product `h1`, shared USD `Money`, product copy, options, and
+  factual ID/category metadata without inventing availability or policies.
+- **`ProductGallery`**: Focused client leaf accepting readonly media. It shows
+  one responsive lead image and native thumbnail buttons with `aria-pressed`;
+  a user selection updates the lead and one polite status. Empty input renders
+  a useful `Empty` state. Native section props and accessible naming remain
+  customizable.
+- **`ProductOptions`**: Focused client leaf composing the certified size,
+  finish, and quantity controls. Optional groups render only when data exists.
+  Quantity is bounded 1–10. Add-to-cart and comparison remain truthfully
+  disabled and share a visible explanatory description.
+- **`ProductInformation`**: Server block composing certified Base UI Tabs.
+  Description is selected initially; Details reports only product ID,
+  category, and configured options. Two generated detail images reuse catalog
+  metadata in a responsive landscape grid.
+- **`RelatedProducts`**: Server block delegates selection to the catalog helper
+  and rendering to `ProductGrid`, followed by a real `/shop` link.
+- **Tabs primitive**: `Tabs`, `TabsList`, `TabsTrigger`, and `TabsContent` are
+  certified for this route against the installed Base UI/shadcn contract.
+  Roving focus and automatic activation are primitive-owned; inactive labels
+  use the accessible muted token and transitions are color-only.
 
 ### Certified Phase 2 Components
 The following components have been fully audited, styled to Compfi's measured design tokens, verified for accessibility (WCAG 2.2 AA floor), and tested in automated JSDOM suites and real-browser rendering:

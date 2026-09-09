@@ -48,7 +48,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-US" className={poppins.variable}>
+    <html lang="en-US" className={poppins.variable} data-scroll-behavior="smooth">
       <body>
         <a className="skip-link" href="#main-content">
           Skip to main content

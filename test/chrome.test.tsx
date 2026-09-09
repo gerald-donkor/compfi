@@ -72,4 +72,26 @@ describe("Compfi chrome", () => {
 
     expect(await checkA11y(container)).toEqual([])
   })
+
+  it("renders compact breadcrumbs without a duplicate heading", async () => {
+    const { container } = render(
+      <PageHero
+        variant="compact-breadcrumb"
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Shop", href: "/shop" },
+          { label: "Atlas Bed" },
+        ]}
+        aria-label="Product path"
+      />
+    )
+
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/")
+    expect(screen.getByRole("link", { name: "Shop" })).toHaveAttribute("href", "/shop")
+    expect(screen.getByText("Atlas Bed")).toHaveAttribute("aria-current", "page")
+    expect(container.firstElementChild).toHaveAttribute("data-variant", "compact-breadcrumb")
+    expect(container.firstElementChild).toHaveAttribute("aria-label", "Product path")
+    expect(await checkA11y(container)).toEqual([])
+  })
 })

@@ -5,6 +5,7 @@ import {
   catalogProducts,
   getCatalogProductBySlug,
   getCatalogProductsByCategory,
+  getRelatedCatalogProducts,
 } from "@/lib/catalog"
 
 function readWebpDimensions(filePath: string): { width: number; height: number } {
@@ -44,7 +45,49 @@ describe("catalog fixtures", () => {
     for (const product of catalogProducts) {
       expect(Object.isFrozen(product)).toBe(true)
       expect(Object.isFrozen(product.media)).toBe(true)
+      expect(Object.isFrozen(product.gallery)).toBe(true)
+      expect(product.gallery).toHaveLength(3)
+      expect(product.gallery[0].path).toBe(product.media.path)
+      expect(new Set(product.gallery.map((media) => media.path))).toHaveLength(3)
+      expect(new Set(product.gallery.map((media) => media.alt))).toHaveLength(3)
+      expect(product.detailDescription.trim().length).toBeGreaterThan(20)
+      product.sizes?.forEach((option) => expect(Object.isFrozen(option)).toBe(true))
+      product.finishes?.forEach((option) => expect(Object.isFrozen(option)).toBe(true))
     }
+  })
+
+  it("validates every gallery asset and option default", () => {
+    for (const product of catalogProducts) {
+      for (const media of product.gallery) {
+        const mediaFile = resolve(process.cwd(), "public", media.path.slice(1))
+        expect(existsSync(mediaFile)).toBe(true)
+        expect(readWebpDimensions(mediaFile)).toEqual({
+          width: media.width,
+          height: media.height,
+        })
+      }
+
+      if (product.sizes) {
+        expect(product.sizes.map(({ value }) => value)).toContain(product.defaultSize)
+      }
+      if (product.finishes) {
+        expect(product.finishes.map(({ value }) => value)).toContain(product.defaultFinish)
+      }
+    }
+  })
+
+  it("selects deterministic related products without mutation or duplication", () => {
+    const product = catalogProducts[2]
+    const related = getRelatedCatalogProducts(product)
+
+    expect(Object.isFrozen(related)).toBe(true)
+    expect(related).toHaveLength(4)
+    expect(related[0].category).toBe(product.category)
+    expect(related[0].id).not.toBe(product.id)
+    expect(new Set(related.map(({ id }) => id)).size).toBe(related.length)
+    expect(getRelatedCatalogProducts(product, -1)).toEqual([])
+    expect(getRelatedCatalogProducts(product, Number.NaN)).toEqual([])
+    expect(getRelatedCatalogProducts(product, 99)).toHaveLength(7)
   })
 
   it("looks up known slugs without throwing for absent products", () => {

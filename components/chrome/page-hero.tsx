@@ -14,26 +14,45 @@ import { Link } from "@/components/ui/link"
 
 export type BreadcrumbItemData = { label: string; href?: string }
 
-export type PageHeroProps = {
-  title: string
+type PageHeroBaseProps = Omit<React.ComponentProps<"section">, "title"> & {
   breadcrumbs: readonly BreadcrumbItemData[]
-  size?: "banner" | "breadcrumb"
 }
 
-export function PageHero({ title, breadcrumbs, size = "banner" }: PageHeroProps) {
+export type PageHeroProps = PageHeroBaseProps &
+  (
+    | { variant?: "banner"; title: string }
+    | { variant: "compact-breadcrumb"; title?: never }
+  )
+
+export function PageHero({
+  breadcrumbs,
+  variant = "banner",
+  title,
+  className,
+  ...props
+}: PageHeroProps) {
   return (
     <section
       className={cn(
-        "surface-wash flex items-center py-8 text-center",
-        size === "banner"
+        "surface-wash flex items-center",
+        variant === "banner"
           ? "min-h-(--chrome-page-hero-banner-height)"
-          : "min-h-(--chrome-page-hero-breadcrumb-height)"
+          : "min-h-(--product-detail-breadcrumb-height)",
+        className
       )}
       data-slot="page-hero"
-      data-size={size}
+      data-variant={variant}
+      {...props}
     >
-      <Container className="flex max-w-3xl flex-col items-center gap-3">
-        <h1 className="type-heading-xl">{title}</h1>
+      <Container
+        className={cn(
+          "flex flex-col",
+          variant === "banner"
+            ? "max-w-3xl items-center gap-3 text-center"
+            : "items-start"
+        )}
+      >
+        {variant === "banner" ? <h1 className="type-heading-xl">{title}</h1> : null}
         <Breadcrumb>
           <BreadcrumbList className="justify-center">
             {breadcrumbs.map((item, index) => {

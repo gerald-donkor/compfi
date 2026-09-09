@@ -33,4 +33,10 @@ export interface CatalogProduct {
   readonly compareAtPriceCents?: number
   readonly badge?: ProductBadge
   readonly media: ProductMedia
+  readonly detailDescription: string
+  readonly gallery: readonly [ProductMedia, ProductMedia, ProductMedia]
+  readonly sizes?: readonly SizeOption[]
+  readonly defaultSize?: string
+  readonly finishes?: readonly ColorOption[]
+  readonly defaultFinish?: string
 }
