@@ -200,6 +200,18 @@ verification decision rather than claiming those checks ran.
 - 2026-09-09: `git diff --check` passed. Application tests, lint, TypeScript,
   production build, and screenshot comparisons were intentionally not run
   because this change only adds Markdown documentation and its index/ledger.
+- 2026-09-09: independent Standards review found one non-blocking
+  documentation-evidence gap: this prompt had not yet recorded the review
+  results required by its acceptance criteria. No heuristic smells were found.
+  Disposition: accepted; this record and completion status are added in the
+  separate review-fix commit.
+- 2026-09-09: independent Spec review found the same moderate
+  documentation-completeness gap and no other missing requirement, incorrect
+  implementation, or scope creep. Disposition: accepted and resolved by this
+  record.
+- 2026-09-09: complete after the separate review-record commit; no re-review
+  is required because this change only records the two review outcomes and does
+  not alter the runbook's workflow or safety contract.
 
 ## Commit and mandatory review
 
