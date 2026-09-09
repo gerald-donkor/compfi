@@ -27,6 +27,9 @@ Records are frozen when the module is initialized so future callers cannot
 mutate the shared static source. Related-product lookup excludes the current
 item, prefers the same category in canonical order, fills from remaining
 canonical products, clamps invalid limits to zero, and returns a frozen result.
+The exported `assertCatalogProduct` contract rejects malformed records; lead
+and first-gallery agreement includes path, alt, dimensions, and focal position,
+so the intentionally repeated fixture literals cannot drift silently.
 
 ## Product-detail gallery media
 

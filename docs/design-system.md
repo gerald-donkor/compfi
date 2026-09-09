@@ -197,8 +197,11 @@ Product detail uses a separate measured geometry layer. The reference's exact
 `--product-detail-breadcrumb-height` 97 CSS px basis. The desktop lead frame is
 423×500px, thumbnail frames are 76×80px, the thumbnail gap is 32px, the
 summary columns are separated by 106px, and the information media grid uses
-605×348px frames with a 29px gap. These purpose-named product tokens preserve
-reference evidence without expanding the global spacing scale.
+605×348px frames with a 29px gap. `--product-detail-summary-padding-top`,
+`--product-detail-gallery-gap`, `--product-detail-information-media-gap`, and
+`--product-detail-information-media-ratio` join the previously named size
+roles. These purpose-named product tokens preserve reference evidence without
+expanding the global spacing scale.
 
 Future comparison tables may scroll horizontally within a named region rather
 than compressing unreadably. Cart tables become labeled stacked rows on mobile.

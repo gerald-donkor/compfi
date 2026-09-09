@@ -83,6 +83,8 @@ describe("Compfi chrome", () => {
           { label: "Atlas Bed" },
         ]}
         aria-label="Product path"
+        data-slot="caller-slot"
+        data-variant="banner"
       />
     )
 
@@ -91,6 +93,7 @@ describe("Compfi chrome", () => {
     expect(screen.getByRole("link", { name: "Shop" })).toHaveAttribute("href", "/shop")
     expect(screen.getByText("Atlas Bed")).toHaveAttribute("aria-current", "page")
     expect(container.firstElementChild).toHaveAttribute("data-variant", "compact-breadcrumb")
+    expect(container.firstElementChild).toHaveAttribute("data-slot", "page-hero")
     expect(container.firstElementChild).toHaveAttribute("aria-label", "Product path")
     expect(await checkA11y(container)).toEqual([])
   })

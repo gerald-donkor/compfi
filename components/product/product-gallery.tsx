@@ -22,9 +22,20 @@ export function ProductGallery({
   "aria-label": ariaLabel = "Product gallery",
   ...props
 }: ProductGalleryProps) {
-  const [selectedPath, setSelectedPath] = React.useState(media[0]?.path)
-  const [announcement, setAnnouncement] = React.useState("")
-  const selectedFromState = media.find((item) => item.path === selectedPath)
+  const mediaKey = media[0]?.path
+  const [selection, setSelection] = React.useState({
+    mediaKey,
+    selectedPath: mediaKey,
+    announcement: "",
+  })
+
+  if (selection.mediaKey !== mediaKey) {
+    setSelection({ mediaKey, selectedPath: mediaKey, announcement: "" })
+  }
+
+  const selectedFromState = selection.mediaKey === mediaKey
+    ? media.find((item) => item.path === selection.selectedPath)
+    : undefined
   const selected = selectedFromState ?? media[0]
 
   if (!selected) {
@@ -32,6 +43,7 @@ export function ProductGallery({
       <section
         {...props}
         className={cn("product-detail-gallery", className)}
+        aria-label={ariaLabel}
         data-slot="product-gallery"
         data-empty="true"
       >
@@ -47,8 +59,11 @@ export function ProductGallery({
 
   function selectMedia(item: ProductMedia) {
     if (item.path === selected.path) return
-    setSelectedPath(item.path)
-    setAnnouncement(`Showing ${item.alt}`)
+    setSelection({
+      mediaKey,
+      selectedPath: item.path,
+      announcement: `Showing ${item.alt}`,
+    })
   }
 
   return (
@@ -93,7 +108,7 @@ export function ProductGallery({
         ))}
       </div>
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
-        {selectedFromState ? announcement : ""}
+        {selectedFromState ? selection.announcement : ""}
       </p>
     </section>
   )

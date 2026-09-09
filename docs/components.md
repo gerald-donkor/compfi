@@ -63,8 +63,9 @@ This document owns the public component contracts, APIs, states, and accessibili
 - **`ProductGallery`**: Focused client leaf accepting readonly media. It shows
   one responsive lead image and native thumbnail buttons with `aria-pressed`;
   a user selection updates the lead and one polite status. Empty input renders
-  a useful `Empty` state. Native section props and accessible naming remain
-  customizable.
+  a useful `Empty` state. A changed lead-media identity resets selection and
+  clears announcements, including when returning to an earlier product. Native
+  section props and accessible naming remain customizable in every state.
 - **`ProductOptions`**: Focused client leaf composing the certified size,
   finish, and quantity controls. Optional groups render only when data exists.
   Quantity is bounded 1–10. Add-to-cart and comparison remain truthfully
@@ -77,8 +78,11 @@ This document owns the public component contracts, APIs, states, and accessibili
   and rendering to `ProductGrid`, followed by a real `/shop` link.
 - **Tabs primitive**: `Tabs`, `TabsList`, `TabsTrigger`, and `TabsContent` are
   certified for this route against the installed Base UI/shadcn contract.
-  Roving focus and automatic activation are primitive-owned; inactive labels
-  use the accessible muted token and transitions are color-only.
+  Each exports its named `Props` contract and protects its stable slot while
+  forwarding native/Base UI props. Orientation is passed to Base UI, whose
+  roving focus and manual Enter/Space activation are primitive-owned; its
+  disabled tabs remain focusable with `aria-disabled` but cannot activate.
+  Inactive labels use the accessible muted token and transitions are color-only.
 
 ### Certified Phase 2 Components
 The following components have been fully audited, styled to Compfi's measured design tokens, verified for accessibility (WCAG 2.2 AA floor), and tested in automated JSDOM suites and real-browser rendering:

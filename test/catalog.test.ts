@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs"
 import { resolve } from "node:path"
 import { describe, expect, it } from "vitest"
 import {
+  assertCatalogProduct,
   catalogProducts,
   getCatalogProductBySlug,
   getCatalogProductsByCategory,
@@ -86,8 +87,33 @@ describe("catalog fixtures", () => {
     expect(related[0].id).not.toBe(product.id)
     expect(new Set(related.map(({ id }) => id)).size).toBe(related.length)
     expect(getRelatedCatalogProducts(product, -1)).toEqual([])
+    expect(getRelatedCatalogProducts(product, 0)).toEqual([])
+    expect(getRelatedCatalogProducts(product, 1.5)).toEqual([])
     expect(getRelatedCatalogProducts(product, Number.NaN)).toEqual([])
     expect(getRelatedCatalogProducts(product, 99)).toHaveLength(7)
+  })
+
+  it("rejects malformed detail media and option defaults", () => {
+    const product = catalogProducts[0]
+
+    expect(() => assertCatalogProduct({
+      ...product,
+      gallery: [product.gallery[0], product.gallery[0], product.gallery[2]],
+    })).toThrow("invalid gallery metadata")
+
+    expect(() => assertCatalogProduct({
+      ...product,
+      gallery: [
+        { ...product.gallery[0], width: product.gallery[0].width + 1 },
+        product.gallery[1],
+        product.gallery[2],
+      ],
+    })).toThrow("lead media must match")
+
+    expect(() => assertCatalogProduct({
+      ...product,
+      defaultFinish: "not-an-option",
+    })).toThrow("valid default finish")
   })
 
   it("looks up known slugs without throwing for absent products", () => {

@@ -33,6 +33,7 @@ export function PageHero({
 }: PageHeroProps) {
   return (
     <section
+      {...props}
       className={cn(
         "surface-wash flex items-center",
         variant === "banner"
@@ -42,7 +43,6 @@ export function PageHero({
       )}
       data-slot="page-hero"
       data-variant={variant}
-      {...props}
     >
       <Container
         className={cn(

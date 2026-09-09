@@ -27,6 +27,17 @@ preview. No stock, delivery, review, rating, warranty, cart, comparison store,
 or transient success claim was introduced. Information tabs expose only
 catalog-backed description, ID, category, and configured choices.
 
+The first browser run identified the selected lead as the route's LCP image and
+Next emitted its specific above-fold eager-loading warning. That observed LCP
+evidence supports `loading="eager"` plus high fetch priority on the selected
+lead only; thumbnails, information media, and related products remain lazy.
+Card navigation also reproduced Next 16's smooth-scroll transition warning.
+The documented framework fix, `data-scroll-behavior="smooth"` on the root HTML
+element, is the narrowly authorized root-layout exception: it lets Next
+temporarily use automatic scrolling between routes while the existing global
+smooth-scroll preference remains intact. A subsequent named-browser navigation
+run verified the marker and no new application error.
+
 Desktop retains the reference's image-led side-by-side summary. At 1024px the
 same hierarchy remains compact; below 800px the gallery and summary stack, the
 thumbnail rail becomes horizontal, information media stacks at mobile, and
@@ -44,8 +55,8 @@ Verification on 2026-09-09:
 
 | check | result |
 | --- | --- |
-| focused product-detail tests | passed: 4 files, 20 tests; catalog integrity, related order, PageHero contract, gallery state/announcement/empty state, options, tabs, route states, USD, and axe coverage |
-| `npm run test` | passed: 17 files, 77 tests |
+| focused product-detail tests | passed after review fixes: 5 files, 27 tests; malformed catalog rejection, related edges, PageHero owned state, gallery reset/announcement/empty naming, Tabs contracts and complete keyboard modes, options present/absent and bounds, all eight route states, USD, and axe coverage |
+| `npm run test` | passed after review fixes: 18 files, 84 tests |
 | `npm run lint` | passed |
 | `npx tsc --noEmit` | passed |
 | `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind its internal port (`Operation not permitted`) |
@@ -57,8 +68,28 @@ Verification on 2026-09-09:
 | screenshots | inspected `/tmp/compfi-product-detail-{1440,1024,768,390,320}.png`; hierarchy and responsive stacking matched the recorded decisions; `/tmp/compfi-product-detail-contact-sheet.webp` records all 16 selected generated images |
 | Web Interface Guidelines | fresh official rules reviewed; inactive tab contrast and an invalid naming target were found in-browser, corrected, and re-audited with no unresolved issue |
 
-The implementation commit and independent-review outcomes are appended after
-those workflow stages complete.
+The implementation commit is `8a4540f`. Initial independent review reported
+four documented Standards violations and one heuristic smell; its worst issue
+was caller-overridable stable component state. The stable PageHero/Tabs slots,
+named Tabs prop exports, empty-gallery naming, and purpose-named geometry tokens
+were accepted and fixed. The possible catalog data-clump smell was resolved at
+the contract boundary with complete lead/gallery equality checks; adding a
+fixture factory solely to shorten eight static records was rejected as weaker
+locality and speculative generality.
+
+The independent Spec review reported five findings; its worst issue was gallery
+selection and live-region state surviving a product round trip. The reset bug,
+empty native prop, and missing automated matrix were accepted and fixed. The
+lead-priority finding identified missing documentation rather than an invalid
+implementation, so the observed LCP warning is now recorded above. The root
+layout scope finding was rejected: the approved prompt explicitly permits a
+verified, documented, tested in-scope defect, and Next's warning plus the
+post-fix named-browser route transition establish that exception. Complete
+re-review results from the original base follow after the fix commit. After the
+fixes, focused tests passed 5 files / 27 tests, the full suite passed 18 files /
+84 tests, lint and TypeScript passed, the default build repeated only the known
+restricted Turbopack worker-port failure, and the webpack build compiled,
+type-checked, and prerendered all eight slugs.
 
 ## Home inspiration and editorial completion
 

@@ -681,3 +681,19 @@ contact sheet is `/tmp/compfi-product-detail-contact-sheet.webp`.
 
 Implementation commit and independent two-axis review evidence are recorded in
 `docs/pages.md` after those workflow stages complete.
+
+Initial review of `f45c1e9c...8a4540f` reported four documented Standards
+violations plus one heuristic smell, and five Spec findings. Accepted fixes
+protect PageHero/Tabs slots, export the Tabs prop contracts, pass orientation
+to Base UI, reset gallery state across product identity changes, preserve empty
+gallery naming, promote measured geometry to product tokens, strengthen full
+lead/gallery agreement, and expand the focused matrix to 5 files / 27 tests.
+The lead priority and root-layout marker were retained with their reproduced
+Next/LCP evidence documented in `docs/pages.md`. A separate fix commit and the
+required complete re-review from the original base follow. Post-fix checks
+passed: focused 5 files / 27 tests, complete 18 files / 84 tests, lint,
+TypeScript, and webpack production build with all eight slugs prerendered; the
+default build repeated only the known sandbox worker-port limitation. The
+post-fix named-browser route transition produced no console or application
+errors, retained the root marker, and passed axe with 0 violations and 0
+incomplete results.

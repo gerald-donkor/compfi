@@ -12,6 +12,7 @@ import ProductPage, {
 import { ProductInformation } from "@/components/product/product-information"
 import { ProductOptions } from "@/components/product/product-options"
 import { catalogProducts } from "@/lib/catalog"
+import { formatMoney } from "@/lib/money"
 import { checkA11y } from "./a11y"
 
 vi.mock("next/navigation", () => ({
@@ -38,6 +39,32 @@ describe("product detail route", () => {
     expect(screen.getByText("$1,599.00")).toBeInTheDocument()
     expect(screen.queryByText(/\breviews?\b|\brating\b|\bstock\b|\bwarranty\b/i)).not.toBeInTheDocument()
     expect(screen.getAllByRole("link", { name: "Morrow Dining Table" })[0]).toHaveAttribute("href", "/shop/morrow-dining-table")
+  })
+
+  it("renders every slug with unique metadata and catalog-backed content", async () => {
+    const titles = new Set<string>()
+
+    for (const product of catalogProducts) {
+      const metadata = await generateMetadata({
+        params: Promise.resolve({ slug: product.slug }),
+      })
+      titles.add(String(metadata.title))
+
+      const page = await ProductPage({
+        params: Promise.resolve({ slug: product.slug }),
+      })
+      const rendered = render(page)
+      expect(screen.getByRole("main")).toHaveAttribute("id", "main-content")
+      expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1)
+      expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(product.name)
+      expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/")
+      expect(screen.getByRole("link", { name: "Shop" })).toHaveAttribute("href", "/shop")
+      expect(screen.getByText(formatMoney(product.priceCents))).toBeInTheDocument()
+      expect(screen.getByText(product.detailDescription)).toBeInTheDocument()
+      rendered.unmount()
+    }
+
+    expect(titles.size).toBe(catalogProducts.length)
   })
 
   it("does not swallow the not-found interrupt", async () => {
@@ -78,10 +105,24 @@ describe("product detail interactions", () => {
     expect(screen.getByRole("button", { name: "King" })).toHaveAttribute("data-pressed", "")
     expect(screen.getByRole("button", { name: "Warm sand" })).toHaveAttribute("data-pressed", "")
     expect(screen.getByRole("spinbutton", { name: "Quantity" })).toHaveValue(2)
+    await user.clear(screen.getByRole("spinbutton", { name: "Quantity" }))
+    await user.type(screen.getByRole("spinbutton", { name: "Quantity" }), "20{Enter}")
+    expect(screen.getByRole("spinbutton", { name: "Quantity" })).toHaveValue(10)
+    expect(screen.getByRole("button", { name: "Increase quantity" })).toBeDisabled()
     expect(screen.getByRole("button", { name: "Add to cart" })).toBeDisabled()
     expect(screen.getByRole("button", { name: "Compare" })).toBeDisabled()
     expect(screen.getByText("Online ordering and comparison are not available in this preview.")).toBeVisible()
     expect(await checkA11y(container)).toEqual([])
+  })
+
+  it("omits unavailable option groups without removing quantity or actions", () => {
+    render(<ProductOptions />)
+
+    expect(screen.queryByText("Size")).not.toBeInTheDocument()
+    expect(screen.queryByText("Finish")).not.toBeInTheDocument()
+    expect(screen.getByRole("spinbutton", { name: "Quantity" })).toHaveValue(1)
+    expect(screen.getByRole("button", { name: "Decrease quantity" })).toBeDisabled()
+    expect(screen.getByRole("button", { name: "Add to cart" })).toBeDisabled()
   })
 
   it("uses Base UI tab relationships and keyboard selection", async () => {
@@ -95,6 +136,10 @@ describe("product detail interactions", () => {
     expect(details).toHaveAttribute("aria-selected", "true")
     expect(screen.getByRole("tabpanel")).toHaveTextContent("Product ID")
     await user.keyboard("{Home}")
+    expect(description).toHaveFocus()
+    await user.keyboard("{End}")
+    expect(details).toHaveFocus()
+    await user.keyboard("{ArrowLeft}")
     expect(description).toHaveFocus()
     expect(await checkA11y(container)).toEqual([])
   })

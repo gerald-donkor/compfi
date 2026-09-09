@@ -2,7 +2,7 @@ import type { CatalogProduct, ProductCategory } from "@/types/commerce"
 
 const productCategories = new Set<ProductCategory>(["dining", "living", "bedroom"])
 
-function assertCatalogProduct(product: CatalogProduct): void {
+export function assertCatalogProduct(product: CatalogProduct): void {
   if (
     !product.id ||
     !product.slug ||
@@ -71,7 +71,13 @@ function assertCatalogProduct(product: CatalogProduct): void {
     mediaAlts.add(alt.toLocaleLowerCase("en-US"))
   }
 
-  if (product.gallery[0].path !== product.media.path) {
+  if (
+    product.gallery[0].path !== product.media.path ||
+    product.gallery[0].alt !== product.media.alt ||
+    product.gallery[0].width !== product.media.width ||
+    product.gallery[0].height !== product.media.height ||
+    product.gallery[0].focalPosition !== product.media.focalPosition
+  ) {
     throw new Error(`Catalog product ${product.id} lead media must match its first gallery view`)
   }
 
