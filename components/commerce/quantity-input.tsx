@@ -154,7 +154,7 @@ export function QuantityInput({
         onChange={handleInputChange}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        className="h-11 w-12 text-center text-sm font-medium tabular-nums text-foreground bg-transparent border-0 outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="h-11 w-12 text-center text-sm font-medium tabular-nums text-foreground bg-transparent border-0 outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       />
 
       <button

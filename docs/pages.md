@@ -105,6 +105,16 @@ plus `AGENTS.md` §§1.1, 1.2, 2.1–2.4, 3.1–3.4, 6–7, 9, 10, 12–13 and o
     WCAG 2.2 AA floor and prompt's 0-violation acceptance criterion.
 - Fix verification: All 26 test files passed (131 tests), 0 lint errors, 0 TypeScript
   errors, and clean Turbopack production build (19/19 pages prerendered).
+- Re-review pass: Standards subagent reported 0 hard violations. Spec subagent
+  noted count announcement on filter settle, timeout token alignment, and input focus offset.
+  Accepted and refined:
+  - `ShopControls`: Added `aria-hidden="true"` to visible count and restored settled
+    count announcement to the live region, ensuring filter updates are announced
+    without duplicate reading when scanning.
+  - `ProductOptions`: Aligned busy guard timeout to 220ms (`--duration-standard`);
+    renamed `nextVal` to `nextValue`.
+  - `QuantityInput`: Standardized `<input>` focus ring offset to 3px (`focus-visible:ring-offset-3`).
+- Final verification: 26 test files (131 tests) passing, 0 lint errors, 0 TypeScript errors.
 - Status: Phase 7 is fully completed and review-closed.
 
 ## Phase 7 unit 1 — interaction polish (overlay, drawer, motion)

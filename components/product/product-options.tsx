@@ -53,15 +53,15 @@ export function ProductOptions({
 
   const handleOptionChange = (
     kind: "size" | "finish",
-    nextVal: string,
+    nextValue: string,
     options: readonly { value: string; label: string }[] | undefined
   ) => {
     if (kind === "size") {
-      setSize(nextVal)
+      setSize(nextValue)
     } else {
-      setFinish(nextVal)
+      setFinish(nextValue)
     }
-    const opt = options?.find((item) => item.value === nextVal)
+    const opt = options?.find((item) => item.value === nextValue)
     if (opt) {
       setAnnouncement(`Selected ${kind} ${opt.label}`)
     }
@@ -79,7 +79,7 @@ export function ProductOptions({
     busyTimerRef.current = window.setTimeout(() => {
       setIsBusy(false)
       busyTimerRef.current = null
-    }, 300)
+    }, 220)
   }
 
   return (

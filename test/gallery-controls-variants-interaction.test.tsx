@@ -164,9 +164,8 @@ describe("Gallery, controls, variants, and pagination interaction contracts", ()
     }
     const { container } = render(<ShopControls options={viewOptions} totalCount={8} />)
 
-    expect(container.querySelector(".shop-controls__count")).toHaveTextContent("8 products")
-    // Settled status clears so virtual cursor does not announce duplicate count
-    expect(screen.getByRole("status")).toHaveTextContent("")
+    expect(container.querySelector(".shop-controls__count")).toHaveAttribute("aria-hidden", "true")
+    expect(screen.getByRole("status")).toHaveTextContent("8 products")
 
     const gridBtn = screen.getByRole("button", { name: "Grid view" })
     const listBtn = screen.getByRole("button", { name: "List view" })
