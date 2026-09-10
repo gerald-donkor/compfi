@@ -2,7 +2,8 @@
 
 Status: Phase 6 complete and review-closed. Phase 7 unit 1 (product-card
 overlay, cart-drawer modal, motion consistency) implemented, verified, and
-pending independent review. Phase 7 is not complete.
+independently review-closed (see review record below). Phase 7 is not
+complete; later interaction units remain open.
 
 ## Phase 7 unit 1 — interaction polish (overlay, drawer, motion)
 
@@ -21,11 +22,15 @@ Decisions: the overlay keeps its reference dark-wash design but renders at
 every width (`display:flex` with opacity/visibility, `pointer-events:none`
 until revealed) and reveals on hover **and** `:focus-within`; image and title
 links keep the product name to the same `/shop/[slug]` while the overlay
-action is named `View {name}`, so keyboard users get one clear destination
-with a documented naming decision and touch users keep the image/title path
-with no hover gate. The title link is `inline-flex` with a 44px minimum
-height. The drawer reuses the certified `Sheet` primitive (dialog labelled
-`Your cart`, trap, Escape/backdrop dismissal, scroll lock, focus return);
+action carries the visible label plus the product name (`View product:
+{name}` via a screen-reader suffix, so the accessible name contains the
+visible label per WCAG 2.5.3), giving keyboard users one clear destination
+with a documented naming decision and touch users the image/title path
+with no hover gate. Full component contracts live in `docs/components.md`;
+this record keeps only scope, deltas, and verification. The title link is
+`inline-flex` with a 44px minimum height. The drawer reuses the certified
+`Sheet` primitive (dialog labelled `Your cart`, trap, Escape/backdrop
+dismissal, scroll lock, focus return);
 removal announces once through the provider's polite live region, and removing
 the last line moves focus to the `Browse furniture` recovery link. The
 empty-state solid action keeps white label text in its own span so the gold
@@ -46,20 +51,46 @@ session, dev server on :3000):
 | check | result |
 | --- | --- |
 | focused interaction tests | passed: 2 files, 9 tests (card destination naming, badge/discount edges, token/reduced-motion/44px CSS contract, drawer Escape/focus-return, rapid open/close, last-line removal announcement + recovery focus, single-removal announcement, axe) |
-| `npm run test` | passed: 25 files, 121 tests |
+| `npm run test` | passed: 25 files, 123 tests |
 | `npm run lint` | passed |
 | `npx tsc --noEmit` | passed |
 | `npm run build` | passed; all routes prerender as before |
-| keyboard flow | focusing the first `/shop` card image link revealed the overlay (`visibility: visible`, opacity transitioning) and Enter navigated to `/shop/alder-dining-chair` |
-| drawer flow | dialog `Your cart` opened with focus inside, Tab cycled within the dialog, body scroll locked while open, Escape closed, focus returned to the `Open cart` trigger after the close transition |
+| keyboard flow | focusing the first `/shop` card image link revealed the overlay (`visibility: visible`, opacity 1, `pointer-events: auto`) and the overlay link reads `View product: Alder Dining Chair`; Enter navigates to `/shop/alder-dining-chair` |
+| drawer flow | dialog `Your cart` opened with focus inside, Tab cycled within the dialog, body scroll locked (`overflow: hidden`) while open, Escape closed after the transition, focus returned to the `Open cart` trigger |
 | removal flow | removing the last drawer line announced `Alder Dining Chair removed from cart.` politely and moved focus to `Browse furniture` |
 | responsive | `/shop` showed `scrollWidth === clientWidth` at 1440, 1024, 768, 390, and 320px; drawer measured 550px at 1440px and 358px (390 minus 16px insets) at 390px with no page overflow |
 | reduced motion | emulated `prefers-reduced-motion: reduce` collapsed overlay/drawer transitions (computed `1e-05s`) with the overlay instantly visible and usable on focus |
 | axe | `/shop` 0 violations/0 incomplete; open drawer 0 violations after the empty-state contrast fix (axe mid-transition reads were re-taken at rest; `aria-hidden-focus` remains an expected modal-inert incomplete manually verified via the focus trap) |
 | console | dev HMR/React-DevTools messages plus the pre-existing Next LCP image hint only; no page errors |
 | screenshots | `/tmp/compfi-interaction-{1440,1024,768,390,320}.png` plus `/tmp/compfi-interaction-drawer-{1440,390}.png` |
+| review-fix re-verification | named `compfi-interaction-review-9f3a2c` session confirmed the corrected overlay name (`View product: Alder Dining Chair`), focus-within reveal (`visibility: visible`, opacity 1), no overflow at all five widths, drawer trap/scroll-lock/Escape/focus-return, reduced-motion `1e-05s`, and `web-design-guidelines` pass on `components/commerce/product-card.tsx` |
 
-Independent two-axis review is pending; Phase 7 remains open.
+### Independent review (2026-09-10)
+
+Review base `620a96b36420d539483087dddf4a4eaca195c9a6...HEAD` covered
+`f064ad4` and `2219c81` against `prompts/20-polish-card-overlay-drawer-motion.md`
+plus `AGENTS.md` §§2.4, 3.2–3.4, 6–7, 9, 12–13 and the owning docs.
+
+- Standards: 2 findings. Worst (hard): overlay `aria-label="View {name}"`
+  did not contain the visible `View product` text (WCAG 2.5.3 Label in Name).
+  Accepted and fixed by rendering `View product` plus a screen-reader
+  `: {name}` suffix with no `aria-label` override. Second (hard, docs):
+  `docs/pages.md` restated the component contract owned by
+  `docs/components.md`; accepted as a docs pointer fix in this closure.
+- Spec: 7 findings (3-stop tab path, touch overlay gating, busy guard,
+  count/subtotal politeness, axe automation coverage, contrast-wrapper scope,
+  visibility-easing mechanics). All rejected with evidence: the spec permits a
+  documented naming decision for the shared destination; touch users keep the
+  image/title path to the same destination; removal is synchronous so no
+  busy guard applies; removal is politely announced with count/subtotal
+  perceivable in the DOM; `/` and open-drawer axe were covered by the named
+  browser run; the contrast span fixed a verified axe defect; the visibility
+  easing keyword is harmless discrete-property mechanics.
+- Fix verification: focused 2-file/9-test interaction suite, full 25-file
+  suite, lint, TypeScript, and production build pass after the fix. The fix
+  touches only the card leaf's accessible name (no public API, primitive,
+  data-flow, or security change), so no second full two-axis re-review was
+  required. Unit 1 is review-closed; Phase 7 remains open.
 
 ## Blog (`/blog`)
 
@@ -518,7 +549,7 @@ lower-page completion is recorded above.
 - The 1440px hierarchy uses a right-side cream campaign panel, three tall room crops, and four product columns. At 1024px, the campaign remains image-led, rooms and products use three columns. At 768px rooms and products use two columns and the panel becomes normal-flow content; at 390px and 320px rooms and products each use one column.
 - The campaign image is decorative because its adjacent HTML copy carries the message. Room images have contextual alt text; product images retain the fixture alt unchanged.
 - The only preloaded image is the campaign hero. Room and catalog images use local paths, intrinsic dimensions, accurate responsive `sizes`, and default lazy loading.
-- Product actions are navigation only: image/name links are always available; the overlay is a redundant `View product` link (named `View {name}`) revealed by hover or `focus-within` at every width. An inset media focus ring remains visible when the image link triggers the overlay. No cart, comparison, favorite, stock, rating, review, or purchase control was added.
+- Product actions are navigation only: image/name links are always available; the overlay is a redundant `View product: {name}` link (visible `View product` plus a screen-reader product-name suffix) revealed by hover or `focus-within` at every width. An inset media focus ring remains visible when the image link triggers the overlay. No cart, comparison, favorite, stock, rating, review, or purchase control was added.
 
 ### Reference deltas
 
