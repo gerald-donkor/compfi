@@ -54,6 +54,16 @@ describe("ProductCard overlay interaction contract", () => {
     expect(overlayRule).toContain("var(--ease-standard)")
     expect(globalsCss).toContain(".product-card:focus-within .product-card__overlay")
     expect(globalsCss).toContain("prefers-reduced-motion: reduce")
+
+    const overlayLinkStart = globalsCss.indexOf(".product-card__overlay-link {")
+    const overlayLinkRule =
+      overlayLinkStart === -1 ? "" : globalsCss.slice(overlayLinkStart, overlayLinkStart + 500)
+    expect(overlayLinkRule).toContain("var(--control-min)")
+
+    const titleLinkStart = globalsCss.indexOf(".product-card__title-link {")
+    const titleLinkRule =
+      titleLinkStart === -1 ? "" : globalsCss.slice(titleLinkStart, titleLinkStart + 400)
+    expect(titleLinkRule).toContain("var(--control-min)")
   })
 
   it("has no axe violations for a representative card", async () => {

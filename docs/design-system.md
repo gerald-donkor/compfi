@@ -318,10 +318,13 @@ an established primitive in the component phase.
   reuses `--duration-fast`/`--ease-standard` over opacity/visibility (never
   `display:none`, never `transition: all`), the drawer open/close reuses
   `--duration-standard`/`--ease-standard` through the certified `Sheet`, and
-  the title-link 44px target reuses `--control-min`. The empty-drawer solid
-  action keeps white label text so the certified `--color-brand-action` fill
-  keeps AA contrast; this is a cascade correction in the drawer markup, not a
-  new token.
+  the overlay/title 44px targets reuse `--control-min`. Because discrete
+  visibility flips mid-duration, hiding defers its zero-duration flip by
+  `--duration-fast` so the fade-out completes while showing flips
+  immediately; the zero duration is flip mechanics, not a motion value. The
+  empty-drawer solid action keeps white label text so the certified
+  `--color-brand-action` fill keeps AA contrast; this is a cascade correction
+  in the drawer markup, not a new token.
 
 ## Shared chrome tokens
 

@@ -67,6 +67,44 @@ describe("CartDrawer modal interaction contract", () => {
     )
   })
 
+  it("tolerates rapid open/close without a stuck trap or lost focus return", async () => {
+    const user = userEvent.setup()
+    render(
+      <CartProvider>
+        <CartDrawer />
+      </CartProvider>
+    )
+
+    const trigger = screen.getByRole("button", { name: "Open cart" })
+    await user.click(trigger)
+    expect(await screen.findByRole("dialog")).toBeInTheDocument()
+    await user.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+
+    await user.click(trigger)
+    expect(await screen.findByRole("dialog")).toBeInTheDocument()
+    await user.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+    expect(trigger).toHaveFocus()
+  })
+
+  it("announces a single removal without duplicating the live message", async () => {
+    const user = userEvent.setup()
+    renderDrawerWithSeededCart()
+
+    await user.click(screen.getByRole("button", { name: "Add to cart" }))
+    await user.click(screen.getByRole("button", { name: "Open cart, 1 items" }))
+    expect(await screen.findByRole("dialog")).toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: `Remove ${atlas.name}` }))
+    await waitFor(() => expect(screen.getByText("Your cart is empty")).toBeInTheDocument())
+
+    expect(screen.queryByRole("button", { name: `Remove ${atlas.name}` })).not.toBeInTheDocument()
+    const liveRegion = document.body.querySelector('[aria-live="polite"]')
+    expect(liveRegion?.textContent).toMatch(/removed from cart/i)
+    expect(liveRegion?.textContent).not.toMatch(/removed from cart.*removed from cart/i)
+  })
+
   it("keeps dialog semantics and focus treatment accessible", async () => {
     const { container } = render(
       <CartProvider>

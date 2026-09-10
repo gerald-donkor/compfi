@@ -1380,9 +1380,11 @@ textarea {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  /* Discrete visibility flips at 50% of its duration, so hiding defers the
+     zero-duration flip by the fade length while showing flips immediately. */
   transition:
     opacity var(--duration-fast) var(--ease-standard),
-    visibility var(--duration-fast) var(--ease-standard);
+    visibility 0s var(--ease-standard) var(--duration-fast);
 }
 
 .product-card:focus-within .product-card__overlay,
@@ -1390,6 +1392,9 @@ textarea {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    visibility 0s;
 }
 
 .product-card__overlay-link {

@@ -45,7 +45,7 @@ session, dev server on :3000):
 
 | check | result |
 | --- | --- |
-| focused interaction tests | passed: 2 files, 7 tests (card destination naming, badge/discount edges, token/reduced-motion CSS contract, drawer Escape/focus-return, last-line removal announcement + recovery focus, axe) |
+| focused interaction tests | passed: 2 files, 9 tests (card destination naming, badge/discount edges, token/reduced-motion/44px CSS contract, drawer Escape/focus-return, rapid open/close, last-line removal announcement + recovery focus, single-removal announcement, axe) |
 | `npm run test` | passed: 25 files, 121 tests |
 | `npm run lint` | passed |
 | `npx tsc --noEmit` | passed |
