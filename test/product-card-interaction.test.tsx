@@ -21,9 +21,10 @@ describe("ProductCard overlay interaction contract", () => {
       expect(link).toHaveAttribute("href", detailHref)
     }
 
-    const overlayLink = screen.getByRole("link", { name: `View ${product.name}` })
+    const overlayLink = screen.getByRole("link", { name: `View product: ${product.name}` })
     expect(overlayLink).toHaveAttribute("href", detailHref)
     expect(overlayLink).toHaveTextContent("View product")
+    expect(overlayLink.textContent).toContain(product.name)
 
     const destinations = new Set(
       screen.getAllByRole("link").map((link) => link.getAttribute("href"))

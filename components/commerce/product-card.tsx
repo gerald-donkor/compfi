@@ -52,12 +52,8 @@ export function ProductCard({ product, className, ...props }: ProductCardProps) 
           </Badge>
         ) : null}
         <div className="product-card__overlay">
-          <Link
-            href={detailHref}
-            aria-label={`View ${product.name}`}
-            className="product-card__overlay-link"
-          >
-            View product
+          <Link href={detailHref} className="product-card__overlay-link">
+            View product<span className="sr-only">: {product.name}</span>
           </Link>
         </div>
       </div>
