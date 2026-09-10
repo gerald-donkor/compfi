@@ -1,8 +1,39 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 5 cart and checkout components implemented, verified, and independently reviewed.
+Status: Phase 6 contact page implemented and self-verified; independent review pending. Phase 5 cart and checkout components remain verified and review-closed.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
+
+## Phase 6 Contact blocks
+
+- **`ContactContent`**: Server-safe block composing the static business-details
+  section and the focused client `ContactForm` inside the shared container. It
+  owns no state, provider, or side effect. The details portion carries one `h2`
+  with concise Compfi inquiry guidance stated honestly as a local preview; it
+  contains no address, phone, map, hours, social, policy, warranty, shipping,
+  or support claim. Real usage: `/contact`.
+- **`ContactForm`**: Focused client leaf (`components/contact/contact-form.tsx`)
+  owning only error/status state. It renders one native uncontrolled
+  `<form noValidate>` with `FieldSet`, `FieldLegend`, `FieldGroup`, certified
+  `Field`, `FieldLabel`, `Input`, `Textarea`, `FieldDescription`, and
+  `FieldError`, plus a `Check message` submit action and one polite atomic
+  status. Fields are name, email, and message with persistent labels, correct
+  `name`/`type`/`required`/`maxLength`/`inputMode`/autocomplete tokens, and the
+  `data-invalid`/`aria-invalid`/`aria-describedby` contract. A pure
+  `reviewContactDetails` utility (`lib/contact.ts`, React-free) validates
+  trimmed required values, a practical email shape, and explicit limits (name
+  80, email 254, message 2000) behind one exported immutable length map;
+  submission is local-only, prevents navigation, focuses a linked error
+  summary, clears edited field errors and stale success, leaves entered values
+  untouched, and announces `Message checked. It was not sent and no email was
+  delivered.` At 1440px the block uses the measured-pattern 454px/527px
+  columns; 1024px uses flexible columns, and 768px through 320px follows one
+  normal-flow column. No subject taxonomy, form action, Server Action, request,
+  persistence, email, ticket, or delivery state exists. Real usage: `/contact`.
+
+  No previously uncertified primitive required source changes for this unit;
+  Field/Input/Textarea/Button/Empty/Separator compositions were reused as
+  certified.
 
 ## Product comparison
 

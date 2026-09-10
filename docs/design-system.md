@@ -33,6 +33,29 @@ below they stack in DOM order. Name fields stack below 480px. Existing
 container gutters, control radius, border, focus, type, and color roles remain
 authoritative; no new checkout palette, shadow, or motion role was introduced.
 
+## Contact geometry
+
+The native Contact reference is 2880 × 4730. Fresh measurement on 2026-09-10
+reproduced the `2880×550+0+3100` benefit band: `#FAF3EA` 1,462,171 px, ink
+`#242424` 35,404 px, muted `#898989` 11,492 px, matching the record below. A
+`2880×700+0+200` hero crop holds white plus photographic tones, confirming
+unknown-provenance photography; production uses the approved tokenized
+`PageHero` wash, as on every other page. The body between hero and benefit
+band is a broad white field with thin control outlines, so production reuses
+the existing 10px control radius, accessible border/focus tokens, and 44px
+targets with no new palette, shadow, or motion role.
+
+The production roles are `--contact-content-padding-top` (111px),
+`--contact-content-padding-bottom` (120px), `--contact-details-width`
+(454px), `--contact-form-width` (527px), `--contact-column-gap` (145px), and
+the 318×64px contact-submit roles. They deliberately reuse the certified
+checkout rhythm as a production decision because the reference supplies no
+auditable column widths beyond the quiet two-column details/form hierarchy;
+they are not separate Contact measurements. Above 1200px they preserve that
+hierarchy inside the 1240px container. From 769px to 1199px flexible columns
+use the established 48px spacing step; at 768px and below details and form
+stack in logical DOM order within the standard container gutters.
+
 ## Reference scale and measurement confidence
 
 All nine supplied PNGs are 2880 pixels wide and contain no embedded scale or

@@ -1,6 +1,57 @@
 # Compfi page build record
 
-Status: Phase 5 cart and checkout presentation implemented, verified, and independently reviewed.
+Status: Phase 6 contact page implemented and self-verified; independent review pending. Phase 5 cart and checkout presentation remain verified and review-closed. Blog remains pending, so Phase 6 is not complete.
+
+## Contact (`/contact`)
+
+Implemented 2026-09-10 as the first Phase 6 content unit. The server route
+owns metadata (`Contact | Compfi`), the existing banner hero with Home /
+Contact breadcrumbs, one main landmark, the focused contact block, and the
+shared benefits strip. Direct load shows concise Compfi inquiry guidance and
+a blank name/email/message form with no delivery claim.
+
+The form review is synchronous and client-only. It prevents native
+submission, holds only error/status state, focuses a linked error summary,
+preserves typed values, clears stale field errors and success feedback on
+edit, and announces `Message checked. It was not sent and no email was
+delivered.` for valid synthetic input. It has no subject taxonomy, form
+action, server action, request, persistence, ticket, email, policy, or
+confirmation state.
+
+Fresh native measurement confirmed the 2880 × 4730 reference, reproduced the
+`2880×550+0+3100` benefit band (`#FAF3EA` 1,462,171 px, `#242424` 35,404 px,
+`#898989` 11,492 px), and confirmed unknown-provenance hero photography, so
+production uses the tokenized hero wash. The 1440px implementation preserves
+the quiet two-column details/form hierarchy inside the 1240px container;
+1024px uses flexible columns, while 768px, 390px, and 320px use logical
+one-column flow.
+
+Reference deltas are deliberate: the send action becomes a `Check message`
+non-transactional review with honest preview copy; the reference subject
+taxonomy is omitted rather than invented; template address/phone/hours/map
+facts are omitted, not relabeled; tablet/mobile structure, validation, focus
+recovery, privacy limits, and reduced motion are implementation decisions not
+proven by the desktop screenshot.
+
+### Verification
+
+Self-verification on 2026-09-10:
+
+| check | result |
+| --- | --- |
+| focused contact tests | passed: 1 file, 5 tests (pure validation, bounds, blank/invalid email, presentation, review flow, retained values, stale-success clearing, axe) |
+| `npm run test` | passed: 22 files, 106 tests |
+| `npm run lint` | passed |
+| `npx tsc --noEmit` | passed |
+| `npm run build` | passed with the default Turbopack pipeline; `/contact` prerendered as static content |
+| browser customer flow | named `compfi-contact-8dbc2e39d5ed` session passed direct load, empty-submit summary/errors/focus, per-field `aria-invalid`/`aria-describedby`, error clearing on edit, valid review with exact announcement, retained inputs, unchanged URL, no POST, and stale-success clearing |
+| responsive screenshots | inspected `/tmp/compfi-contact-{1440,1024,768,390,320}.png`; all five widths matched the recorded layout decisions with `scrollWidth === clientWidth` |
+| reduced motion and accessibility | reduced-motion emulation matched with `scroll-behavior: auto` and collapsed transitions; axe audit reported 0 violations/0 incomplete/43 passes; console showed only dev HMR/React-DevTools messages |
+| zoom/reflow | contact layout stayed in-bounds at 200% root text; the remaining document overflow at 200% comes from pre-existing global header chrome and is out of scope for this unit |
+| keyboard | skip link first, logical DOM order through fields and review action, visible focus treatment |
+| Web Interface Guidelines | fresh rules reviewed against all changed UI files; placeholder ellipsis and long-word wrapping findings were corrected and re-verified |
+
+Independent two-axis review is pending; blog (`/blog`) is explicitly out of scope.
 
 ## Product comparison (`/comparison`)
 

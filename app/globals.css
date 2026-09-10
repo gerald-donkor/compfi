@@ -187,6 +187,14 @@
   --checkout-control-height: 4.6875rem;
   --checkout-submit-width: 19.875rem;
   --checkout-submit-height: 4rem;
+  /* Contact presentation geometry */
+  --contact-content-padding-top: 6.9375rem;
+  --contact-content-padding-bottom: 7.5rem;
+  --contact-details-width: 28.375rem;
+  --contact-form-width: 32.9375rem;
+  --contact-column-gap: 9.0625rem;
+  --contact-submit-width: 19.875rem;
+  --contact-submit-height: 4rem;
   /* shadcn semantic role mappings to Compfi design tokens */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);
@@ -843,6 +851,90 @@ textarea {
   .checkout-summary-line,
   .checkout-summary-subtotal {
     gap: var(--space-3);
+  }
+}
+
+.contact-content {
+  padding-block: var(--contact-content-padding-top) var(--contact-content-padding-bottom);
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, var(--contact-details-width)) minmax(0, var(--contact-form-width));
+  justify-content: center;
+  gap: var(--contact-column-gap);
+  align-items: start;
+}
+
+.contact-details,
+.contact-form {
+  min-width: 0;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  overflow-wrap: anywhere;
+}
+
+.contact-details p {
+  margin: 0;
+}
+
+.contact-field-group {
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+}
+
+.contact-error-summary {
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  border: var(--border-thin) solid var(--color-discount);
+  color: var(--color-ink);
+}
+
+.contact-error-summary:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-brand-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.contact-error-summary a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-min);
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: var(--space-1);
+}
+
+.contact-submit {
+  width: min(100%, var(--contact-submit-width));
+  min-height: var(--contact-submit-height);
+  margin-top: var(--space-10);
+}
+
+@media (max-width: 74.999rem) {
+  .contact-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.9fr);
+    gap: var(--space-12);
+  }
+}
+
+@media (max-width: 48rem) {
+  .contact-content {
+    padding-block: var(--space-16);
+  }
+
+  .contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+}
+
+@media (max-width: 30rem) {
+  .contact-field-group {
+    gap: var(--space-6);
   }
 }
 
