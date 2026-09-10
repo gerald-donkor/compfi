@@ -25,12 +25,27 @@ describe("contact detail review", () => {
   })
 
   it("rejects trimmed blanks and an invalid email shape", () => {
-    const blankErrors = reviewContactDetails({ ...validDetails, name: "   ", message: "\t" })
+    const blankErrors = reviewContactDetails({
+      ...validDetails,
+      name: "   ",
+      email: "   ",
+      message: "\t",
+    })
     expect(blankErrors.name).toBe("Enter your name.")
+    expect(blankErrors.email).toBe("Enter your email address.")
     expect(blankErrors.message).toBe("Enter your message.")
 
     const emailErrors = reviewContactDetails({ ...validDetails, email: "avery@example" })
     expect(emailErrors.email).toBe("Enter a valid email address.")
+  })
+
+  it("handles missing or undefined field values defensively", () => {
+    const partialErrors = reviewContactDetails({
+      name: "Avery",
+    } as unknown as ContactDetails)
+    expect(partialErrors.name).toBeUndefined()
+    expect(partialErrors.email).toBe("Enter your email address.")
+    expect(partialErrors.message).toBe("Enter your message.")
   })
 
   it("enforces explicit upper bounds", () => {

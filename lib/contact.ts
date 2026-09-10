@@ -30,7 +30,7 @@ export function reviewContactDetails(details: ContactDetails): ContactErrors {
   const errors: Partial<Record<ContactFieldName, string>> = {}
 
   for (const fieldName of CONTACT_FIELD_NAMES) {
-    const value = details[fieldName].trim()
+    const value = (details[fieldName] ?? "").trim()
 
     if (!value) {
       errors[fieldName] = REQUIRED_MESSAGES[fieldName]
@@ -42,7 +42,7 @@ export function reviewContactDetails(details: ContactDetails): ContactErrors {
     }
   }
 
-  const email = details.email.trim()
+  const email = (details.email ?? "").trim()
   if (email && !errors.email && !EMAIL_PATTERN.test(email)) {
     errors.email = "Enter a valid email address."
   }

@@ -117,7 +117,7 @@ export function ContactForm() {
         </FieldDescription>
         {Object.keys(errors).length ? (
           <div ref={errorSummaryRef} tabIndex={-1} role="alert" className="contact-error-summary">
-            <h2 className="font-semibold">Check the highlighted fields</h2>
+            <h3 className="font-semibold">Check the highlighted fields</h3>
             <ul className="mt-2 list-disc pl-5">
               {CONTACT_FIELD_NAMES.flatMap((fieldName) =>
                 errors[fieldName]
@@ -136,6 +136,7 @@ export function ContactForm() {
         <FieldGroup className="contact-field-group">
           <ContactInputField
             name="name"
+            type="text"
             error={errors.name}
             required
             maxLength={CONTACT_MAX_LENGTHS.name}

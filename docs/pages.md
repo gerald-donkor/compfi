@@ -1,6 +1,6 @@
 # Compfi page build record
 
-Status: Phase 6 contact page implemented and self-verified; independent review pending. Phase 5 cart and checkout presentation remain verified and review-closed. Blog remains pending, so Phase 6 is not complete.
+Status: Phase 6 contact page implemented, verified, and review-closed; blog (/blog) remains pending, so Phase 6 is not complete.
 
 ## Contact (`/contact`)
 
@@ -51,7 +51,43 @@ Self-verification on 2026-09-10:
 | keyboard | skip link first, logical DOM order through fields and review action, visible focus treatment |
 | Web Interface Guidelines | fresh rules reviewed against all changed UI files; placeholder ellipsis and long-word wrapping findings were corrected and re-verified |
 
-Independent two-axis review is pending; blog (`/blog`) is explicitly out of scope.
+Implementation commit `fd48719` received the mandatory dual-axis independent
+code review on 2026-09-10 against base `08a9af5`. Standards reported 3
+violations and 2 baseline smells; the worst hard violation was an `<h2>` heading
+inside the form error summary alert interrupting the page section outline under
+the main section `<h2>`. Spec reported 3 findings; the worst was a lack of
+defensive null-safety in `reviewContactDetails` when encountering undefined
+properties.
+
+Review dispositions:
+- Standards violation 1 (heading hierarchy): Accepted. The error summary title
+  now uses `<h3 className="font-semibold">` to preserve a logical heading
+  hierarchy inside the section.
+- Standards violation 2 (geometry tokens): Rejected with evidence. The
+  `--contact-*` tokens are surface-specific component geometry explicitly
+  mandated by Prompt 17 based on measured reference dimensions; AGENTS.md § 6.1
+  permits component tokens when semantic roles cannot express component
+  contracts, and sharing them with checkout would couple two separate domain
+  surfaces.
+- Standards violation 3 (docs index sync): Accepted. `AGENTS.md` documentation
+  index was updated to reflect current comparison, checkout, and contact
+  documentation status.
+- Standards baseline smells (duplicated layout / duplicated regex): Rejected with
+  evidence. The layout geometry is intentionally surface-scoped; extracting a
+  shared regex across checkout and contact would violate task boundary rules by
+  editing pre-existing checkout code without a bug.
+- Spec finding 1 (trimmed blank email test): Accepted. `test/contact.test.tsx`
+  now tests trimmed blank email input producing the required message.
+- Spec finding 2 (explicit type attribute): Accepted. `name` field in
+  `components/contact/contact-form.tsx` now explicitly declares `type="text"`.
+- Spec finding 3 (defensive null-safety): Accepted. `reviewContactDetails` now
+  normalizes fields with `(details[fieldName] ?? "").trim()` and is covered by a
+  dedicated unit test.
+
+The accepted fixes are committed as a local review-fix commit. Focused tests (1
+file, 6 tests), full test suite (22 files, 107 tests), lint, TypeScript, and
+production build pass cleanly with zero errors. Contact is verified and
+review-closed; blog (`/blog`) is the remaining unit of Phase 6.
 
 ## Product comparison (`/comparison`)
 
