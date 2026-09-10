@@ -30,8 +30,9 @@ This document owns the public component contracts, APIs, states, and accessibili
   page-level grid sibling rather than nested here, so DOM order (search,
   feed, widgets) matches the single-column visual order and keyboard focus
   never jumps past content. Real usage: `/blog`.
-- **`BlogSearch`**: Focused client leaf (`components/blog/blog-search.tsx`,
-  `data-slot="blog-search"`) owning no state. It renders one uncontrolled
+- **`BlogSearch`**: Stateless server-safe form leaf
+  (`components/blog/blog-search.tsx`, `data-slot="blog-search"`) owning no
+  state. It renders one uncontrolled
   native GET form to `/blog` with `type="search"`, `name="q"`,
   `autocomplete="off"`, `enterKeyHint="search"`, an accessible label, the
   active category as a hidden field, a 44px icon submit action, and a `Clear`
@@ -54,8 +55,9 @@ This document owns the public component contracts, APIs, states, and accessibili
   certified shop blocks (`ShopResults`, `ShopControls`) establish that
   convention, and forwarding arbitrary props would let callers overwrite the
   owned `data-slot` and heading relationships the product-detail review
-  certified as protected. The only client boundary is the stateless search
-  form. No previously uncertified primitive
+  certified as protected. Search needs no `"use client"` boundary because the
+  browser owns its value through a native GET submit. No previously
+  uncertified primitive
   required source changes; `Pagination`, `Empty`, `Link`, `PageHero`,
   `BenefitsStrip`, and `Container` were reused as certified.
 

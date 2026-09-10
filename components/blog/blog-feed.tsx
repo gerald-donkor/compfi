@@ -57,7 +57,7 @@ export function BlogFeed({ view }: BlogFeedProps) {
 
       {hasFilter && (
         <div
-          className="blog-feed__filter-status mb-8 flex flex-wrap items-center justify-between gap-4 rounded-[0.5rem] bg-wash px-5 py-3 text-sm text-foreground"
+          className="blog-feed__filter-status mb-8 flex flex-wrap items-center justify-between gap-4 bg-wash px-5 py-3 text-sm text-foreground"
           role="status"
         >
           <p>

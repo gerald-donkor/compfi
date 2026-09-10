@@ -50,7 +50,7 @@ supplies a 1634px feed column, a 143px column gap, a 622px sidebar column,
 (72px), `--blog-sidebar-width` (312px),
 `--blog-card-gap` (54px), `--blog-card-radius` (10px),
 `--blog-card-media-ratio` (817 / 500), `--blog-recent-thumb-size` (80px),
-`--blog-recent-thumb-radius` (8px), `--blog-search-height` (53px),
+`--blog-recent-thumb-radius` (8px), `--blog-search-height` (53px), `--blog-filter-radius` (8px),
 `--blog-pagination-size` (60px), and `--blog-pagination-radius` (10px).
 
 Reference lead and thumbnail crops are never shipped: their mockup pixels

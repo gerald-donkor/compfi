@@ -201,12 +201,14 @@
   --blog-gap: 4.5rem;
   --blog-column-gap: var(--blog-gap);
   --blog-sidebar-width: 19.5rem;
+  --blog-sidebar-width-tablet: 15rem;
   --blog-card-gap: 3.375rem;
   --blog-card-radius: 0.625rem;
   --blog-card-media-ratio: 817 / 500;
   --blog-recent-thumb-size: 5rem;
   --blog-recent-thumb-radius: 0.5rem;
   --blog-search-height: 3.3125rem;
+  --blog-filter-radius: 0.5rem;
   --blog-pagination-size: 3.75rem;
   --blog-pagination-radius: 0.625rem;
   /* shadcn semantic role mappings to Compfi design tokens */
@@ -1091,6 +1093,10 @@ textarea {
   border-radius: var(--blog-recent-thumb-radius);
 }
 
+.blog-feed__filter-status {
+  border-radius: var(--blog-filter-radius);
+}
+
 .blog-feed__empty-action {
   border-radius: var(--blog-card-radius);
 }
@@ -1127,7 +1133,7 @@ textarea {
 
 @media (max-width: 63.999rem) {
   .blog-layout__grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 15rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--blog-sidebar-width-tablet));
     gap: var(--space-8);
   }
 

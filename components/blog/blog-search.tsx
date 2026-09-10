@@ -1,5 +1,3 @@
-"use client"
-
 import { Search } from "lucide-react"
 
 import { Link } from "@/components/ui/link"
@@ -10,9 +8,9 @@ export interface BlogSearchProps {
   activeCategory?: string
 }
 
-// Uncontrolled native GET form: the browser owns the input value and submits
-// ?q=... (plus the preserved category) to /blog with zero client state,
-// so typing never rerenders the form and no effect synchronization is needed.
+// Stateless server-safe form leaf: the browser owns the input value and
+// submits a native GET to /blog with zero client state, so typing never
+// rerenders the form and no "use client" boundary is needed.
 export function BlogSearch({ defaultValue = "", activeCategory }: BlogSearchProps) {
   const clearHref = blogHref({ activeCategory }, { page: null })
 
