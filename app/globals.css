@@ -1372,18 +1372,24 @@ textarea {
 .product-card__overlay {
   position: absolute;
   inset: 0;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-6);
   background: var(--home-product-overlay);
   opacity: 0;
-  transition: opacity var(--duration-fast) var(--ease-standard);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    visibility var(--duration-fast) var(--ease-standard);
 }
 
 .product-card:focus-within .product-card__overlay,
 .product-card:hover .product-card__overlay {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .product-card__overlay-link {
@@ -1411,6 +1417,9 @@ textarea {
 }
 
 .product-card__title-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-min);
   color: var(--color-product-ink);
   text-decoration: none;
 }
@@ -1666,10 +1675,6 @@ textarea {
     justify-content: center;
     padding: var(--space-12);
     transform: translateY(-50%);
-  }
-
-  .product-card__overlay {
-    display: flex;
   }
 }
 

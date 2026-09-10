@@ -15,6 +15,16 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 export function CartDrawer() {
   const [open, setOpen] = React.useState(false)
   const { lines, itemCount, subtotalCents, productFor, remove } = useCart()
+  const emptyRecoveryRef = React.useRef<HTMLAnchorElement>(null)
+  const prevLineCountRef = React.useRef(lines.length)
+
+  React.useEffect(() => {
+    const previous = prevLineCountRef.current
+    prevLineCountRef.current = lines.length
+    if (open && previous > 0 && lines.length === 0) {
+      emptyRecoveryRef.current?.focus()
+    }
+  }, [lines.length, open])
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -39,8 +49,12 @@ export function CartDrawer() {
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Link href="/shop" className={buttonVariants({ variant: "default", size: "default" })}>
-              Browse furniture
+            <Link
+              ref={emptyRecoveryRef}
+              href="/shop"
+              className={buttonVariants({ variant: "default", size: "default" })}
+            >
+              <span className="text-primary-foreground">Browse furniture</span>
             </Link>
           </EmptyContent>
         </Empty> : <>

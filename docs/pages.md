@@ -1,6 +1,65 @@
 # Compfi page build record
 
-Status: Phase 6 blog page implemented, verified, and review-closed; Phase 6 is complete.
+Status: Phase 6 complete and review-closed. Phase 7 unit 1 (product-card
+overlay, cart-drawer modal, motion consistency) implemented, verified, and
+pending independent review. Phase 7 is not complete.
+
+## Phase 7 unit 1 — interaction polish (overlay, drawer, motion)
+
+Implemented 2026-09-10 as the first dependency-safe Phase 7 unit. No route
+was added or removed; `/`, `/shop`, and `/shop/[slug]` card consumers plus
+every route rendering the global `CartDrawer` inherit the polish with no URL,
+metadata, or data-contract change.
+
+Scope was limited to the two AGENTS.md §7 gaps plus their motion/focus
+consistency: the card overlay is no longer hover-only, the drawer meets the
+modal contract, and touched transitions reuse certified tokens under the
+global reduced-motion reset. No cart-model, pricing, checkout, comparison,
+filter, gallery, carousel, pagination, blog, or contact change was made.
+
+Decisions: the overlay keeps its reference dark-wash design but renders at
+every width (`display:flex` with opacity/visibility, `pointer-events:none`
+until revealed) and reveals on hover **and** `:focus-within`; image and title
+links keep the product name to the same `/shop/[slug]` while the overlay
+action is named `View {name}`, so keyboard users get one clear destination
+with a documented naming decision and touch users keep the image/title path
+with no hover gate. The title link is `inline-flex` with a 44px minimum
+height. The drawer reuses the certified `Sheet` primitive (dialog labelled
+`Your cart`, trap, Escape/backdrop dismissal, scroll lock, focus return);
+removal announces once through the provider's polite live region, and removing
+the last line moves focus to the `Browse furniture` recovery link. The
+empty-state solid action keeps white label text in its own span so the gold
+fill keeps AA contrast against the shared `Link` ink-text cascade. No new
+motion, palette, or type token was needed; `web-design-guidelines` was
+reviewed against the touched files with no unresolved finding.
+
+Reference deltas: legacy brand stays reference-only; overlay reveal on focus
+and the single-destination naming are the §7 accessibility deltas; drawer
+responsive width (550px maximum, nearly full-width with 16px insets at 390px)
+and 140/220ms motion timing are system values, not screenshot measurements.
+
+### Verification
+
+Self-verification on 2026-09-10 (named `compfi-interaction-8dbc2e39d5ed`
+session, dev server on :3000):
+
+| check | result |
+| --- | --- |
+| focused interaction tests | passed: 2 files, 7 tests (card destination naming, badge/discount edges, token/reduced-motion CSS contract, drawer Escape/focus-return, last-line removal announcement + recovery focus, axe) |
+| `npm run test` | passed: 25 files, 121 tests |
+| `npm run lint` | passed |
+| `npx tsc --noEmit` | passed |
+| `npm run build` | passed; all routes prerender as before |
+| keyboard flow | focusing the first `/shop` card image link revealed the overlay (`visibility: visible`, opacity transitioning) and Enter navigated to `/shop/alder-dining-chair` |
+| drawer flow | dialog `Your cart` opened with focus inside, Tab cycled within the dialog, body scroll locked while open, Escape closed, focus returned to the `Open cart` trigger after the close transition |
+| removal flow | removing the last drawer line announced `Alder Dining Chair removed from cart.` politely and moved focus to `Browse furniture` |
+| responsive | `/shop` showed `scrollWidth === clientWidth` at 1440, 1024, 768, 390, and 320px; drawer measured 550px at 1440px and 358px (390 minus 16px insets) at 390px with no page overflow |
+| reduced motion | emulated `prefers-reduced-motion: reduce` collapsed overlay/drawer transitions (computed `1e-05s`) with the overlay instantly visible and usable on focus |
+| axe | `/shop` 0 violations/0 incomplete; open drawer 0 violations after the empty-state contrast fix (axe mid-transition reads were re-taken at rest; `aria-hidden-focus` remains an expected modal-inert incomplete manually verified via the focus trap) |
+| console | dev HMR/React-DevTools messages plus the pre-existing Next LCP image hint only; no page errors |
+| screenshots | `/tmp/compfi-interaction-{1440,1024,768,390,320}.png` plus `/tmp/compfi-interaction-drawer-{1440,390}.png` |
+
+Independent two-axis review is pending; Phase 7 remains open.
 
 ## Blog (`/blog`)
 
@@ -459,7 +518,7 @@ lower-page completion is recorded above.
 - The 1440px hierarchy uses a right-side cream campaign panel, three tall room crops, and four product columns. At 1024px, the campaign remains image-led, rooms and products use three columns. At 768px rooms and products use two columns and the panel becomes normal-flow content; at 390px and 320px rooms and products each use one column.
 - The campaign image is decorative because its adjacent HTML copy carries the message. Room images have contextual alt text; product images retain the fixture alt unchanged.
 - The only preloaded image is the campaign hero. Room and catalog images use local paths, intrinsic dimensions, accurate responsive `sizes`, and default lazy loading.
-- Product actions are navigation only: image/name links are always available; the desktop overlay is a redundant `View product` link revealed by hover or `focus-within`. An inset media focus ring remains visible when the image link triggers the overlay. No cart, comparison, favorite, stock, rating, review, or purchase control was added.
+- Product actions are navigation only: image/name links are always available; the overlay is a redundant `View product` link (named `View {name}`) revealed by hover or `focus-within` at every width. An inset media focus ring remains visible when the image link triggers the overlay. No cart, comparison, favorite, stock, rating, review, or purchase control was added.
 
 ### Reference deltas
 

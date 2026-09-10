@@ -1,6 +1,6 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 6 blog and contact pages implemented, verified, and review-closed. Phase 5 cart and checkout components remain verified and review-closed.
+Status: Phase 6 blog and contact pages implemented, verified, and review-closed. Phase 7 unit 1 product-card overlay and cart-drawer contracts implemented and verified, pending independent review.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 
@@ -216,11 +216,22 @@ The following components have been fully audited, styled to Compfi's measured de
   totals are derived from immutable fixtures. Its polite live region announces
   ordinary cart changes. Reloading deliberately starts a new empty cart.
 - **`CartDrawer`**: Client leaf built on the existing named Base UI Sheet.
-  Empty and populated states retain the primitive's modal focus mechanics. A
-  populated drawer renders local product media, configured selection labels,
-  product links, removal controls, an integer-cent subtotal, and real Cart and
-  Checkout links. Both links close the sheet while preserving primitive-owned
-  focus return.
+  Empty and populated states retain the primitive's modal focus mechanics
+  (dialog labelled `Your cart` with a screen-reader description, focus trap,
+  Escape/backdrop dismissal, background scroll lock, focus return to the
+  trigger; verified in a real browser, including Tab cycling inside the dialog
+  and focus restoration after the close transition). A populated drawer renders
+  local product media, configured selection labels, product links, removal
+  controls, an integer-cent subtotal, and real Cart and Checkout links. Both
+  links close the sheet while preserving primitive-owned focus return. Removal
+  is announced through the provider's single polite live region (no duplicate
+  drawer live region); removing the last line moves focus to the empty-state
+  `Browse furniture` recovery link so focus never lands on `body`. The
+  empty-state solid action keeps white (`text-primary-foreground`) label text
+  inside its span so the gold fill keeps AA contrast (the shared `Link`
+  ink-text class otherwise wins the cascade). The sheet keeps its certified
+  550px maximum at desktop and renders nearly full-width (`100dvw` minus the
+  16px insets) at 390px with close, focus, and Escape intact.
 - **`CartContent`**: Client route content that uses a semantic desktop table
   and labelled mobile line-item groups below `768px`. Both use the certified
   controlled `QuantityInput`; removal returns focus to its cart-items heading.
@@ -425,7 +436,7 @@ Generated components outside this certified inventory (including accordion, aler
 - **Exported Props**: `ProductCardProps extends ComponentProps<"article"> { product: CatalogProduct }`.
 - **Slots**: `data-slot="product-card"`; its media, image link, badge, overlay, content, title, description, prices, and compare-at elements have stable component classes.
 - **Behavior**: Forwards valid article attributes, merges caller `className` through `cn`, links image and name to `/shop/[slug]`, uses fixture image metadata, formats cents through `Money`, and derives a rounded truthful discount percentage only from a valid higher compare-at amount. `new` renders visible text, while non-badged products reserve no badge node.
-- **Accessibility**: Image link has the fixture product name; media retains the fixture alt; title is an `h3`; previous price has a screen-reader label; the redundant desktop-only `View product` link appears on hover and `:focus-within`, never as the sole path to a product.
+- **Accessibility**: Image link has the fixture product name; media retains the fixture alt; title is an `h3`; previous price has a screen-reader label. The overlay is a redundant enhancement at every width, never the sole path: image and title links carry the product name to the same `/shop/[slug]`, and the overlay action is named `View {name}` (visible text `View product`). The overlay reveals on hover **and** `:focus-within` via opacity/visibility (no `display:none` gate, no hover-only functionality), stays operable on touch through the image/title targets, and keeps a 44px overlay target; the title link is `inline-flex` with a 44px minimum height. Verified keyboard flow: focusing the image link reveals the overlay and Enter navigates to the detail route.
 - **Responsive/performance**: Reserves the measured 285:301 media field before image load, has responsive `sizes`, and remains lazy by default.
 - **Real Usage**: All eight Home featured products.
 

@@ -314,6 +314,14 @@ an established primitive in the component phase.
   references do not supply timing or easing evidence.
 - Reduced-motion preference removes smooth scrolling, collapses transitions,
   and prevents the specimen motion transform. Content never depends on motion.
+- Phase 7 unit 1 added no motion, focus, or color token: the card overlay
+  reuses `--duration-fast`/`--ease-standard` over opacity/visibility (never
+  `display:none`, never `transition: all`), the drawer open/close reuses
+  `--duration-standard`/`--ease-standard` through the certified `Sheet`, and
+  the title-link 44px target reuses `--control-min`. The empty-drawer solid
+  action keeps white label text so the certified `--color-brand-action` fill
+  keeps AA contrast; this is a cascade correction in the drawer markup, not a
+  new token.
 
 ## Shared chrome tokens
 
