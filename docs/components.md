@@ -1,6 +1,6 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 5 cart and checkout components implemented and self-verified; checkout independent review pending.
+Status: Phase 5 cart and checkout components implemented, self-verified, and under final independent re-review.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 
@@ -145,7 +145,8 @@ The following components have been fully audited, styled to Compfi's measured de
   `Field`, `FieldLabel`, `Input`, `Textarea`, `FieldDescription`, and
   `FieldError`; it derives product labels and integer-cent subtotals from the
   canonical cart/catalog interface. A pure `reviewCheckoutDetails` utility
-  validates required fields, US ZIP/email/phone shapes, and explicit limits.
+  validates required fields, US ZIP/email/phone shapes, and explicit limits;
+  one exported immutable length contract supplies both validator and controls.
   Submission is local-only: it prevents navigation, retains no personal values
   in React state, focuses a linked error summary, clears edited field errors,
   and announces the exact non-transactional success result. Payment controls,

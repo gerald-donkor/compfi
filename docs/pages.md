@@ -1,6 +1,6 @@
 # Compfi page build record
 
-Status: Phase 5 cart and checkout presentation implemented and self-verified; checkout independent review pending.
+Status: Phase 5 cart and checkout presentation implemented, self-verified, and under final independent re-review.
 
 ## Product comparison (`/comparison`)
 
@@ -453,17 +453,26 @@ Self-verification on 2026-09-09:
 
 | check | result |
 | --- | --- |
-| focused checkout/cart/field tests | passed: 3 files, 12 tests |
+| focused checkout/cart/field tests | passed: 3 files, 13 tests |
 | `npm run test` | passed: 21 files, 101 tests |
 | `npm run lint` | passed |
 | `npx tsc --noEmit` | passed |
 | `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind its internal port (`Operation not permitted`) |
 | `npm run build -- --webpack` | passed; `/checkout` prerendered as static content |
-| browser customer flow | named `compfi-checkout` session passed product add → populated drawer → Checkout, Cart → Proceed to checkout, direct empty reload, invalid focus recovery, valid review, stale-success clearing, retained values/cart, no URL change, no POST, and modal Escape/focus return |
+| browser customer flow | named `compfi-checkout-8dbc2e39d5ed` session passed product add → populated drawer → Checkout, Cart → Proceed to checkout, direct empty reload, invalid focus recovery, valid review, stale-success clearing, retained values/cart, no URL change, no POST, and modal Escape/focus return |
 | responsive screenshots | inspected `/tmp/compfi-checkout-{1440,1024,768,390,320}.png`; all five widths matched the recorded layout decisions and had `scrollWidth === clientWidth`; 320px supplies the effective 400% reflow width for a 1280px desktop viewport |
 | reduced motion and accessibility | reduced-motion media emulation matched; populated axe audit reported 0 violations/0 incomplete/43 passes and empty-state re-audit reported 0/0/39 after correcting the primary-link foreground contrast |
 | console | no checkout runtime, hydration, or accessibility errors after clearing the earlier product-page-only LCP development warning |
 | Web Interface Guidelines | fresh rules reviewed against all changed UI files; the verified primary-link contrast defect was fixed and no unresolved finding remains |
 
-Implementation commit and independent Standards/Spec review are pending; this
-section will record their SHAs and outcomes before Phase 5 is marked complete.
+Implementation commit `4266071` received the required independent review on
+2026-09-10. Standards reported 0 hard violations and 2 judgment-call smells;
+the worst was duplicated field-length constraints. Spec reported 2 findings;
+the worst was accepting alphabetic phone characters when the digit count was
+otherwise valid. All four findings were accepted: one immutable length map now
+drives validation and input attributes, summary rows use `cartLineKey`, phone
+formatting rejects non-phone characters, and upper-bound tests cover every
+field. Focused tests, lint, TypeScript, and the webpack production build pass;
+the full 21-file/101-test suite passes with one worker after the unconstrained
+run exceeded two existing 5-second per-test limits under host load. Final
+independent re-review from the original base is pending.

@@ -27,9 +27,10 @@ import { Input, type InputProps } from "@/components/ui/input"
 import { Link } from "@/components/ui/link"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
-import { cartLineSelectionLabel, type CartLine } from "@/lib/cart"
+import { cartLineKey, cartLineSelectionLabel, type CartLine } from "@/lib/cart"
 import {
   CHECKOUT_FIELD_NAMES,
+  CHECKOUT_MAX_LENGTHS,
   reviewCheckoutDetails,
   type CheckoutDetails,
   type CheckoutErrors,
@@ -101,7 +102,7 @@ function CheckoutSummary() {
           const configuredSelection = selectionLabel(line, product)
 
           return (
-            <li key={`${line.slug}-${line.size}-${line.finish}`} className="checkout-summary-line">
+            <li key={cartLineKey(line)} className="checkout-summary-line">
               <div className="min-w-0 break-words">
                 <span className="font-medium">{product.name}</span>
                 <span className="ml-2 whitespace-nowrap">× {line.quantity}</span>
@@ -228,24 +229,24 @@ export function CheckoutContent() {
           ) : null}
           <FieldGroup className="checkout-field-group">
             <div className="checkout-name-fields">
-              <CheckoutInputField name="firstName" error={errors.firstName} required maxLength={80} autoComplete="given-name" />
-              <CheckoutInputField name="lastName" error={errors.lastName} required maxLength={80} autoComplete="family-name" />
+              <CheckoutInputField name="firstName" error={errors.firstName} required maxLength={CHECKOUT_MAX_LENGTHS.firstName} autoComplete="given-name" />
+              <CheckoutInputField name="lastName" error={errors.lastName} required maxLength={CHECKOUT_MAX_LENGTHS.lastName} autoComplete="family-name" />
             </div>
-            <CheckoutInputField name="company" error={errors.company} maxLength={100} autoComplete="organization" />
-            <CheckoutInputField name="countryRegion" error={errors.countryRegion} readOnly defaultValue="United States" maxLength={13} autoComplete="country-name" />
-            <CheckoutInputField name="addressLine1" error={errors.addressLine1} required maxLength={120} autoComplete="address-line1" />
-            <CheckoutInputField name="addressLine2" error={errors.addressLine2} maxLength={120} autoComplete="address-line2" />
-            <CheckoutInputField name="city" error={errors.city} required maxLength={80} autoComplete="address-level2" />
-            <CheckoutInputField name="state" error={errors.state} required maxLength={80} autoComplete="address-level1" />
-            <CheckoutInputField name="zipCode" error={errors.zipCode} required maxLength={10} inputMode="numeric" autoComplete="postal-code" />
-            <CheckoutInputField name="phone" error={errors.phone} required type="tel" maxLength={25} inputMode="tel" autoComplete="tel" />
-            <CheckoutInputField name="email" error={errors.email} required type="email" maxLength={254} inputMode="email" autoComplete="email" spellCheck={false} />
+            <CheckoutInputField name="company" error={errors.company} maxLength={CHECKOUT_MAX_LENGTHS.company} autoComplete="organization" />
+            <CheckoutInputField name="countryRegion" error={errors.countryRegion} readOnly defaultValue="United States" maxLength={CHECKOUT_MAX_LENGTHS.countryRegion} autoComplete="country-name" />
+            <CheckoutInputField name="addressLine1" error={errors.addressLine1} required maxLength={CHECKOUT_MAX_LENGTHS.addressLine1} autoComplete="address-line1" />
+            <CheckoutInputField name="addressLine2" error={errors.addressLine2} maxLength={CHECKOUT_MAX_LENGTHS.addressLine2} autoComplete="address-line2" />
+            <CheckoutInputField name="city" error={errors.city} required maxLength={CHECKOUT_MAX_LENGTHS.city} autoComplete="address-level2" />
+            <CheckoutInputField name="state" error={errors.state} required maxLength={CHECKOUT_MAX_LENGTHS.state} autoComplete="address-level1" />
+            <CheckoutInputField name="zipCode" error={errors.zipCode} required maxLength={CHECKOUT_MAX_LENGTHS.zipCode} inputMode="numeric" autoComplete="postal-code" />
+            <CheckoutInputField name="phone" error={errors.phone} required type="tel" maxLength={CHECKOUT_MAX_LENGTHS.phone} inputMode="tel" autoComplete="tel" />
+            <CheckoutInputField name="email" error={errors.email} required type="email" maxLength={CHECKOUT_MAX_LENGTHS.email} inputMode="email" autoComplete="email" spellCheck={false} />
             <Field data-invalid={errors.orderNotes ? "true" : undefined}>
               <FieldLabel htmlFor="checkout-orderNotes">{FIELD_LABELS.orderNotes}</FieldLabel>
               <Textarea
                 id="checkout-orderNotes"
                 name="orderNotes"
-                maxLength={500}
+                maxLength={CHECKOUT_MAX_LENGTHS.orderNotes}
                 autoComplete="off"
                 placeholder="Share context for this review…"
                 aria-invalid={Boolean(errors.orderNotes)}

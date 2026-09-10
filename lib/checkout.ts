@@ -19,7 +19,7 @@ export type CheckoutDetails = Readonly<Record<CheckoutFieldName, string>>
 
 export type CheckoutErrors = Readonly<Partial<Record<CheckoutFieldName, string>>>
 
-const MAX_LENGTHS: Readonly<Record<CheckoutFieldName, number>> = Object.freeze({
+export const CHECKOUT_MAX_LENGTHS: Readonly<Record<CheckoutFieldName, number>> = Object.freeze({
   firstName: 80,
   lastName: 80,
   company: 100,
@@ -62,6 +62,7 @@ const MAX_LENGTH_MESSAGES: Readonly<Record<CheckoutFieldName, string>> = Object.
 
 const ZIP_CODE_PATTERN = /^\d{5}(?:-\d{4})?$/
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PHONE_PATTERN = /^[\d\s()+.-]+$/
 
 export function reviewCheckoutDetails(details: CheckoutDetails): CheckoutErrors {
   const errors: Partial<Record<CheckoutFieldName, string>> = {}
@@ -75,7 +76,7 @@ export function reviewCheckoutDetails(details: CheckoutDetails): CheckoutErrors 
       continue
     }
 
-    if (value.length > MAX_LENGTHS[fieldName]) {
+    if (value.length > CHECKOUT_MAX_LENGTHS[fieldName]) {
       errors[fieldName] = MAX_LENGTH_MESSAGES[fieldName]
     }
   }
@@ -92,7 +93,7 @@ export function reviewCheckoutDetails(details: CheckoutDetails): CheckoutErrors 
   const phone = details.phone.trim()
   if (phone && !errors.phone) {
     const digitCount = phone.replace(/\D/g, "").length
-    if (digitCount < 10 || digitCount > 15) {
+    if (!PHONE_PATTERN.test(phone) || digitCount < 10 || digitCount > 15) {
       errors.phone = "Enter a phone number with 10 to 15 digits."
     }
   }

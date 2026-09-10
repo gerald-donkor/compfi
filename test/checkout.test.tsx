@@ -6,7 +6,7 @@ import { CartProvider } from "@/components/cart/cart-provider"
 import { CheckoutContent } from "@/components/checkout/checkout-content"
 import { ProductOptions } from "@/components/product/product-options"
 import { catalogProducts } from "@/lib/catalog"
-import { reviewCheckoutDetails, type CheckoutDetails } from "@/lib/checkout"
+import { CHECKOUT_MAX_LENGTHS, reviewCheckoutDetails, type CheckoutDetails, type CheckoutFieldName } from "@/lib/checkout"
 import { checkA11y } from "./a11y"
 
 const atlas = catalogProducts.find((product) => product.slug === "atlas-bed")!
@@ -48,22 +48,21 @@ describe("checkout detail review", () => {
     expect(formatErrors.zipCode).toBe("Enter a 5-digit ZIP code or ZIP+4.")
     expect(formatErrors.phone).toBe("Enter a phone number with 10 to 15 digits.")
     expect(formatErrors.email).toBe("Enter a valid email address.")
+    expect(reviewCheckoutDetails({ ...validDetails, phone: "call5035550198" }).phone).toBe(
+      "Enter a phone number with 10 to 15 digits.",
+    )
   })
 
   it("enforces explicit upper bounds", () => {
-    const errors = reviewCheckoutDetails({
-      ...validDetails,
-      firstName: "a".repeat(81),
-      company: "a".repeat(101),
-      addressLine2: "a".repeat(121),
-      email: `${"a".repeat(246)}@test.com`,
-      orderNotes: "a".repeat(501),
-    })
-    expect(errors.firstName).toMatch(/80 characters/)
-    expect(errors.company).toMatch(/100 characters/)
-    expect(errors.addressLine2).toMatch(/120 characters/)
-    expect(errors.email).toMatch(/254 characters/)
-    expect(errors.orderNotes).toMatch(/500 characters/)
+    const boundedFields = Object.keys(CHECKOUT_MAX_LENGTHS) as CheckoutFieldName[]
+
+    for (const fieldName of boundedFields) {
+      const errors = reviewCheckoutDetails({
+        ...validDetails,
+        [fieldName]: "a".repeat(CHECKOUT_MAX_LENGTHS[fieldName] + 1),
+      })
+      expect(errors[fieldName], fieldName).toBeDefined()
+    }
   })
 })
 
