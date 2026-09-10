@@ -1,6 +1,6 @@
 # Compfi page build record
 
-Status: Phase 6 blog page implemented and self-verified; independent review pending. Contact and Phase 5 cart/checkout presentation remain verified and review-closed. Phase 6 is not complete until the blog review closes.
+Status: Phase 6 blog page implemented, verified, and review-closed; Phase 6 is complete.
 
 ## Blog (`/blog`)
 
@@ -61,7 +61,28 @@ Self-verification on 2026-09-10:
 | keyboard | skip link first in tab order with a logical DOM path through search, articles, categories, recent posts, and pagination |
 | Web Interface Guidelines | fresh rules reviewed against all new/changed UI files; placeholder ellipsis (`…`) and a 44px search-submit target were corrected and re-verified |
 
-Independent two-axis review is pending; closing it completes Phase 6.
+Independent two-axis review is closed; this completes Phase 6.
+
+The implementation commit is `f65c357`. The initial independent review
+reported four Standards findings and six Spec findings. Accepted and fixed
+in `df0d177`: certified Pagination primitives replace the hand-rolled nav,
+clear-search routes through `blogHref`, raw component geometry moves to
+blog tokens, and search becomes a page-level grid sibling so DOM order
+matches the single-column mobile order with flexible two columns retained
+through 768px. Rejected with evidence: prompt-mandated `BlogPost` naming
+and stateless `"use client"` (since removed), semantic token utilities,
+catalog-parity view-model fields, global reduced-motion handling, the `Prev`
+label (60px geometry with full aria-labels), and illustrative token names.
+The worst Standards issue was the missing native-prop contract (resolved by
+documenting the explicit-props decision with the owned-slot rationale and
+shop precedent); the worst Spec issue was the mobile search order.
+
+The second review reported two remaining Standards findings and no new Spec
+findings. Both were accepted and fixed in `af93de4`: the unneeded client
+boundary was removed from the stateless search form and the filter-status
+radius plus tablet sidebar width were tokenized. Final re-review from the
+original `299b3c5` base reported zero Standards findings and zero Spec
+findings. No verified blocking issue remains, and nothing was pushed.
 
 ## Contact (`/contact`)
 

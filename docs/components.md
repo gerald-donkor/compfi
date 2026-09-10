@@ -1,6 +1,6 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 6 blog page implemented and self-verified; independent review pending. Contact and Phase 5 cart/checkout components remain verified and review-closed.
+Status: Phase 6 blog and contact pages implemented, verified, and review-closed. Phase 5 cart and checkout components remain verified and review-closed.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 
