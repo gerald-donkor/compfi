@@ -1,6 +1,63 @@
 # Compfi page build record
 
-Status: Phase 6 contact page implemented, verified, and review-closed; blog (/blog) remains pending, so Phase 6 is not complete.
+Status: Phase 6 blog page implemented and self-verified; independent review pending. Contact and Phase 5 cart/checkout presentation remain verified and review-closed. Phase 6 is not complete until the blog review closes.
+
+## Blog (`/blog`)
+
+Implemented 2026-09-10 as the second and final Phase 6 content unit. The
+server route owns metadata (`Blog | Compfi`), the existing banner hero with
+Home / Blog breadcrumbs, one main landmark, a `Container` two-column
+feed/sidebar composition, and the shared benefits strip. Direct load shows
+three article cards, sidebar search, five categories with exact counts
+(Crafts 2, Design 8, Handmade 7, Interior 1, Wood 6), five recent posts, and
+pagination for 24 fixtures across 8 pages.
+
+State is allowlisted URL state projected by the pure `resolveBlogView`
+(`lib/blog.ts`): case-insensitive `q` search across title/excerpt/category,
+case-insensitive `category` filter, 3-post pages clamped to `1..totalPages`,
+and clean `blogHref` URLs that preserve sibling filters while resetting the
+page on filter change. Invalid categories fall back to all articles; unknown
+searches render the certified empty state with a `View all articles` link.
+Pagination reuses the certified primitives with the measured 60px wash
+buttons and an accessible gold active fill; only the filter-status region
+uses `role="status"`.
+
+Fresh native measurement confirmed the 2880 × 7962 reference and reproduced
+the `2400×4000+240+900` body field (5,331,406 white px, 42,385 black px),
+the 1634px feed / 143px gap / 622px sidebar split, 1634×1000px leads, and
+the photographic hero wash that production replaces with the tokenized
+`PageHero`. The 1440px implementation preserves the two-column composition
+inside the 1240px container; 1024px keeps fluid columns, while 768px, 390px,
+and 320px stack search, feed, categories, and recent posts in DOM order.
+
+Reference deltas are deliberate: honest reused editorial originals replace
+unknown-provenance mockup crops (CSS `object-cover` inside the measured
+frames); the active pagination fill uses `--color-brand-action` so white
+numerals keep AA contrast against the reference `#B88E2F`; title and
+read-more links target `/blog#{slug}` because no article reader route exists
+in this unit; the two-argument `blogHref` threads current filters through
+every link where the prompt sketched a single partial; and tablet/mobile
+structure, focus treatment, 44px targets, and reduced motion are
+implementation decisions not proven by the desktop screenshot.
+
+### Verification
+
+Self-verification on 2026-09-10:
+
+| check | result |
+| --- | --- |
+| focused blog tests | passed: 1 file, 7 tests (projection defaults/counts, category/page clamping, search/invalid/empty, URL builder, default/category/empty route states, ISO times, axe) |
+| `npm run test` | passed: 23 files, 114 tests |
+| `npm run lint` | passed |
+| `npx tsc --noEmit` | passed |
+| `npm run build` | passed with the default Turbopack pipeline; `/blog` renders dynamic on demand |
+| browser customer flow | named `compfi-blog-8dbc2e39d5ed` session passed direct load, Wood category filter (`?category=wood`, status, current marking, page reset), linen search (`?q=linen`, retained results), empty search recovery, page-2 navigation with changed articles, and unchanged-article card/heading/link naming |
+| responsive screenshots | inspected `/tmp/compfi-blog-{1440,1024,768,390,320}.png`; all five widths matched the recorded layout decisions with `scrollWidth === clientWidth` |
+| reduced motion and accessibility | reduced-motion emulation matched with `scroll-behavior: auto`; axe audit reported 0 violations/0 incomplete/45 passes; console showed only dev HMR/React-DevTools messages with no page errors |
+| keyboard | skip link first in tab order with a logical DOM path through search, articles, categories, recent posts, and pagination |
+| Web Interface Guidelines | fresh rules reviewed against all new/changed UI files; placeholder ellipsis (`…`) and a 44px search-submit target were corrected and re-verified |
+
+Independent two-axis review is pending; closing it completes Phase 6.
 
 ## Contact (`/contact`)
 

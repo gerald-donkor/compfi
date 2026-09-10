@@ -1,8 +1,56 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 6 contact page implemented and self-verified; independent review pending. Phase 5 cart and checkout components remain verified and review-closed.
+Status: Phase 6 blog page implemented and self-verified; independent review pending. Contact and Phase 5 cart/checkout components remain verified and review-closed.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
+
+## Phase 6 Blog blocks
+
+- **`BlogFeed`**: Server-safe section (`components/blog/blog-feed.tsx`,
+  `data-slot="blog-feed"`) receiving the resolved `BlogViewModel`. It owns a
+  screen-reader `Blog articles` heading, a `role="status"` filter announcement
+  with a `Clear filter` link when search/category state is active, the article
+  list, and pagination through the certified `Pagination`, `PaginationContent`,
+  `PaginationItem`, `PaginationLink`, `PaginationNext`, and
+  `PaginationPrevious` primitives. Page links preserve the active `q` and
+  `category` via `blogHref`; the active page carries `aria-current="page"`.
+  Zero results render the certified `Empty` composition with a `View all
+  articles` recovery link and no pagination. Real usage: `/blog`.
+- **`BlogCard`**: Server-safe article (`components/blog/blog-card.tsx`,
+  `data-slot="blog-card"`) for one `BlogPost`. It renders a `next/image` lead
+  (817×500 display ratio, `object-cover`, descriptive alt, first-card
+  priority, otherwise lazy), an `Article metadata` list with decorative User,
+  Calendar, and Tag icons plus author, ISO-backed `<time>`, and category, an
+  `h2` title link, a muted excerpt, and a `Read more about {title}` action.
+  Title and action links point at `/blog#{slug}`; no article reader route
+  exists in this unit. Real usage: `BlogFeed`.
+- **`BlogSidebar`**: Server-safe `aside` (`components/blog/blog-sidebar.tsx`,
+  `data-slot="blog-sidebar"`, `aria-label="Blog sidebar"`) composing
+  `BlogSearch`, `BlogCategories`, and `BlogRecentPosts`. Real usage: `/blog`.
+- **`BlogSearch`**: Focused client leaf (`components/blog/blog-search.tsx`,
+  `data-slot="blog-search"`) owning no state. It renders one uncontrolled
+  native GET form to `/blog` with `type="search"`, `name="q"`,
+  `autocomplete="off"`, `enterKeyHint="search"`, an accessible label, the
+  active category as a hidden field, a 44px icon submit action, and a `Clear`
+  link preserving the category when a query is active. Real usage:
+  `BlogSidebar`.
+- **`BlogCategories`**: Server-safe section
+  (`components/blog/blog-categories.tsx`, `data-slot="blog-categories"`)
+  with an `h3` heading and one link per category carrying its exact fixture
+  count. The active category uses `aria-current="page"`; activating it again
+  toggles back to all articles and resets the page. Real usage: `BlogSidebar`.
+- **`BlogRecentPosts`**: Server-safe section
+  (`components/blog/blog-recent-posts.tsx`, `data-slot="blog-recent-posts"`)
+  with an `h3` heading and the five most recent posts. Thumbnails are
+  decorative duplicate links (`tabindex="-1"`, `aria-hidden`) with empty alt;
+  titles are `h4` links and dates are ISO-backed muted `<time>`. Real usage:
+  `BlogSidebar`.
+
+  All six blocks extend their native element props and keep data fetching in
+  the pure `resolveBlogView` projection (`lib/blog.ts`); the only client
+  boundary is the stateless search form. No previously uncertified primitive
+  required source changes; `Pagination`, `Empty`, `Link`, `PageHero`,
+  `BenefitsStrip`, and `Container` were reused as certified.
 
 ## Phase 6 Contact blocks
 

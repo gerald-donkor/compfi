@@ -24,3 +24,17 @@ _Avoid_: sale price, offer
 A transient, configured catalog product selection. Its identity is the catalog
 slug with its selected size and finish; its quantity is a whole number from one
 through ten. Cart Lines hold no mutable product, price, or inventory data.
+
+**Article**:
+A curated static editorial record for one interior-design story. It is not a
+CMS entry or a purchasable offer.
+_Avoid_: post, story entry
+
+**Blog Category**:
+One of Compfi's five editorial groupings: Crafts, Design, Handmade, Interior,
+or Wood.
+_Avoid_: tag, topic channel
+
+**Excerpt**:
+The fixed short summary displayed for an Article in feed and card surfaces.
+_Avoid_: teaser, dek

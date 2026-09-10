@@ -33,6 +33,36 @@ below they stack in DOM order. Name fields stack below 480px. Existing
 container gutters, control radius, border, focus, type, and color roles remain
 authoritative; no new checkout palette, shadow, or motion role was introduced.
 
+## Blog geometry
+
+The native Blog reference is 2880 × 7962. Fresh measurement on 2026-09-10
+reproduced the `2400×4000+240+900` body field: 5,331,406 white pixels with
+42,385 black pixels, matching the auditable reference record. The hero center
+sample returns photographic tones rather than a flat fill, confirming
+unknown-provenance photography; production uses the approved tokenized
+`PageHero` banner wash, as on every other page.
+
+At the established 2 raster px : 1 CSS px interpretation, the reference
+supplies a 1634px feed column, a 143px column gap, a 622px sidebar column,
+1634×1000px lead frames (1.634:1), 120×118px pagination buttons, and a
+622×106px sidebar search box. The production roles are
+`--blog-content-padding-top` (72px), `--blog-content-padding-bottom` (80px),
+`--blog-column-gap` (72px), `--blog-sidebar-width` (312px),
+`--blog-card-gap` (54px), `--blog-card-radius` (10px),
+`--blog-card-media-ratio` (817 / 500), `--blog-recent-thumb-size` (80px),
+`--blog-recent-thumb-radius` (8px), `--blog-search-height` (53px),
+`--blog-pagination-size` (60px), and `--blog-pagination-radius` (10px).
+
+Reference lead and thumbnail crops are never shipped: their mockup pixels
+have unknown provenance, so the 24 fixtures reuse honest Compfi editorial
+originals cropped by CSS `object-cover` inside the measured frames. The
+pagination active fill uses the accessible `--color-brand-action` instead of
+the reference `#B88E2F` so white numerals keep AA contrast. Above 1024px the
+feed/sidebar grid preserves the measured two-column composition inside the
+1240px container; at 1023px and below the layout stacks in DOM order with
+search first. No new palette, shadow, or motion role was introduced; the
+global reduced-motion reset remains authoritative.
+
 ## Contact geometry
 
 The native Contact reference is 2880 × 4730. Fresh measurement on 2026-09-10
