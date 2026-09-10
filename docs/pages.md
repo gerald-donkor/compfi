@@ -35,7 +35,11 @@ unknown-provenance mockup crops (CSS `object-cover` inside the measured
 frames); the active pagination fill uses `--color-brand-action` so white
 numerals keep AA contrast against the reference `#B88E2F`; title and
 read-more links target `/blog#{slug}` because no article reader route exists
-in this unit; the two-argument `blogHref` threads current filters through
+in this unit; search is a page-level grid sibling (not nested in the
+sidebar) so DOM order matches the single-column visual order on mobile with
+no CSS reordering; 1024px keeps flexible two columns with a reduced gap
+while 768px and below stack search, feed, and widgets in DOM order; the
+two-argument `blogHref` threads current filters through
 every link where the prompt sketched a single partial; and tablet/mobile
 structure, focus treatment, 44px targets, and reduced motion are
 implementation decisions not proven by the desktop screenshot.
@@ -46,7 +50,7 @@ Self-verification on 2026-09-10:
 
 | check | result |
 | --- | --- |
-| focused blog tests | passed: 1 file, 7 tests (projection defaults/counts, category/page clamping, search/invalid/empty, URL builder, default/category/empty route states, ISO times, axe) |
+| focused blog tests | passed: 1 file, 7 tests (projection defaults/counts, category/page clamping, search/invalid/empty, URL builder, default/category/empty route states with DOM search-before-feed order, ISO times, axe) |
 | `npm run test` | passed: 23 files, 114 tests |
 | `npm run lint` | passed |
 | `npx tsc --noEmit` | passed |

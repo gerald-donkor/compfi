@@ -26,7 +26,10 @@ This document owns the public component contracts, APIs, states, and accessibili
   exists in this unit. Real usage: `BlogFeed`.
 - **`BlogSidebar`**: Server-safe `aside` (`components/blog/blog-sidebar.tsx`,
   `data-slot="blog-sidebar"`, `aria-label="Blog sidebar"`) composing
-  `BlogSearch`, `BlogCategories`, and `BlogRecentPosts`. Real usage: `/blog`.
+  `BlogCategories` and `BlogRecentPosts`. `BlogSearch` is deliberately a
+  page-level grid sibling rather than nested here, so DOM order (search,
+  feed, widgets) matches the single-column visual order and keyboard focus
+  never jumps past content. Real usage: `/blog`.
 - **`BlogSearch`**: Focused client leaf (`components/blog/blog-search.tsx`,
   `data-slot="blog-search"`) owning no state. It renders one uncontrolled
   native GET form to `/blog` with `type="search"`, `name="q"`,
@@ -46,9 +49,13 @@ This document owns the public component contracts, APIs, states, and accessibili
   titles are `h4` links and dates are ISO-backed muted `<time>`. Real usage:
   `BlogSidebar`.
 
-  All six blocks extend their native element props and keep data fetching in
-  the pure `resolveBlogView` projection (`lib/blog.ts`); the only client
-  boundary is the stateless search form. No previously uncertified primitive
+  All six blocks take explicit domain props (`view`, `post`, `categories`,
+  `posts`, `defaultValue`) rather than spreading native element props: the
+  certified shop blocks (`ShopResults`, `ShopControls`) establish that
+  convention, and forwarding arbitrary props would let callers overwrite the
+  owned `data-slot` and heading relationships the product-detail review
+  certified as protected. The only client boundary is the stateless search
+  form. No previously uncertified primitive
   required source changes; `Pagination`, `Empty`, `Link`, `PageHero`,
   `BenefitsStrip`, and `Container` were reused as certified.
 

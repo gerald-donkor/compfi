@@ -35,7 +35,7 @@ export function BlogFeed({ view }: BlogFeedProps) {
           <EmptyContent>
             <Link
               href="/blog"
-              className="inline-flex h-11 items-center justify-center rounded-[0.375rem] bg-brand-action px-6 font-medium text-white shadow transition-colors hover:bg-brand-action/90"
+              className="blog-feed__empty-action inline-flex h-11 items-center justify-center bg-brand-action px-6 font-medium text-white transition-colors hover:bg-brand-action/90"
             >
               View all articles
             </Link>
@@ -84,7 +84,7 @@ export function BlogFeed({ view }: BlogFeedProps) {
         </div>
       )}
 
-      <div className="blog-feed__articles flex flex-col gap-[3.375rem]">
+      <div className="blog-feed__articles flex flex-col">
         {view.visiblePosts.map((post, index) => (
           <BlogCard key={post.id} post={post} priority={index === 0} />
         ))}

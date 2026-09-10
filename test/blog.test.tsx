@@ -89,6 +89,9 @@ describe("BlogPage", () => {
     })
 
     expect(screen.getByRole("searchbox", { name: "Search blog posts" })).toBeInTheDocument()
+    const searchForm = screen.getByRole("search", { name: "Search blog posts" })
+    const firstArticle = screen.getAllByRole("article")[0]
+    expect(searchForm.compareDocumentPosition(firstArticle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(screen.getByRole("heading", { name: "Categories", level: 3 })).toBeInTheDocument()
     expect(screen.getByRole("heading", { name: "Recent Posts", level: 3 })).toBeInTheDocument()
     const sidebar = screen.getByRole("complementary", { name: "Blog sidebar" })

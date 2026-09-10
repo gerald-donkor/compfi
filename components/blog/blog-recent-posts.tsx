@@ -29,7 +29,7 @@ export function BlogRecentPosts({ posts }: BlogRecentPostsProps) {
             <li key={post.id} className="blog-recent-posts__item flex items-center gap-4">
               <Link
                 href={postHref}
-                className="blog-recent-posts__thumb relative size-20 shrink-0 overflow-hidden rounded-[0.5rem] bg-wash focus:outline-none focus:ring-2 focus:ring-brand-focus"
+                className="blog-recent-posts__thumb relative shrink-0 overflow-hidden bg-wash focus:outline-none focus:ring-2 focus:ring-brand-focus"
                 tabIndex={-1}
                 aria-hidden="true"
               >

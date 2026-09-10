@@ -3,6 +3,7 @@
 import { Search } from "lucide-react"
 
 import { Link } from "@/components/ui/link"
+import { blogHref } from "@/lib/blog"
 
 export interface BlogSearchProps {
   defaultValue?: string
@@ -13,9 +14,7 @@ export interface BlogSearchProps {
 // ?q=... (plus the preserved category) to /blog with zero client state,
 // so typing never rerenders the form and no effect synchronization is needed.
 export function BlogSearch({ defaultValue = "", activeCategory }: BlogSearchProps) {
-  const clearHref = activeCategory
-    ? `/blog?category=${encodeURIComponent(activeCategory.toLowerCase())}`
-    : "/blog"
+  const clearHref = blogHref({ activeCategory }, { page: null })
 
   return (
     <form
@@ -38,7 +37,7 @@ export function BlogSearch({ defaultValue = "", activeCategory }: BlogSearchProp
           autoComplete="off"
           enterKeyHint="search"
           aria-label="Search blog posts"
-          className="blog-search__input w-full rounded-[0.625rem] border border-(--color-control-border,#9F9F9F) bg-canvas px-4 pr-24 text-base text-foreground placeholder:text-muted focus:border-brand-focus focus:outline-none focus:ring-2 focus:ring-brand-focus/20"
+          className="blog-search__input w-full border border-(--color-control-border) bg-canvas px-4 pr-24 text-base text-foreground placeholder:text-muted focus:border-brand-focus focus:outline-none focus:ring-2 focus:ring-brand-focus/20"
         />
         <div className="blog-search__actions absolute right-2 flex items-center gap-1">
           {defaultValue && (

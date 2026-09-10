@@ -45,9 +45,9 @@ unknown-provenance photography; production uses the approved tokenized
 At the established 2 raster px : 1 CSS px interpretation, the reference
 supplies a 1634px feed column, a 143px column gap, a 622px sidebar column,
 1634×1000px lead frames (1.634:1), 120×118px pagination buttons, and a
-622×106px sidebar search box. The production roles are
-`--blog-content-padding-top` (72px), `--blog-content-padding-bottom` (80px),
-`--blog-column-gap` (72px), `--blog-sidebar-width` (312px),
+622×106px sidebar search box. The production roles are `--blog-content-padding-top` (72px),
+`--blog-content-padding-bottom` (80px), `--blog-gap`/`--blog-column-gap`
+(72px), `--blog-sidebar-width` (312px),
 `--blog-card-gap` (54px), `--blog-card-radius` (10px),
 `--blog-card-media-ratio` (817 / 500), `--blog-recent-thumb-size` (80px),
 `--blog-recent-thumb-radius` (8px), `--blog-search-height` (53px),
@@ -56,6 +56,11 @@ supplies a 1634px feed column, a 143px column gap, a 622px sidebar column,
 Reference lead and thumbnail crops are never shipped: their mockup pixels
 have unknown provenance, so the 24 fixtures reuse honest Compfi editorial
 originals cropped by CSS `object-cover` inside the measured frames. The
+grid uses named areas (`feed search` / `feed sidebar`) so the search form
+can sit first in DOM order: above 1024px the measured two-column composition
+holds, 768–1024px keeps flexible columns with a reduced gap, and 768px and
+below stack search, feed, and widgets in DOM order with no visual
+reordering. The
 pagination active fill uses the accessible `--color-brand-action` instead of
 the reference `#B88E2F` so white numerals keep AA contrast. Above 1024px the
 feed/sidebar grid preserves the measured two-column composition inside the

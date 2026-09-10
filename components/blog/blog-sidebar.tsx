@@ -1,12 +1,14 @@
 import { BlogCategories } from "@/components/blog/blog-categories"
 import { BlogRecentPosts } from "@/components/blog/blog-recent-posts"
-import { BlogSearch } from "@/components/blog/blog-search"
 import type { BlogViewModel } from "@/lib/blog"
 
 export interface BlogSidebarProps {
   view: BlogViewModel
 }
 
+// Categories and recent posts only. BlogSearch is a page-level grid sibling
+// (not nested here) so DOM order — search, feed, widgets — matches the
+// single-column visual order and keyboard focus never jumps past content.
 export function BlogSidebar({ view }: BlogSidebarProps) {
   return (
     <aside
@@ -14,10 +16,6 @@ export function BlogSidebar({ view }: BlogSidebarProps) {
       data-slot="blog-sidebar"
       aria-label="Blog sidebar"
     >
-      <BlogSearch
-        defaultValue={view.searchQuery}
-        activeCategory={view.activeCategory}
-      />
       <BlogCategories
         categories={view.categories}
         activeCategory={view.activeCategory}
