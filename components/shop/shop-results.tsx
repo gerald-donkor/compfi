@@ -15,9 +15,9 @@ export function ShopResults({ view }: ShopResultsProps) {
     <p className="shop-results__summary">Showing {view.visibleStart}–{view.visibleEnd} of {view.totalCount} products</p>
     <ProductGrid products={view.visibleProducts} />
     {view.totalPages > 1 && <Pagination className="shop-results__pagination"><PaginationContent>
-      {view.page > 1 && <PaginationItem><PaginationPrevious href={shopHref(view, { page: view.page - 1 })} /></PaginationItem>}
+      {view.page > 1 && <PaginationItem><PaginationPrevious href={shopHref(view, { page: view.page - 1 })} text="Prev" /></PaginationItem>}
       {Array.from({ length: view.totalPages }, (_, index) => index + 1).map((page) => <PaginationItem key={page}><PaginationLink href={shopHref(view, { page })} isActive={page === view.page}>{page}</PaginationLink></PaginationItem>)}
-      {view.page < view.totalPages && <PaginationItem><PaginationNext href={shopHref(view, { page: view.page + 1 })} /></PaginationItem>}
+      {view.page < view.totalPages && <PaginationItem><PaginationNext href={shopHref(view, { page: view.page + 1 })} text="Next" /></PaginationItem>}
     </PaginationContent></Pagination>}
   </Container></section>
 }

@@ -122,7 +122,7 @@ export function QuantityInput({
       data-disabled={disabled ? "" : undefined}
       data-readonly={readOnly ? "" : undefined}
       className={cn(
-        "inline-flex h-11 items-center rounded-control border border-input bg-transparent transition-colors",
+        "inline-flex h-11 items-center rounded-control border border-input bg-transparent outline-none transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
         disabled && "opacity-50",
         className
       )}
@@ -133,7 +133,7 @@ export function QuantityInput({
         aria-label="Decrease quantity"
         disabled={!canDecrement}
         onClick={handleDecrement}
-        className="flex size-11 items-center justify-center text-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex size-11 items-center justify-center text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-3 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
       >
         <MinusIcon className="size-4" aria-hidden="true" />
       </button>
@@ -154,7 +154,7 @@ export function QuantityInput({
         onChange={handleInputChange}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        className="h-11 w-12 text-center text-sm font-medium tabular-nums text-foreground bg-transparent border-0 outline-none focus-visible:ring-2 focus-visible:ring-ring [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="h-11 w-12 text-center text-sm font-medium tabular-nums text-foreground bg-transparent border-0 outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       />
 
       <button
@@ -162,7 +162,7 @@ export function QuantityInput({
         aria-label="Increase quantity"
         disabled={!canIncrement}
         onClick={handleIncrement}
-        className="flex size-11 items-center justify-center text-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex size-11 items-center justify-center text-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-3 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
       >
         <PlusIcon className="size-4" aria-hidden="true" />
       </button>

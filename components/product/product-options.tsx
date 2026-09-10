@@ -39,6 +39,48 @@ export function ProductOptions({
   const [size, setSize] = React.useState(defaultSize)
   const [finish, setFinish] = React.useState(defaultFinish)
   const [quantity, setQuantity] = React.useState(1)
+  const [announcement, setAnnouncement] = React.useState("")
+  const [isBusy, setIsBusy] = React.useState(false)
+  const busyTimerRef = React.useRef<number | null>(null)
+
+  React.useEffect(() => {
+    return () => {
+      if (busyTimerRef.current !== null) {
+        window.clearTimeout(busyTimerRef.current)
+      }
+    }
+  }, [])
+
+  const handleSizeChange = (nextSize: string) => {
+    setSize(nextSize)
+    const opt = sizes?.find((s) => s.value === nextSize)
+    if (opt) {
+      setAnnouncement(`Selected size ${opt.label}`)
+    }
+  }
+
+  const handleFinishChange = (nextFinish: string) => {
+    setFinish(nextFinish)
+    const opt = finishes?.find((f) => f.value === nextFinish)
+    if (opt) {
+      setAnnouncement(`Selected finish ${opt.label}`)
+    }
+  }
+
+  const handleQuantityChange = (nextQuantity: number) => {
+    setQuantity(nextQuantity)
+    setAnnouncement(`Quantity set to ${nextQuantity}`)
+  }
+
+  const handleAddToCart = () => {
+    if (!product || !cart || isBusy) return
+    setIsBusy(true)
+    cart.add(product, { size, finish }, quantity)
+    busyTimerRef.current = window.setTimeout(() => {
+      setIsBusy(false)
+      busyTimerRef.current = null
+    }, 300)
+  }
 
   return (
     <section
@@ -54,7 +96,7 @@ export function ProductOptions({
             options={sizes}
             defaultValue={defaultSize}
             value={size}
-            onValueChange={setSize}
+            onValueChange={handleSizeChange}
             aria-labelledby={sizeLabelId}
           />
         </div>
@@ -67,7 +109,7 @@ export function ProductOptions({
             options={finishes}
             defaultValue={defaultFinish}
             value={finish}
-            onValueChange={setFinish}
+            onValueChange={handleFinishChange}
             aria-labelledby={finishLabelId}
           />
         </div>
@@ -75,19 +117,31 @@ export function ProductOptions({
 
       <div className="flex flex-col gap-2" data-slot="product-option-group">
         <label className="type-label" htmlFor={quantityId}>Quantity</label>
-        <QuantityInput id={quantityId} value={quantity} onValueChange={setQuantity} min={1} max={10} />
+        <QuantityInput id={quantityId} value={quantity} onValueChange={handleQuantityChange} min={1} max={10} />
         <p className="type-body-sm text-muted-foreground">Quantity is limited to 10 in this preview.</p>
       </div>
 
       <div className="flex flex-col gap-3" data-slot="product-actions">
         <p className="type-body-sm text-muted-foreground" id={actionsNoteId}>Quantity is limited to 10 per selection.</p>
         <div className="flex flex-wrap gap-3">
-          <Button disabled={!product || !cart} aria-describedby={actionsNoteId} className="max-sm:w-full" onClick={() => { if (!product || !cart) return; cart.add(product, { size, finish }, quantity) }}>
+          <Button
+            type="button"
+            disabled={!product || !cart || isBusy}
+            aria-busy={isBusy ? "true" : undefined}
+            aria-describedby={actionsNoteId}
+            className="max-sm:w-full"
+            onClick={handleAddToCart}
+          >
             Add to cart
           </Button>
           {comparisonHref ? <Link href={comparisonHref} className="min-h-11 min-w-11 border border-compfi-ink px-6 py-3 text-sm hover:border-primary hover:text-primary max-sm:w-full">Compare</Link> : null}
         </div>
       </div>
+      {announcement ? (
+        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+          {announcement}
+        </p>
+      ) : null}
     </section>
   )
 }

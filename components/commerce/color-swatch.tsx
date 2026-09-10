@@ -100,15 +100,17 @@ export function ColorSwatch({ option, ref, className, ...props }: ColorSwatchPro
           type="button"
           {...renderProps}
           className={cn(
-            "group relative flex size-11 items-center justify-center rounded-full transition-all outline-none",
-            "focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "group relative flex size-11 items-center justify-center rounded-full outline-none",
+            "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+            "focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-3",
             "disabled:cursor-not-allowed disabled:opacity-40",
             className
           )}
         >
           <span
             className={cn(
-              "relative flex size-8 items-center justify-center rounded-full border border-compfi-ink/15 transition-all",
+              "relative flex size-8 items-center justify-center rounded-full border border-compfi-ink/15",
+              "transition-[transform,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
               state.pressed && "ring-2 ring-primary ring-offset-2 scale-105"
             )}
             style={{ backgroundColor: option.color }}

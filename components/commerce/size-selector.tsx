@@ -82,11 +82,12 @@ export function SizeSelector({
               type="button"
               {...renderProps}
               className={cn(
-                "inline-flex min-h-11 min-w-11 items-center justify-center rounded-control border px-4 py-2 text-sm font-medium transition-colors outline-none",
+                "inline-flex min-h-11 min-w-11 items-center justify-center rounded-control border px-4 py-2 text-sm font-medium outline-none",
+                "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
                 state.pressed
                   ? "border-primary bg-primary text-primary-foreground font-semibold"
                   : "border-input bg-transparent text-foreground hover:bg-muted",
-                "focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2",
+                "focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-3",
                 "disabled:cursor-not-allowed disabled:opacity-40"
               )}
             >

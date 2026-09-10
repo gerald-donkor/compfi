@@ -154,21 +154,28 @@ therefore owns this one fully documented table composition.
 - **`ShopControls`**: Client leaf for the normalized `CatalogViewOptions` and
   `totalCount`; it owns only URL navigation and pending feedback, never catalog
   records. Its stable slots are `shop-controls` and `shop-filter`. Native
-  `details` supplies room disclosure and local links; the selected Base UI view
+  `details` supplies room disclosure and local links with smooth chevron
+  transitions; view toggle items enforce 44px minimum touch targets
+  (`min-width: var(--control-min)`); the selected Base UI view
   toggle carries `data-composite-item-active`, making it the roving Tab entry
   point while arrow keys move within the group. Native page-size and sort
   controls are labelled, disabled during a transition, and rebuild canonical
-  local URLs. Real usage: `/shop`.
+  local URLs. Feedback is consolidated into a single polite atomic live region
+  (`<p role="status" aria-live="polite" class="sr-only">`), eliminating duplicate
+  or competing announcements between pending and settled states. Real usage: `/shop`.
 - **`ShopResults`**: Server block accepting one resolved `CatalogViewModel`.
   It owns the `shop-results` slot and `data-view` presentation boundary,
   truthful result range, `ProductGrid` delegation, a recoverable empty state,
   and real-link pagination with the active page exposed through
-  `aria-current="page"`. Grid/list styling is responsive; it has no client
-  state or catalog mutation. Real usage: `/shop`.
+  `aria-current="page"`. Pagination uses the measured 60px wash geometry
+  (`--blog-pagination-size: 3.75rem`, `--blog-pagination-radius: 0.625rem`) matching
+  `design/2-Shop.png`, explicit `text="Prev"` and `text="Next"` navigation buttons,
+  and preserves the standard accessible name `"pagination"`. Grid/list styling
+  is responsive; it has no client state or catalog mutation. Real usage: `/shop`.
 - **`Pagination`**: Server-safe navigation composition. `PaginationLink`,
   `PaginationPrevious`, and `PaginationNext` render native anchors styled with
   the shared button variants; they never override link semantics. The active
-  page alone receives `aria-current="page"`. Real usage: Shop result pages.
+  page alone receives `aria-current="page"`. Real usage: Shop and Blog result pages.
 
 ### Phase 4 Product Detail Blocks
 
@@ -177,15 +184,23 @@ therefore owns this one fully documented table composition.
   factual ID/category metadata without inventing availability or policies.
 - **`ProductGallery`**: Focused client leaf accepting readonly media. It shows
   one responsive lead image and native thumbnail buttons with `aria-pressed`;
-  a user selection updates the lead and one polite status. Empty input renders
-  a useful `Empty` state. A changed lead-media identity resets selection and
-  clears announcements, including when returning to an earlier product. Native
-  section props and accessible naming remain customizable in every state.
+  a user selection updates the lead and one polite status. Thumbnails carry
+  the standard 3px focus ring (`outline: var(--focus-ring-width) solid var(--color-brand-focus)`
+  with `outline-offset: var(--focus-ring-offset)`); single-image collections
+  gracefully omit redundant thumbnails while keeping keyboard focus on the lead.
+  Empty input renders a useful `Empty` state. A changed lead-media identity
+  resets selection and clears announcements, including when returning to an
+  earlier product. Native section props and accessible naming remain
+  customizable in every state.
 - **`ProductOptions`**: Focused client leaf composing the certified size,
   finish, and quantity controls. Optional groups render only when data exists.
-  Quantity is bounded 1–10. Add-to-cart submits the valid configured catalog
-  selection to the cart provider and its result is announced politely;
-  an optional allowlisted `comparisonHref` renders the real Compare link.
+  Quantity is bounded 1–10. Add-to-cart features an `aria-busy` guard with
+  double-click protection (timer cleanup on unmount) and submits the valid
+  configured catalog selection to the cart provider, announced via the provider's
+  live region. A dedicated variant selection live region announces size, finish,
+  and quantity changes politely; it is mounted conditionally only when an
+  announcement is present to avoid DOM collision with the cart live region. An
+  optional allowlisted `comparisonHref` renders the real Compare link.
 - **`ProductInformation`**: Server block composing certified Base UI Tabs.
   Description is selected initially; Details reports only product ID,
   category, and configured options. Two generated detail images reuse catalog
@@ -262,8 +277,10 @@ The following components have been fully audited, styled to Compfi's measured de
   InspirationSlide[]`. It composes the certified carousel primitive, tracks
   `select` and `reInit`, exposes previous/next and four labelled dots, and
   announces one polite atomic status. Dots carry `aria-current`; controls stay
-  mounted at disabled boundaries; nested links retain arrow keys. Reduced
-  motion uses Embla's jump path. An empty collection renders no carousel.
+  mounted at disabled boundaries; nested links retain arrow keys. Interactive
+  controls use discrete motion tokens (`--duration-fast`, `--ease-standard`).
+  Reduced motion uses Embla's immediate jump path and global CSS animation
+  duration zeroing. An empty collection renders no carousel.
   At desktop each slide is capped at 404px and the locally clipped viewport
   shows the next slide; tablet/mobile use an 84% basis for a meaningful peek.
   Captions are HTML overlays inside each figure and all controls retain 44px hits.
@@ -457,6 +474,7 @@ Generated components outside this certified inventory (including accordion, aler
   - Composes native `<input type="number">` with custom decrement and increment buttons meeting 44px minimum targets.
   - Full WAI-ARIA spinbutton keyboard support: `ArrowUp` increments, `ArrowDown` decrements, `Enter` commits draft text.
   - Buttons clamp within `[min, max]` boundaries and disable at respective boundaries.
+  - Interactive elements use standardized 3px focus ring offsets (`focus-visible:ring-offset-3`) and discrete motion tokens (`transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]`).
   - Sets `data-disabled` and `data-readonly` attributes on root container.
   - Free of cascading renders: uses derived state rather than synchronization effects.
 - **Slot**: `data-slot="quantity-input"`.
@@ -470,6 +488,8 @@ Generated components outside this certified inventory (including accordion, aler
   - Hides array-valued Base UI quirk behind string-valued selection.
   - Non-color selection cue: visible checkmark icon + ring when selected.
   - Minimum 44 × 44 px touch targets (`size-11`).
+  - Discrete transitions: removed `transition-all`; uses `transition-colors` on button and `transition-[transform,box-shadow]` on inner swatch with `--duration-fast` and `--ease-standard`.
+  - Focus ring offset standardized to 3px (`focus-visible:ring-offset-3`).
   - Detects and throws on duplicate option values in development.
   - Gracefully handles empty and non-existent controlled values.
   - Forwards `ref` and native DOM attributes on both selector and individual swatches.
@@ -483,6 +503,7 @@ Generated components outside this certified inventory (including accordion, aler
 - **Features**:
   - Visible text labels with 44px minimum target floor (`min-h-11 min-w-11`).
   - Single string selection.
+  - Discrete motion tokens (`transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]`) and standardized 3px focus ring offset (`focus-visible:ring-offset-3`).
   - Detects and throws on duplicate option values in development.
   - Gracefully handles empty and non-existent controlled values.
   - Forwards `ref` and native DOM attributes.

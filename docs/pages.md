@@ -1,9 +1,68 @@
 # Compfi page build record
 
-Status: Phase 6 complete and review-closed. Phase 7 unit 1 (product-card
-overlay, cart-drawer modal, motion consistency) implemented, verified, and
-independently review-closed (see review record below). Phase 7 is not
-complete; later interaction units remain open.
+Status: Phase 7 complete and verified (Unit 1: card overlay, cart-drawer
+modal, motion consistency; Unit 2: galleries, browsing controls, variants,
+pagination). Next phase: Phase 8 (Accessibility, performance, and visual QA).
+
+## Phase 7 unit 2 — interaction polish (galleries, controls, variants, pagination)
+
+Implemented 2026-09-10 as the second and final Phase 7 unit, completing all
+Phase 7 interaction and motion polish deliverables. No route was added or
+removed; `/`, `/shop`, `/shop/[slug]`, and `/comparison` inherit the polished
+interaction contracts with no data-contract, pricing, or catalog projection change.
+
+Scope delivered:
+- `ProductGallery`: Standardized 3px focus ring on thumbnails (`outline: var(--focus-ring-width) solid var(--color-brand-focus)`
+  with `outline-offset: var(--focus-ring-offset)`), single polite live region
+  announcing image swaps, and graceful single-image resilience.
+- `ProductOptions`: Add-to-cart `aria-busy` guard with double-click protection
+  (timer cleanup on unmount); dedicated variant selection live region announcing
+  size, finish, and quantity changes politely, conditionally mounted only when
+  an announcement is present to avoid DOM collision with `CartProvider`'s live region.
+- `SizeSelector`: Standardized 3px focus ring offset (`focus-visible:ring-offset-3`),
+  discrete motion tokens (`transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]`).
+- `ColorSwatch`: Removed forbidden `transition-all`; discrete `transition-colors`
+  on button and `transition-[transform,box-shadow]` on inner swatch with
+  `--duration-fast` and `--ease-standard`, 3px focus ring offset.
+- `QuantityInput`: Standardized 3px focus ring offset, discrete motion tokens.
+- `ShopControls`: Consolidated single atomic polite live region (`<p role="status" aria-live="polite" class="sr-only">`),
+  eliminating competing live regions between pending and settled states; 44px
+  minimum touch targets on view toggles (`.shop-controls [data-slot="toggle-group-item"]`),
+  filter `<summary>` styling with smooth disclosure chevron transition.
+- `ShopResults` & `Pagination`: 60px wash pagination geometry (`--blog-pagination-size: 3.75rem`,
+  `--blog-pagination-radius: 0.625rem`) matching `design/2-Shop.png`, explicit
+  `text="Prev"` and `text="Next"` navigation buttons, default accessible name `"pagination"`.
+- `app/globals.css`: Exposed `--duration-fast` (140ms), `--duration-standard` (220ms),
+  and `--ease-standard` in `@theme inline`; moved `a { color: inherit; text-decoration: inherit; }`
+  into `@layer base` resolving a critical cascade defect where anchor buttons lost
+  white text contrast against brand gold; updated `@media (prefers-reduced-motion: reduce)`
+  with `animation-duration: 0.01ms !important;` and `animation-iteration-count: 1 !important;`.
+
+Decisions & Reference deltas:
+- Preserved measured 60px wash pagination geometry from `design/2-Shop.png` across
+  both Shop and Blog pagination.
+- Enforced 44px minimum target size on ShopControls view toggles for WCAG 2.5.8
+  compliance even though visual reference icons are compact.
+- Variant selection polite announcements and Add to Cart busy guards are
+  established accessibility additions extending the static PNGs.
+
+### Verification
+
+Self-verification on 2026-09-10 (named `compfi-phase7u2-9a8b7c6d` session, dev server on :3000):
+
+| check | result |
+| --- | --- |
+| focused interaction tests | passed: `test/gallery-controls-variants-interaction.test.tsx` (6 tests: keyboard gallery selection & polite status, single-image gallery, variant announcements & bounds, Add to Cart busy guard, ShopControls single polite region, ShopResults pagination Prev/Next) |
+| `npm run test` | passed: 26 files, 129 tests |
+| `npm run lint` | passed: 0 errors |
+| `npx tsc --noEmit` | passed: 0 errors |
+| `npm run build` | passed: 19/19 routes prerendered cleanly |
+| responsive | `/`, `/shop`, `/shop/alder-dining-chair`, and `/comparison` showed `scrollWidth === clientWidth` at 1440, 1024, 768, 390, and 320px (zero page overflow) |
+| interactive flows | gallery lead swap and status, variant size/color/quantity selection and boundary clamping, tabs switching, filter disclosure, pagination navigation, comparison remove, and carousel navigation with boundary stops verified |
+| reduced motion | emulated `prefers-reduced-motion: reduce` verified instant jump path on carousel and collapsed transition/animation durations (0.01ms) |
+| axe | 0 violations across all four production routes (`/`, `/shop`, `/shop/alder-dining-chair`, `/comparison`) |
+| console | 0 console errors across all verified routes |
+| screenshots | `/tmp/compfi-phase7u2-{1440,1024,768,390,320}.png` and `/tmp/compfi-phase7u2-gallery-{1440,390}.png` |
 
 ## Phase 7 unit 1 — interaction polish (overlay, drawer, motion)
 

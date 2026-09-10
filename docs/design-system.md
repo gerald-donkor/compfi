@@ -325,6 +325,18 @@ an established primitive in the component phase.
   empty-drawer solid action keeps white label text so the certified
   `--color-brand-action` fill keeps AA contrast; this is a cascade correction
   in the drawer markup, not a new token.
+- Phase 7 unit 2 exposed `--duration-fast` (140ms), `--duration-standard` (220ms),
+  and `--ease-standard` (`cubic-bezier(0.2, 0, 0, 1)`) inside Tailwind 4's
+  `@theme inline` in `app/globals.css`, enabling uniform transition utility
+  classes across components. Standardized focus ring offsets to 3px on variant
+  options (`focus-visible:ring-offset-3`), replaced forbidden `transition-all`
+  with discrete property transitions (`transition-colors`, `transition-[transform,box-shadow]`),
+  and enhanced the global `@media (prefers-reduced-motion: reduce)` block with
+  `animation-duration: 0.01ms !important;` and `animation-iteration-count: 1 !important;`.
+  Additionally, moved the default `a { color: inherit; text-decoration: inherit; }`
+  reset into `@layer base` so that `@layer utilities` classes (such as
+  `.text-primary-foreground`) correctly win the CSS cascade on anchor buttons
+  without requiring specificity hacks.
 
 ## Shared chrome tokens
 
