@@ -64,6 +64,49 @@ Self-verification on 2026-09-10 (named `compfi-phase7u2-9a8b7c6d` session, dev s
 | console | 0 console errors across all verified routes |
 | screenshots | `/tmp/compfi-phase7u2-{1440,1024,768,390,320}.png` and `/tmp/compfi-phase7u2-gallery-{1440,390}.png` |
 
+### Independent review (2026-09-10)
+
+Review base `01705cccd04a968a39535b84b21e88c7d62c9a1e...HEAD` covered
+`7eb39c0` against `prompts/22-polish-gallery-controls-variants-pagination.md`
+plus `AGENTS.md` §§1.1, 1.2, 2.1–2.4, 3.1–3.4, 6–7, 9, 10, 12–13 and owning docs.
+
+- Standards: 2 violations + 3 baseline code smells reported.
+  - Violation 1 (hard): Conditionally mounting `{announcement ? <p role="status">...</p> : null}`
+    in `ProductOptions` injected container simultaneously with text, causing screen
+    readers to drop announcements (WCAG 2.2 AA / WAI-ARIA 4.1.3). Accepted and fixed:
+    persisted container `<p role="status" aria-live="polite" aria-atomic="true">` permanently.
+    Placed `CartProvider`'s persistent live region before children so it remains the
+    primary provider-level status.
+  - Violation 2 (hard): `ShopControls` exposed identical count text in both visible
+    and screen-reader paragraphs when not pending, creating duplicate announcements
+    in virtual reading mode. Accepted and fixed: live region clears when settled
+    (`{isPending ? "Updating products…" : ""}`).
+  - Smell 1 (Duplicated Code): Option find-by-value and announcement template logic
+    duplicated across size and finish handlers. Accepted and refactored into `handleOptionChange`.
+  - Smell 2 (Duplicated Code): Count string interpolation duplicated in `ShopControls`.
+    Resolved via Violation 2 fix.
+  - Smell 3 (Speculative Generality): Exposing `--duration-*` without Tailwind 4's
+    `--transition-duration-*` theme mapping. Accepted and mapped `--transition-duration-fast`,
+    `--transition-duration-standard`, and `--transition-timing-function-standard` in `@theme inline`.
+- Spec: 4 findings reported.
+  - Finding 1 (c, hard): Setting `disabled` on Add to Cart button during the 300ms
+    busy window resets browser focus to `document.body`, disorienting keyboard users.
+    Accepted and fixed: button remains enabled with `aria-busy="true"` and an early-return
+    guard in `handleAddToCart`, retaining keyboard focus completely.
+  - Finding 2 (a, hard): Interaction test suite lacked tests for tabs keyboard operation
+    and carousel controls/boundaries. Accepted and fixed: added focused tests in
+    `test/gallery-controls-variants-interaction.test.tsx`.
+  - Finding 3 (a, minor): `ProductComparison` live region lacked `role="status"` and
+    `aria-atomic="true"`. Accepted and standardized in `components/comparison/product-comparison.tsx`.
+  - Finding 4 (b, scope creep): Global reset layer migration of `a { ... }` into `@layer base`.
+    Rejected with evidence: unlayered CSS reset in Tailwind 4 beat `@layer utilities`
+    classes like `.text-primary-foreground` on link buttons, causing axe color contrast
+    violations on brand gold backgrounds. Fixing the cascade was mandatory to meet
+    WCAG 2.2 AA floor and prompt's 0-violation acceptance criterion.
+- Fix verification: All 26 test files passed (131 tests), 0 lint errors, 0 TypeScript
+  errors, and clean Turbopack production build (19/19 pages prerendered).
+- Status: Phase 7 is fully completed and review-closed.
+
 ## Phase 7 unit 1 — interaction polish (overlay, drawer, motion)
 
 Implemented 2026-09-10 as the first dependency-safe Phase 7 unit. No route

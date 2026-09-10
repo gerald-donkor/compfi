@@ -17,7 +17,7 @@ export function ProductComparison({ comparison, className, ...props }: ProductCo
   const canAdd = comparison.choices.length > 0 && comparison.count < comparison.capacity
   return <section {...props} className={cn("product-comparison", className)} data-slot="product-comparison">
     <Container>
-      <div className="product-comparison__intro"><h2 className="type-heading-lg">Compare products</h2><p className="text-muted">Review catalog details and available options side by side.</p><p className="sr-only" aria-live="polite">Comparing {comparison.count} {comparison.count === 1 ? "product" : "products"}</p></div>
+      <div className="product-comparison__intro"><h2 className="type-heading-lg">Compare products</h2><p className="text-muted">Review catalog details and available options side by side.</p><p className="sr-only" role="status" aria-live="polite" aria-atomic="true">Comparing {comparison.count} {comparison.count === 1 ? "product" : "products"}</p></div>
       {comparison.count ? <>
         {comparison.count === 1 ? <p className="product-comparison__guidance">Add another product to compare their catalog details side by side.</p> : null}
         <div className="product-comparison__summaries">{comparison.products.map((product) => <ComparisonProductSummary key={product.id} product={product} removeHref={comparison.removeHref(product.slug)} />)}

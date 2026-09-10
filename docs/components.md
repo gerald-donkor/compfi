@@ -195,12 +195,13 @@ therefore owns this one fully documented table composition.
 - **`ProductOptions`**: Focused client leaf composing the certified size,
   finish, and quantity controls. Optional groups render only when data exists.
   Quantity is bounded 1–10. Add-to-cart features an `aria-busy` guard with
-  double-click protection (timer cleanup on unmount) and submits the valid
-  configured catalog selection to the cart provider, announced via the provider's
-  live region. A dedicated variant selection live region announces size, finish,
-  and quantity changes politely; it is mounted conditionally only when an
-  announcement is present to avoid DOM collision with the cart live region. An
-  optional allowlisted `comparisonHref` renders the real Compare link.
+  double-click protection (timer cleanup on unmount) while keeping the button
+  enabled so keyboard focus is never ejected to `document.body`. It submits
+  the valid configured catalog selection to the cart provider, announced via
+  the provider's live region. A dedicated persistent variant selection live
+  region (`<p role="status" aria-live="polite" aria-atomic="true">`) announces
+  size, finish, and quantity changes politely without unmounting. An optional
+  allowlisted `comparisonHref` renders the real Compare link.
 - **`ProductInformation`**: Server block composing certified Base UI Tabs.
   Description is selected initially; Details reports only product ID,
   category, and configured options. Two generated detail images reuse catalog
@@ -228,8 +229,10 @@ The following components have been fully audited, styled to Compfi's measured de
 - **`CartProvider` / `useCart`**: Narrow client state boundary mounted inside
   the root layout. It holds only the current tab's cart lines and exposes
   `add`, `setQuantity`, and `remove`; catalog product details and integer-cent
-  totals are derived from immutable fixtures. Its polite live region announces
-  ordinary cart changes. Reloading deliberately starts a new empty cart.
+  totals are derived from immutable fixtures. Its polite live region
+  (`<p className="sr-only" role="status" aria-live="polite" aria-atomic="true">`)
+  is persistently mounted before children to act as the primary provider status.
+  Reloading deliberately starts a new empty cart.
 - **`CartDrawer`**: Client leaf built on the existing named Base UI Sheet.
   Empty and populated states retain the primitive's modal focus mechanics
   (dialog labelled `Your cart` with a screen-reader description, focus trap,

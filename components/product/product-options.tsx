@@ -51,19 +51,19 @@ export function ProductOptions({
     }
   }, [])
 
-  const handleSizeChange = (nextSize: string) => {
-    setSize(nextSize)
-    const opt = sizes?.find((s) => s.value === nextSize)
-    if (opt) {
-      setAnnouncement(`Selected size ${opt.label}`)
+  const handleOptionChange = (
+    kind: "size" | "finish",
+    nextVal: string,
+    options: readonly { value: string; label: string }[] | undefined
+  ) => {
+    if (kind === "size") {
+      setSize(nextVal)
+    } else {
+      setFinish(nextVal)
     }
-  }
-
-  const handleFinishChange = (nextFinish: string) => {
-    setFinish(nextFinish)
-    const opt = finishes?.find((f) => f.value === nextFinish)
+    const opt = options?.find((item) => item.value === nextVal)
     if (opt) {
-      setAnnouncement(`Selected finish ${opt.label}`)
+      setAnnouncement(`Selected ${kind} ${opt.label}`)
     }
   }
 
@@ -96,7 +96,7 @@ export function ProductOptions({
             options={sizes}
             defaultValue={defaultSize}
             value={size}
-            onValueChange={handleSizeChange}
+            onValueChange={(val) => handleOptionChange("size", val, sizes)}
             aria-labelledby={sizeLabelId}
           />
         </div>
@@ -109,7 +109,7 @@ export function ProductOptions({
             options={finishes}
             defaultValue={defaultFinish}
             value={finish}
-            onValueChange={handleFinishChange}
+            onValueChange={(val) => handleOptionChange("finish", val, finishes)}
             aria-labelledby={finishLabelId}
           />
         </div>
@@ -126,7 +126,7 @@ export function ProductOptions({
         <div className="flex flex-wrap gap-3">
           <Button
             type="button"
-            disabled={!product || !cart || isBusy}
+            disabled={!product || !cart}
             aria-busy={isBusy ? "true" : undefined}
             aria-describedby={actionsNoteId}
             className="max-sm:w-full"
@@ -137,11 +137,9 @@ export function ProductOptions({
           {comparisonHref ? <Link href={comparisonHref} className="min-h-11 min-w-11 border border-compfi-ink px-6 py-3 text-sm hover:border-primary hover:text-primary max-sm:w-full">Compare</Link> : null}
         </div>
       </div>
-      {announcement ? (
-        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
-          {announcement}
-        </p>
-      ) : null}
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </p>
     </section>
   )
 }

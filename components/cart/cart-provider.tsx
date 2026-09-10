@@ -63,7 +63,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     productFor: (line) => getCatalogProductBySlug(line.slug),
   }), [add, lines, liveMessage, remove, setQuantity])
 
-  return <CartContext.Provider value={value}>{children}<p className="sr-only" aria-live="polite">{liveMessage}</p></CartContext.Provider>
+  return (
+    <CartContext.Provider value={value}>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {liveMessage}
+      </p>
+      {children}
+    </CartContext.Provider>
+  )
 }
 
 export function useCart(): CartContextValue {

@@ -36,7 +36,7 @@ export function ShopControls({ options, totalCount }: ShopControlsProps) {
             <ToggleGroupItem value="list" aria-label="List view" data-composite-item-active={options.view === "list" ? "" : undefined} disabled={isPending}><ListIcon aria-hidden="true" /></ToggleGroupItem>
           </ToggleGroup>
           <p className="shop-controls__count">{totalCount} {totalCount === 1 ? "product" : "products"}</p>
-          <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{isPending ? "Updating products…" : `${totalCount} ${totalCount === 1 ? "product" : "products"}`}</p>
+          <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{isPending ? "Updating products…" : ""}</p>
         </div>
         <div className="shop-controls__selects">
           <label>Show

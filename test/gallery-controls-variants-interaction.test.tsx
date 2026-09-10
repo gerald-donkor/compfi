@@ -3,12 +3,15 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { CartProvider } from "@/components/cart/cart-provider"
+import { InspirationCarousel } from "@/components/home/inspiration-carousel"
 import { ProductGallery } from "@/components/product/product-gallery"
+import { ProductInformation } from "@/components/product/product-information"
 import { ProductOptions } from "@/components/product/product-options"
 import { ShopControls } from "@/components/shop/shop-controls"
 import { ShopResults } from "@/components/shop/shop-results"
 import { catalogProducts } from "@/lib/catalog"
 import { resolveCatalogView } from "@/lib/catalog-view"
+import { inspirationSlides } from "@/lib/home-editorial"
 import { checkA11y } from "./a11y"
 
 const atlas = catalogProducts.find((product) => product.slug === "atlas-bed")!
@@ -127,7 +130,16 @@ describe("Gallery, controls, variants, and pagination interaction contracts", ()
     expect(addBtn).toBeEnabled()
     expect(addBtn).not.toHaveAttribute("aria-busy")
 
+    // Focus button
+    addBtn.focus()
+    expect(addBtn).toHaveFocus()
+
     await user.click(addBtn)
+
+    // Button remains enabled (does NOT lose focus to body) with aria-busy="true"
+    expect(addBtn).toBeEnabled()
+    expect(addBtn).toHaveAttribute("aria-busy", "true")
+    expect(addBtn).toHaveFocus()
 
     // Provider live message announced
     expect(screen.getByText(new RegExp(`${atlas.name} added to cart`, "i"))).toBeInTheDocument()
@@ -136,7 +148,7 @@ describe("Gallery, controls, variants, and pagination interaction contracts", ()
     expect(addBtn).toHaveTextContent("Add to cart")
 
     await waitFor(() => {
-      expect(addBtn).toBeEnabled()
+      expect(addBtn).not.toHaveAttribute("aria-busy")
     })
 
     expect(await checkA11y(container)).toEqual([])
@@ -153,7 +165,8 @@ describe("Gallery, controls, variants, and pagination interaction contracts", ()
     const { container } = render(<ShopControls options={viewOptions} totalCount={8} />)
 
     expect(container.querySelector(".shop-controls__count")).toHaveTextContent("8 products")
-    expect(screen.getByRole("status")).toHaveTextContent("8 products")
+    // Settled status clears so virtual cursor does not announce duplicate count
+    expect(screen.getByRole("status")).toHaveTextContent("")
 
     const gridBtn = screen.getByRole("button", { name: "Grid view" })
     const listBtn = screen.getByRole("button", { name: "List view" })
@@ -161,6 +174,55 @@ describe("Gallery, controls, variants, and pagination interaction contracts", ()
     expect(gridBtn).toHaveAttribute("tabindex", "0")
     expect(gridBtn).toHaveAttribute("data-composite-item-active")
     expect(listBtn).toHaveAttribute("tabindex", "-1")
+
+    expect(await checkA11y(container)).toEqual([])
+  })
+
+  it("operates ProductInformation tabs with keyboard navigation and panel switching", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<ProductInformation product={atlas} />)
+
+    const descTab = screen.getByRole("tab", { name: "Description" })
+    const detailsTab = screen.getByRole("tab", { name: "Details" })
+
+    expect(descTab).toHaveAttribute("aria-selected", "true")
+    expect(detailsTab).toHaveAttribute("aria-selected", "false")
+    expect(screen.getByText(atlas.detailDescription)).toBeInTheDocument()
+
+    // Keyboard navigation between tabs
+    await user.click(descTab)
+    expect(descTab).toHaveFocus()
+
+    await user.keyboard("{ArrowRight}")
+    expect(detailsTab).toHaveFocus()
+    await user.keyboard("{Enter}")
+
+    expect(detailsTab).toHaveAttribute("aria-selected", "true")
+    expect(descTab).toHaveAttribute("aria-selected", "false")
+    expect(screen.getByText(atlas.id)).toBeInTheDocument()
+
+    expect(await checkA11y(container)).toEqual([])
+  })
+
+  it("operates InspirationCarousel with dots, arrows, and polite status announcement", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<InspirationCarousel slides={inspirationSlides} />)
+
+    // Initial status
+    const status = screen.getByRole("status")
+    expect(status).toHaveTextContent(`Room 1 of ${inspirationSlides.length}: ${inspirationSlides[0].title}`)
+
+    // Dots have accessible label and aria-current on active
+    const dot1 = screen.getByRole("button", { name: `Go to room 1: ${inspirationSlides[0].title}` })
+    const dot2 = screen.getByRole("button", { name: `Go to room 2: ${inspirationSlides[1].title}` })
+
+    expect(dot1).toHaveAttribute("aria-current", "true")
+    expect(dot2).not.toHaveAttribute("aria-current")
+
+    // Click next dot
+    await user.click(dot2)
+    expect(dot2).toHaveAttribute("aria-current", "true")
+    expect(status).toHaveTextContent(`Room 2 of ${inspirationSlides.length}: ${inspirationSlides[1].title}`)
 
     expect(await checkA11y(container)).toEqual([])
   })

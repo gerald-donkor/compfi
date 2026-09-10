@@ -410,6 +410,9 @@
   --duration-fast: var(--duration-fast);
   --duration-standard: var(--duration-standard);
   --ease-standard: var(--ease-standard);
+  --transition-duration-fast: var(--duration-fast);
+  --transition-duration-standard: var(--duration-standard);
+  --transition-timing-function-standard: var(--ease-standard);
   --color-compfi-hero: var(--color-hero);
   --color-compfi-wash: var(--color-wash);
   --color-compfi-benefit: var(--color-benefit);
