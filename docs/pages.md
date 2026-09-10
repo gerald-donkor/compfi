@@ -1,6 +1,6 @@
 # Compfi page build record
 
-Status: Phase 5 cart and checkout presentation implemented, self-verified, and under final independent re-review.
+Status: Phase 5 cart and checkout presentation implemented, verified, and independently reviewed.
 
 ## Product comparison (`/comparison`)
 
@@ -472,7 +472,9 @@ the worst was accepting alphabetic phone characters when the digit count was
 otherwise valid. All four findings were accepted: one immutable length map now
 drives validation and input attributes, summary rows use `cartLineKey`, phone
 formatting rejects non-phone characters, and upper-bound tests cover every
-field. Focused tests, lint, TypeScript, and the webpack production build pass;
+field. The fixes were committed as `db6c11c`. Focused tests, lint, TypeScript,
+and the webpack production build pass;
 the full 21-file/101-test suite passes with one worker after the unconstrained
 run exceeded two existing 5-second per-test limits under host load. Final
-independent re-review from the original base is pending.
+independent re-review from the original `e2bfa6c` base reported 0 Standards
+findings and 0 Spec findings. Phase 5 is complete and reviewed.

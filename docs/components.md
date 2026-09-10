@@ -1,6 +1,6 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 5 cart and checkout components implemented, self-verified, and under final independent re-review.
+Status: Phase 5 cart and checkout components implemented, verified, and independently reviewed.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 
