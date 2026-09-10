@@ -84,7 +84,7 @@ Review dispositions:
   normalizes fields with `(details[fieldName] ?? "").trim()` and is covered by a
   dedicated unit test.
 
-The accepted fixes are committed as a local review-fix commit. Focused tests (1
+The accepted fixes are committed as a local review-fix commit (`dcc353c`). Focused tests (1
 file, 6 tests), full test suite (22 files, 107 tests), lint, TypeScript, and
 production build pass cleanly with zero errors. Contact is verified and
 review-closed; blog (`/blog`) is the remaining unit of Phase 6.
