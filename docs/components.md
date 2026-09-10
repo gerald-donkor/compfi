@@ -1,6 +1,6 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 4 product-detail components certified; implemented, tested, and verified.
+Status: Phase 5 cart and checkout components implemented and self-verified; checkout independent review pending.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 
@@ -130,11 +130,28 @@ The following components have been fully audited, styled to Compfi's measured de
 - **`CartDrawer`**: Client leaf built on the existing named Base UI Sheet.
   Empty and populated states retain the primitive's modal focus mechanics. A
   populated drawer renders local product media, configured selection labels,
-  product links, removal controls, an integer-cent subtotal, and a real Cart
-  link. Checkout is visibly unavailable until the route exists.
+  product links, removal controls, an integer-cent subtotal, and real Cart and
+  Checkout links. Both links close the sheet while preserving primitive-owned
+  focus return.
 - **`CartContent`**: Client route content that uses a semantic desktop table
   and labelled mobile line-item groups below `768px`. Both use the certified
   controlled `QuantityInput`; removal returns focus to its cart-items heading.
+  Its populated subtotal surface links to `/checkout`; empty state omits that
+  action.
+- **`CheckoutContent`**: Focused client block consuming `useCart` directly
+  inside the server-rendered `/checkout` shell. Empty state composes the
+  certified `Empty` and a real Shop recovery link. Populated state uses one
+  native uncontrolled form with `FieldSet`, `FieldLegend`, `FieldGroup`,
+  `Field`, `FieldLabel`, `Input`, `Textarea`, `FieldDescription`, and
+  `FieldError`; it derives product labels and integer-cent subtotals from the
+  canonical cart/catalog interface. A pure `reviewCheckoutDetails` utility
+  validates required fields, US ZIP/email/phone shapes, and explicit limits.
+  Submission is local-only: it prevents navigation, retains no personal values
+  in React state, focuses a linked error summary, clears edited field errors,
+  and announces the exact non-transactional success result. Payment controls,
+  order state, persistence, and network work are absent. At 1440px the block
+  uses measured 454px/527px columns; 1024px uses flexible columns, and 768px
+  through 320px follows one normal-flow column. Real usage: `/checkout`.
 
 ### Phase 4 Home Editorial Blocks
 

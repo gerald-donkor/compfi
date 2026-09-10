@@ -178,6 +178,15 @@
   --comparison-product-frame-height: 11.25rem;
   --comparison-table-attribute-width: 22.1875rem;
   --comparison-table-product-width: 21.5rem;
+  /* Checkout presentation geometry */
+  --checkout-content-padding-top: 6.9375rem;
+  --checkout-content-padding-bottom: 7.5rem;
+  --checkout-billing-width: 28.375rem;
+  --checkout-summary-width: 32.9375rem;
+  --checkout-column-gap: 9.0625rem;
+  --checkout-control-height: 4.6875rem;
+  --checkout-submit-width: 19.875rem;
+  --checkout-submit-height: 4rem;
   /* shadcn semantic role mappings to Compfi design tokens */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);
@@ -704,6 +713,137 @@ textarea {
   .product-comparison__summaries { grid-template-columns: minmax(0, 1fr); }
   .comparison-picker { width: 100%; }
   .comparison-picker__select { width: 100%; min-width: 0; }
+}
+
+.checkout-content {
+  padding-block: var(--checkout-content-padding-top) var(--checkout-content-padding-bottom);
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, var(--checkout-billing-width)) minmax(0, var(--checkout-summary-width));
+  justify-content: center;
+  gap: var(--checkout-column-gap);
+  align-items: start;
+}
+
+.checkout-billing,
+.checkout-review {
+  min-width: 0;
+}
+
+.checkout-field-group {
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+}
+
+.checkout-name-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
+}
+
+.checkout-field-control {
+  min-height: var(--checkout-control-height);
+}
+
+.checkout-error-summary {
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  border: var(--border-thin) solid var(--color-discount);
+  color: var(--color-ink);
+}
+
+.checkout-error-summary:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-brand-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.checkout-error-summary a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-min);
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: var(--space-1);
+}
+
+.checkout-empty-action,
+.cart-checkout-action {
+  color: var(--color-canvas);
+}
+
+.checkout-summary-heading,
+.checkout-summary-line,
+.checkout-summary-subtotal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.checkout-summary-lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: var(--space-6) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checkout-summary-subtotal {
+  align-items: baseline;
+  padding-block: var(--space-6);
+}
+
+.checkout-payment {
+  margin-top: var(--space-10);
+}
+
+.checkout-submit {
+  width: min(100%, var(--checkout-submit-width));
+  min-height: var(--checkout-submit-height);
+  margin-top: var(--space-10);
+}
+
+@media (max-width: 74.999rem) {
+  .checkout-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.9fr);
+    gap: var(--space-12);
+  }
+}
+
+.checkout-field-control[readonly] {
+  cursor: default;
+  background: var(--color-product);
+  color: var(--color-muted);
+}
+
+@media (max-width: 48rem) {
+  .checkout-content {
+    padding-block: var(--space-16);
+  }
+
+  .checkout-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+}
+
+@media (max-width: 30rem) {
+  .checkout-name-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .checkout-field-group {
+    gap: var(--space-6);
+  }
+
+  .checkout-summary-heading,
+  .checkout-summary-line,
+  .checkout-summary-subtotal {
+    gap: var(--space-3);
+  }
 }
 
 .home-section-intro {

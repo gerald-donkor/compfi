@@ -61,14 +61,10 @@ export function CartDrawer() {
           </ul>
           <div className="border-t border-compfi-border px-8 py-6">
             <div className="flex items-baseline justify-between gap-4"><span className="type-body">Subtotal</span><Money amountCents={subtotalCents} className="type-heading-sm text-primary" /></div>
-            <div className="mt-6 flex flex-col gap-3"><Link href="/cart" className={buttonVariants({ variant: "outline", size: "default" })} onClick={() => setOpen(false)}>View cart</Link><ButtonDisabled /></div>
+            <div className="mt-6 flex flex-col gap-3"><Link href="/cart" className={buttonVariants({ variant: "outline", size: "default" })} onClick={() => setOpen(false)}>View cart</Link><Link href="/checkout" className={buttonVariants({ variant: "outline", size: "default" })} onClick={() => setOpen(false)}>Checkout</Link></div>
           </div>
         </>}
       </SheetContent>
     </Sheet>
   )
-}
-
-function ButtonDisabled() {
-  return <span aria-disabled="true" className={`${buttonVariants({ variant: "outline", size: "default" })} cursor-not-allowed opacity-50`}>Checkout available soon</span>
 }

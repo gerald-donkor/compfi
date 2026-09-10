@@ -1,6 +1,6 @@
 # Compfi page build record
 
-Status: Phase 4 Home, Shop, and product-detail browsing implemented and verified.
+Status: Phase 5 cart and checkout presentation implemented and self-verified; checkout independent review pending.
 
 ## Product comparison (`/comparison`)
 
@@ -333,10 +333,10 @@ with a 20% scrim. At `768px` the table intentionally becomes labelled line
 item cards, avoiding horizontal overflow.
 
 Reference deltas: fixture local WebP media and integer USD cents replace
-template imagery and mixed currencies. The reference's unsupported total,
-comparison, and checkout controls are omitted; checkout is clearly unavailable
-because no route or order flow has been approved. The cart has no persistence,
-tax, shipping, discount, payment, inventory, or delivery claim.
+template imagery and mixed currencies. The unsupported total and comparison
+controls remain omitted. Populated cart states now link to the presentation-only
+`/checkout` review boundary; empty states omit checkout actions. The cart has no
+persistence, tax, shipping, discount, payment, inventory, or delivery claim.
 
 ### Reference evidence and production interpretation
 
@@ -410,3 +410,60 @@ original base reported zero Standards findings. Its final Spec pass found the
 benefit heading at 20px rather than the required 24px; that one-line,
 behavior-preserving typography correction is committed separately after the
 same test, lint, and TypeScript checks passed.
+
+## Checkout (`/checkout`)
+
+Implemented 2026-09-09 as the remaining Phase 5 presentation unit. The server
+route owns metadata, the existing banner hero with Home / Cart / Checkout
+breadcrumbs, one main landmark, the focused client checkout block, and the
+shared benefits strip. A direct empty load shows only the certified recovery
+state and Shop link. A populated tab-local cart shows blank uncontrolled US
+contact/address fields, a read-only United States value, canonical product
+configuration and integer-cent subtotal, an explicit unavailable-payment
+explanation, and `Check details`.
+
+The form review is synchronous and client-only. It prevents native submission,
+holds only error/status state, focuses a linked error summary, preserves typed
+values and cart lines, clears stale field errors and success feedback on edit,
+and announces `Details checked. No order was placed and no payment was
+processed.` for valid synthetic input. It has no form action, server action,
+request, persistence, order, payment control, tax, shipping, discount,
+inventory, policy, or confirmation state. Populated cart page and drawer states
+now expose real `/checkout` links; empty states omit them.
+
+Fresh native measurement reproduced the `2200×3000+300+900` Checkout crop and
+its 6,454,154-pixel white field. The measured body starts near y=1050, with
+approximately 454px/527px columns, a 145px gap, 75px controls, a 1px summary
+rule, and a 318×64px outline action under the established 2× interpretation.
+The 1440px implementation preserves that quiet two-column hierarchy; 1024px
+uses flexible columns, while 768px, 390px, and 320px use logical one-column
+flow with name fields stacking below 480px.
+
+Reference deltas are deliberate: Compfi copy, Poppins, USD fixtures, a
+tokenized hero wash, a display subtotal, an unavailable-payment explanation,
+and a non-transactional review action replace the legacy brand, mixed currency,
+photograph, unsupported grand total, bank/cash choices, policy claim, and
+misleading order action. Tablet/mobile structure, validation, focus recovery,
+privacy limits, and reduced motion are implementation decisions not proven by
+the desktop screenshot.
+
+### Verification
+
+Self-verification on 2026-09-09:
+
+| check | result |
+| --- | --- |
+| focused checkout/cart/field tests | passed: 3 files, 12 tests |
+| `npm run test` | passed: 21 files, 101 tests |
+| `npm run lint` | passed |
+| `npx tsc --noEmit` | passed |
+| `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind its internal port (`Operation not permitted`) |
+| `npm run build -- --webpack` | passed; `/checkout` prerendered as static content |
+| browser customer flow | named `compfi-checkout` session passed product add → populated drawer → Checkout, Cart → Proceed to checkout, direct empty reload, invalid focus recovery, valid review, stale-success clearing, retained values/cart, no URL change, no POST, and modal Escape/focus return |
+| responsive screenshots | inspected `/tmp/compfi-checkout-{1440,1024,768,390,320}.png`; all five widths matched the recorded layout decisions and had `scrollWidth === clientWidth`; 320px supplies the effective 400% reflow width for a 1280px desktop viewport |
+| reduced motion and accessibility | reduced-motion media emulation matched; populated axe audit reported 0 violations/0 incomplete/43 passes and empty-state re-audit reported 0/0/39 after correcting the primary-link foreground contrast |
+| console | no checkout runtime, hydration, or accessibility errors after clearing the earlier product-page-only LCP development warning |
+| Web Interface Guidelines | fresh rules reviewed against all changed UI files; the verified primary-link contrast defect was fixed and no unresolved finding remains |
+
+Implementation commit and independent Standards/Spec review are pending; this
+section will record their SHAs and outcomes before Phase 5 is marked complete.

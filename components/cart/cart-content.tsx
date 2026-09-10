@@ -6,7 +6,7 @@ import { Trash2Icon } from "lucide-react"
 import { Money } from "@/components/commerce/money"
 import { QuantityInput } from "@/components/commerce/quantity-input"
 import { Container } from "@/components/layout/container"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia } from "@/components/ui/empty"
 import { Link } from "@/components/ui/link"
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table"
@@ -37,7 +37,7 @@ export function CartContent() {
       <Table className="hidden min-[769px]:table"><TableHeader className="bg-secondary"><TableRow><TableHead className="px-6">Product</TableHead><TableHead>Price</TableHead><TableHead>Quantity</TableHead><TableHead>Subtotal</TableHead><TableHead><span className="sr-only">Remove</span></TableHead></TableRow></TableHeader><TableBody>{lines.map((line) => <DesktopLine key={`${line.slug}-${line.size}-${line.finish}`} line={line} onRemove={removeAndFocus} />)}</TableBody></Table>
       <div className="flex flex-col gap-5 min-[769px]:hidden">{lines.map((line) => <MobileLine key={`${line.slug}-${line.size}-${line.finish}`} line={line} onRemove={removeAndFocus} />)}</div>
     </div>
-    <aside aria-labelledby="cart-subtotal" className="surface-wash p-8 sm:p-12"><h2 id="cart-subtotal" className="type-heading-lg">Cart subtotal</h2><div className="mt-10 flex items-baseline justify-between gap-4"><span className="type-body">Subtotal</span><Money amountCents={subtotalCents} className="type-heading-md text-primary" /></div><p className="mt-8 type-body-sm text-muted-foreground">Checkout is not available yet.</p><Button disabled className="mt-6 w-full">Checkout unavailable</Button></aside>
+    <aside aria-labelledby="cart-subtotal" className="surface-wash p-8 sm:p-12"><h2 id="cart-subtotal" className="type-heading-lg">Cart subtotal</h2><div className="mt-10 flex items-baseline justify-between gap-4"><span className="type-body">Subtotal</span><Money amountCents={subtotalCents} className="type-heading-md text-primary" /></div><p className="mt-8 type-body-sm text-muted-foreground">Review your details before checkout options are added.</p><Link href="/checkout" className={`${buttonVariants({ variant: "default", size: "default" })} cart-checkout-action mt-6 w-full`}>Proceed to checkout</Link></aside>
   </Container>
 }
 

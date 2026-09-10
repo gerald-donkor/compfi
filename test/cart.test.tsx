@@ -35,6 +35,12 @@ describe("cart model", () => {
 })
 
 describe("cart interactions", () => {
+  it("omits checkout entry points when the cart is empty", () => {
+    render(<CartProvider><CartDrawer /><CartContent /></CartProvider>)
+    expect(screen.queryByRole("link", { name: "Proceed to checkout" })).not.toBeInTheDocument()
+    expect(screen.queryByRole("link", { name: "Checkout" })).not.toBeInTheDocument()
+  })
+
   it("synchronizes detail additions, the drawer, and the cart page", async () => {
     const user = userEvent.setup()
     const { container } = render(<CartProvider><ProductOptions product={atlas} sizes={atlas.sizes} defaultSize={atlas.defaultSize} finishes={atlas.finishes} defaultFinish={atlas.defaultFinish} /><CartDrawer /><CartContent /></CartProvider>)
@@ -43,9 +49,11 @@ describe("cart interactions", () => {
     expect(screen.getByRole("button", { name: "Open cart, 1 items" })).toBeInTheDocument()
     expect(screen.getAllByRole("link", { name: atlas.name })[0]).toHaveAttribute("href", `/shop/${atlas.slug}`)
     expect(screen.getAllByText("$1,599.00").length).toBeGreaterThan(0)
+    expect(screen.getByRole("link", { name: "Proceed to checkout" })).toHaveAttribute("href", "/checkout")
     await user.click(screen.getByRole("button", { name: "Open cart, 1 items" }))
     expect(await screen.findByRole("dialog")).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "View cart" })).toHaveAttribute("href", "/cart")
+    expect(screen.getByRole("link", { name: "Checkout" })).toHaveAttribute("href", "/checkout")
     await user.click(screen.getByRole("button", { name: "Close" }))
     await user.click(screen.getAllByRole("button", { name: "Increase quantity" })[1])
     expect(screen.getByRole("button", { name: "Open cart, 2 items" })).toBeInTheDocument()

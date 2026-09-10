@@ -14,6 +14,25 @@ columns, and 180px product-media frames. The table is a fixed-layout semantic
 table in a labelled, focusable horizontal-scroll region; only that region may
 overflow at narrow widths.
 
+## Checkout geometry
+
+The fresh Checkout measurement used the native `2200×3000+300+900` crop. Its
+6,454,154 white pixels confirm the broad flat canvas; the first billing text
+begins near x=350/y=1050 and the order summary near x=1548. At the established
+2 raster px : 1 CSS px interpretation, the reference supplies approximately
+454px and 527px columns with a 145px gap, 75px form controls, a 1px summary
+rule, and a 318×64px outline action.
+
+The production roles are `--checkout-content-padding-top` (111px),
+`--checkout-content-padding-bottom` (120px), `--checkout-billing-width`
+(454px), `--checkout-summary-width` (527px), `--checkout-column-gap` (145px),
+`--checkout-control-height` (75px), and the 318×64px checkout-submit roles.
+Above 1200px they preserve the measured asymmetric composition. From 769px to
+1199px flexible columns use the established 48px spacing step; at 768px and
+below they stack in DOM order. Name fields stack below 480px. Existing
+container gutters, control radius, border, focus, type, and color roles remain
+authoritative; no new checkout palette, shadow, or motion role was introduced.
+
 ## Reference scale and measurement confidence
 
 All nine supplied PNGs are 2880 pixels wide and contain no embedded scale or
