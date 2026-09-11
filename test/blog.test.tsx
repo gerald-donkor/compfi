@@ -67,6 +67,17 @@ describe("resolveBlogView", () => {
     ).toBe("/blog?q=linen&category=handmade&page=2")
     expect(blogHref({ searchQuery: "linen" }, { q: null, page: 1 })).toBe("/blog")
   })
+
+  it("ensures all 24 blog fixtures have latest 2026 publication dates and valid ISO-8601 dateTimes", () => {
+    expect(blogPosts).toHaveLength(24)
+    blogPosts.forEach((post) => {
+      expect(post.date).toMatch(/^\d{2} [A-Z][a-z]{2} 2026$/)
+      expect(post.dateTime).toMatch(/^2026-\d{2}-\d{2}$/)
+      expect(new Date(`${post.dateTime}T00:00:00Z`).getUTCFullYear()).toBe(2026)
+    })
+    expect(blogPosts[0].date).toBe("11 Sep 2026")
+    expect(blogPosts[0].dateTime).toBe("2026-09-11")
+  })
 })
 
 describe("BlogPage", () => {
@@ -85,7 +96,8 @@ describe("BlogPage", () => {
     const times = container.querySelectorAll("article time")
     expect(times.length).toBe(3)
     times.forEach((time) => {
-      expect(time.getAttribute("datetime")).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      expect(time.getAttribute("datetime")).toMatch(/^2026-\d{2}-\d{2}$/)
+      expect(time.textContent).toMatch(/^\d{2} [A-Z][a-z]{2} 2026$/)
     })
 
     expect(screen.getByRole("searchbox", { name: "Search blog posts" })).toBeInTheDocument()
@@ -96,6 +108,13 @@ describe("BlogPage", () => {
     expect(screen.getByRole("heading", { name: "Recent Posts", level: 3 })).toBeInTheDocument()
     const sidebar = screen.getByRole("complementary", { name: "Blog sidebar" })
     expect(within(sidebar).getByRole("link", { name: "Wood 6 articles" })).toHaveAttribute("href", "/blog?category=wood")
+
+    const sidebarTimes = sidebar.querySelectorAll("time")
+    expect(sidebarTimes.length).toBe(5)
+    sidebarTimes.forEach((time) => {
+      expect(time.getAttribute("datetime")).toMatch(/^2026-\d{2}-\d{2}$/)
+      expect(time.textContent).toMatch(/^\d{2} [A-Z][a-z]{2} 2026$/)
+    })
 
     const pagination = screen.getByRole("navigation", { name: "Blog pagination" })
     expect(within(pagination).getByRole("link", { name: "Page 1, current page" })).toHaveAttribute("aria-current", "page")

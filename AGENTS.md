@@ -236,6 +236,7 @@ thing once does not satisfy an ALWAYS rule.
 | 2026-09-07 | Always use every required skill; when a capability is missing from `.agents/skills`, use `find-skills` before selecting and installing the minimum suitable skill. | Keeps task execution aligned with current specialized guidance while the detailed discovery, vetting, and installation procedure remains in Section 3.6. |
 | 2026-09-09 | Always use your own named `agent-browser` session for the whole task. | Prevents the shared persistent default browser from hijacking another agent's page or user state. |
 | 2026-09-09 | Always use the `agent-browser` usage documentation when needed. | Keeps browser automation commands and safety guidance aligned with the installed CLI version. |
+| 2026-09-11 | Always make sure the dates used across all the pages are the latest. | Ensures editorial posts, timestamps, sitemaps, and metadata reflect the latest publication dates across all storefront pages. |
 
 ## 3.2 Implementation workflow
 
