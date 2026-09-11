@@ -1,13 +1,7 @@
-import type { Metadata } from "next";
 import { PageHero } from "@/components/chrome/page-hero";
 import { Container } from "@/components/layout/container";
 import { Link } from "@/components/ui/link";
 import { buttonVariants } from "@/components/ui/button";
-
-export const metadata: Metadata = {
-  title: "Page Not Found",
-  description: "The requested page could not be found.",
-};
 
 export default function NotFound() {
   return (

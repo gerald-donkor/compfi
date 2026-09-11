@@ -6,7 +6,13 @@ import { ShopResults } from "@/components/shop/shop-results"
 import { catalogProducts } from "@/lib/catalog"
 import { resolveCatalogView } from "@/lib/catalog-view"
 
-export const metadata: Metadata = { title: "Shop", description: "Browse Compfi furniture by room, price, and collection order." }
+export const metadata: Metadata = {
+  title: "Shop",
+  description: "Browse Compfi furniture by room, price, and collection order.",
+  alternates: {
+    canonical: "/shop",
+  },
+}
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const view = resolveCatalogView(catalogProducts, await searchParams)

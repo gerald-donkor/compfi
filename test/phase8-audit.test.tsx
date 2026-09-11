@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import robots from "@/app/robots"
 import sitemap from "@/app/sitemap"
-import NotFound, { metadata as notFoundMetadata } from "@/app/not-found"
+import NotFound from "@/app/not-found"
 import { metadata as layoutMetadata } from "@/app/layout"
 import { metadata as homeMetadata } from "@/app/page"
 import { metadata as shopMetadata } from "@/app/shop/page"
@@ -81,11 +81,6 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
   })
 
   describe("Branded 404 page (app/not-found.tsx)", () => {
-    it("exports metadata for 404 page", () => {
-      expect(notFoundMetadata.title).toBe("Page Not Found")
-      expect(notFoundMetadata.description).toBe("The requested page could not be found.")
-    })
-
     it("renders branded PageHero, recovery message, and navigation links", async () => {
       const { container } = render(<NotFound />)
 
@@ -104,15 +99,12 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
   })
 
   describe("Metadata consistency across routes", () => {
-    it("defines root layout metadata with siteName, Open Graph, Twitter cards, and canonical URL", () => {
+    it("defines root layout metadata with siteName, Open Graph, and Twitter cards", () => {
       expect(layoutMetadata.title).toEqual({
         default: "Compfi",
         template: "%s | Compfi",
       })
       expect(layoutMetadata.description).toBe("Furniture and home furnishings, thoughtfully presented.")
-      expect(layoutMetadata.alternates).toEqual({
-        canonical: "/",
-      })
       expect(layoutMetadata.openGraph).toMatchObject({
         title: "Compfi",
         siteName: "Compfi",
@@ -124,14 +116,27 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
       })
     })
 
-    it("exports consistent titles and descriptions for all static routes", () => {
+    it("exports consistent titles, descriptions, and canonical URLs for all static routes", () => {
       expect(homeMetadata.title).toBe("Home")
+      expect(homeMetadata.alternates?.canonical).toBe("/")
+
       expect(shopMetadata.title).toBe("Shop")
+      expect(shopMetadata.alternates?.canonical).toBe("/shop")
+
       expect(cartMetadata.title).toBe("Cart")
+      expect(cartMetadata.alternates?.canonical).toBe("/cart")
+
       expect(checkoutMetadata.title).toBe("Checkout")
+      expect(checkoutMetadata.alternates?.canonical).toBe("/checkout")
+
       expect(comparisonMetadata.title).toBe("Product comparison")
+      expect(comparisonMetadata.alternates?.canonical).toBe("/comparison")
+
       expect(contactMetadata.title).toBe("Contact")
+      expect(contactMetadata.alternates?.canonical).toBe("/contact")
+
       expect(blogMetadata.title).toBe("Blog")
+      expect(blogMetadata.alternates?.canonical).toBe("/blog")
     })
 
     it("generates dynamic product metadata for valid and invalid slugs", async () => {
@@ -140,6 +145,7 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
       })
       expect(validMeta.title).toBe("Alder Dining Chair")
       expect(validMeta.description).toBeDefined()
+      expect(validMeta.alternates?.canonical).toBe("/shop/alder-dining-chair")
       expect(validMeta.openGraph).toBeDefined()
 
       const invalidMeta = await generateProductMetadata({

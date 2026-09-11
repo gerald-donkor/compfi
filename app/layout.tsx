@@ -38,9 +38,6 @@ const poppins = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  alternates: {
-    canonical: "/",
-  },
   title: {
     default: "Compfi",
     template: "%s | Compfi",

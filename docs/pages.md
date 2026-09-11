@@ -11,9 +11,9 @@ Implemented 2026-09-11 as the Phase 8 site-wide certification gate. All nine sto
   - `lib/site.ts`: Centralized `siteUrl` fallback (`process.env.NEXT_PUBLIC_SITE_URL || "https://compfi.com"`).
   - `app/robots.ts`: Next.js Route Handler generating crawler exclusion rules (`User-Agent: *`, `Allow: /`) and dynamic sitemap reference (omitted speculative `/api/` rule).
   - `app/sitemap.ts`: Dynamic sitemap generator providing entries for all static storefront paths (`/`, `/shop`, `/cart`, `/checkout`, `/contact`, `/blog`, `/comparison`) and dynamic catalog products (`/shop/[slug]`), with deterministic `lastModified` timestamp, accurate `changeFrequency`, and `priority`.
-  - `app/not-found.tsx`: Custom branded 404 recovery route exporting `metadata` (`title: "Page Not Found"`), rendering `PageHero` with breadcrumbs, accessible recovery guidance, and primary/outline actions to browse furniture or return home.
-  - `app/layout.tsx`: Standardized metadataBase, canonical URL (`alternates: { canonical: "/" }`), Open Graph defaults (`siteName: "Compfi"`, locale `"en_US"`), and Twitter card metadata.
-  - `app/shop/[slug]/page.tsx`: Standardized dynamic `generateMetadata` with Open Graph image and `robots: { index: false, follow: false }` on unlisted product slugs.
+  - `app/not-found.tsx`: Custom branded 404 recovery route rendering `PageHero` with breadcrumbs, accessible recovery guidance, and primary/outline actions to browse furniture or return home.
+  - `app/layout.tsx`: Standardized `metadataBase`, Open Graph defaults (`siteName: "Compfi"`, locale `"en_US"`), and Twitter card metadata without root canonical forcing, allowing accurate per-route canonical inheritance.
+  - Page routes (`/`, `/shop`, `/cart`, `/checkout`, `/contact`, `/blog`, `/comparison`, and dynamic `/shop/[slug]`): Each exports explicit `alternates: { canonical: ... }` matching its route path.
 - **Accessibility fixes**:
   - `components/home/inspiration-carousel.tsx`: Removed redundant `aria-label="Choose a room"` from plain `.home-inspiration__dots` `<div>`, resolving `aria-prohibited-attr` and preserving slide `group` semantics without extraneous landmark wrappers.
   - `components/chrome/cart-drawer.tsx`: Verified contrast on empty-state recovery action and modal focus trapping.
@@ -31,13 +31,13 @@ Implemented 2026-09-11 as the Phase 8 site-wide certification gate. All nine sto
   - Shop: TTFB 128.3ms, FCP 204ms, LCP 496ms, CLS 0, Hydration 31.8ms.
   - Product: TTFB 247.3ms, FCP 408ms, LCP 408ms, CLS 0, Hydration 37.4ms.
 - **Automated test suite**:
-  - `test/phase8-audit.test.tsx`: 9 automated integration tests covering robots, sitemap, 404 rendering/a11y/metadata, layout metadata with canonical URL, route metadata consistency, dynamic product metadata, and `SiteHeader`/`SiteFooter` axe checks.
-  - Full suite: 27 test files, 140 tests passing cleanly.
+  - `test/phase8-audit.test.tsx`: 8 automated integration tests covering robots, sitemap, 404 rendering/a11y, layout metadata, route metadata and canonical URL consistency across all static and dynamic routes, and `SiteHeader`/`SiteFooter` axe checks.
+  - Full suite: 27 test files, 139 tests passing cleanly.
 
 ### Verification (2026-09-11, named `compfi-phase8-8dbc2e39d5ed` session):
 | check | result |
 | --- | --- |
-| `npm run test` | passed: 27 files, 140 tests |
+| `npm run test` | passed: 27 files, 139 tests |
 | `npm run lint` | passed: 0 warnings, 0 errors |
 | `npx tsc --noEmit` | passed: 0 errors |
 | `npm run build` | passed: Turbopack prerendered 21/21 routes (including /robots.txt and /sitemap.xml) in 1.4s |
@@ -48,7 +48,7 @@ Implemented 2026-09-11 as the Phase 8 site-wide certification gate. All nine sto
 | desktop screenshots | 11 captures saved under `/tmp/compfi-phase8-qa/*.png`, confirming 2:1 raster scale and 1240px centered container |
 | Web Interface Guidelines | confirmed compliant: visible focus, 44px targets, semantic landmarks, no horizontal scroll, explicit image sizing |
 
-Implementation commit `774540b` received the required independent review on 2026-09-11. Standards reported 2 tokenization violations and 3 baseline smells (duplicated site URL, speculative `/api/` disallow, and volatile date). Spec reported missing canonical URL metadata, unbranded 404 title, and omitted chrome a11y tests. All findings were accepted and resolved in fix commit: CSS tokens `--product-detail-gallery-max-share` and `--comparison-picker-width` declared; `siteUrl` centralized; speculative rule removed; sitemap date stabilized; canonical and 404 metadata added; test suite expanded to 140 tests. All 27 test files, lint, TypeScript, and Turbopack build pass. Phase 8 is complete and certified.
+Implementation commit `774540b` received the required independent review on 2026-09-11. Standards reported 2 tokenization violations and 3 baseline smells (duplicated site URL, speculative `/api/` disallow, and volatile date). Spec reported missing canonical URL metadata, unbranded 404 title, and omitted chrome a11y tests. All findings were accepted and resolved: CSS tokens `--product-detail-gallery-max-share` and `--comparison-picker-width` declared; `siteUrl` centralized; speculative rule removed; sitemap date stabilized; canonical URLs configured explicitly per route; test suite expanded to 139 tests. Re-review confirmed 0 hard Standards violations and complete Spec alignment. All 27 test files, lint, TypeScript, and Turbopack build pass. Phase 8 is complete and certified.
 
 ## Phase 7 unit 2 — interaction polish (galleries, controls, variants, pagination)
 

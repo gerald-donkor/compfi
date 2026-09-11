@@ -7,6 +7,9 @@ import { PageHero } from "@/components/chrome/page-hero"
 export const metadata: Metadata = {
   title: "Checkout",
   description: "Review your Compfi cart and checkout details.",
+  alternates: {
+    canonical: "/checkout",
+  },
 }
 
 export default function CheckoutPage() {

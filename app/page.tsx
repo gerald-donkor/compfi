@@ -12,6 +12,9 @@ import { catalogProducts } from "@/lib/catalog"
 export const metadata: Metadata = {
   title: "Home",
   description: "Discover Compfi furniture for considered rooms.",
+  alternates: {
+    canonical: "/",
+  },
 }
 
 export default function HomePage() {

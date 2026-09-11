@@ -11,6 +11,9 @@ import { blogPosts, resolveBlogView } from "@/lib/blog"
 export const metadata: Metadata = {
   title: "Blog",
   description: "Explore interior design stories, craft insights, and decor ideas from Compfi.",
+  alternates: {
+    canonical: "/blog",
+  },
 }
 
 export default async function BlogPage({

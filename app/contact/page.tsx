@@ -7,6 +7,9 @@ import { PageHero } from "@/components/chrome/page-hero"
 export const metadata: Metadata = {
   title: "Contact",
   description: "Contact Compfi with questions about furniture and your space.",
+  alternates: {
+    canonical: "/contact",
+  },
 }
 
 export default function ContactPage() {
