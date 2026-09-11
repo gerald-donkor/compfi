@@ -12,13 +12,23 @@ import {
 } from "@/components/ui/empty"
 import { Link } from "@/components/ui/link"
 import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 import type { OrderWithItems } from "@/db/orders"
 import { formatMoney } from "@/lib/money"
 
-export function OrderHistory({ orders }: { orders: readonly OrderWithItems[] }) {
+export type OrderHistoryProps = React.HTMLAttributes<HTMLElement> & {
+  orders: readonly OrderWithItems[]
+}
+
+export function OrderHistory({ orders, className, ...props }: OrderHistoryProps) {
   if (orders.length === 0) {
     return (
-      <section aria-labelledby="order-history-heading" className="w-full">
+      <section
+        aria-labelledby="order-history-heading"
+        data-slot="order-history"
+        className={cn("w-full", className)}
+        {...props}
+      >
         <h2 id="order-history-heading" className="type-heading-md mb-6">
           Order History
         </h2>
@@ -43,7 +53,12 @@ export function OrderHistory({ orders }: { orders: readonly OrderWithItems[] }) 
   }
 
   return (
-    <section aria-labelledby="order-history-heading" className="w-full">
+    <section
+      aria-labelledby="order-history-heading"
+      data-slot="order-history"
+      className={cn("w-full", className)}
+      {...props}
+    >
       <div className="flex items-center justify-between mb-6">
         <h2 id="order-history-heading" className="type-heading-md">
           Order History

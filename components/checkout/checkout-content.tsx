@@ -1,14 +1,17 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
+import { useAuth } from "@clerk/nextjs"
 import { CheckCircle2Icon, ShoppingCartIcon } from "lucide-react"
 
-import { placeOrderAction } from "@/app/actions/checkout"
+import { type PlaceOrderItem, placeOrderAction } from "@/app/actions/checkout"
 import { useCart } from "@/components/cart/cart-provider"
 import { Money } from "@/components/commerce/money"
 import { Container } from "@/components/layout/container"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { cn } from "cn"
+import type { ShippingAddress } from "@/db/schema"
+import { cn } from "@/lib/utils"
 import {
   Empty,
   EmptyContent,
@@ -179,34 +182,82 @@ type ConfirmedOrder = {
   itemCount: number
   customerName: string
   customerEmail: string
-  shippingAddress: {
-    addressLine1: string
-    addressLine2?: string
-    city: string
-    state: string
-    zipCode: string
-    countryRegion: string
-  }
+  shippingAddress: ShippingAddress
+  items?: PlaceOrderItem[]
 }
 
 function OrderConfirmation({ order }: { order: ConfirmedOrder }) {
+  const { isSignedIn } = useAuth()
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(order.createdAt)
+
   return (
     <Container className="py-16">
-      <div className="mx-auto max-w-2xl rounded-2xl border border-compfi-border bg-card p-6 md:p-10 shadow-xs">
+      <div
+        data-slot="order-confirmation"
+        role="status"
+        aria-labelledby="order-confirmed-heading"
+        className="mx-auto max-w-2xl rounded-2xl border border-compfi-border bg-card p-6 md:p-10 shadow-xs"
+      >
         <div className="flex flex-col items-center text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-compfi-wash text-compfi-brand mb-4">
             <CheckCircle2Icon className="h-8 w-8" aria-hidden="true" />
           </div>
-          <h2 className="type-heading-lg text-compfi-ink">Order confirmed</h2>
+          <h2 id="order-confirmed-heading" className="type-heading-lg text-compfi-ink">Order confirmed</h2>
           <p className="mt-2 type-body text-muted-foreground">
             Thank you for shopping with Compfi. Your order has been placed and saved to our database.
           </p>
-          <div className="mt-4 inline-flex items-center rounded-md bg-compfi-wash px-3 py-1.5 text-sm font-medium text-compfi-ink">
-            Order reference: <span className="font-semibold ml-1.5">{order.orderId}</span>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-compfi-ink">
+            <span className="rounded-md bg-compfi-wash px-3 py-1.5 font-medium">
+              Order reference: <span className="font-semibold ml-1.5">{order.orderId}</span>
+            </span>
+            <span className="rounded-md bg-compfi-wash px-3 py-1.5 font-medium text-muted-foreground">
+              Placed: <time dateTime={new Date(order.createdAt).toISOString()}>{formattedDate}</time>
+            </span>
           </div>
         </div>
 
         <Separator className="my-8" />
+
+        {order.items && order.items.length > 0 ? (
+          <div className="mb-8">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+              Items in this order
+            </h3>
+            <ul className="divide-y divide-compfi-border" aria-label="Ordered items">
+              {order.items.map((item) => (
+                <li key={item.id} className="flex items-center gap-4 py-3">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-compfi-border bg-muted">
+                    <Image
+                      src={item.imageSrc}
+                      alt={item.productTitle}
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-medium text-compfi-ink truncate">{item.productTitle}</h4>
+                    {item.size || item.finish ? (
+                      <p className="text-xs text-muted-foreground">
+                        {[item.size, item.finish].filter(Boolean).join(" · ")}
+                      </p>
+                    ) : null}
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {item.quantity} × {formatMoney(item.unitPriceCents)}
+                    </p>
+                  </div>
+                  <div className="text-right font-medium text-compfi-ink">
+                    {formatMoney(item.totalPriceCents)}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <Separator className="my-6" />
+          </div>
+        ) : null}
 
         <div className="grid gap-6 sm:grid-cols-2 text-left">
           <div>
@@ -256,12 +307,14 @@ function OrderConfirmation({ order }: { order: ConfirmedOrder }) {
           >
             Continue shopping
           </Link>
-          <Link
-            href="/account"
-            className={cn(buttonVariants({ variant: "outline" }), "min-h-11 min-w-44 justify-center")}
-          >
-            View in account
-          </Link>
+          {isSignedIn ? (
+            <Link
+              href="/account"
+              className={cn(buttonVariants({ variant: "outline" }), "min-h-11 min-w-44 justify-center")}
+            >
+              View in account
+            </Link>
+          ) : null}
         </div>
       </div>
     </Container>
@@ -344,16 +397,10 @@ export function CheckoutContent() {
         totalCents: result.totalCents,
         createdAt: result.createdAt,
         itemCount: result.itemCount,
-        customerName: `${details.firstName.trim()} ${details.lastName.trim()}`,
-        customerEmail: details.email.trim(),
-        shippingAddress: {
-          addressLine1: details.addressLine1.trim(),
-          addressLine2: details.addressLine2?.trim() || undefined,
-          city: details.city.trim(),
-          state: details.state.trim(),
-          zipCode: details.zipCode.trim(),
-          countryRegion: details.countryRegion.trim() || "United States",
-        },
+        customerName: result.customerName,
+        customerEmail: result.customerEmail,
+        shippingAddress: result.shippingAddress,
+        items: result.items,
       })
 
       clearCart()

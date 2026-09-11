@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server"
 import { db, ensureDbSchema } from "@/db"
-import { orders, orderItems } from "@/db/schema"
+import { orders, orderItems, type ShippingAddress } from "@/db/schema"
 import { catalogProducts } from "@/lib/catalog"
 import {
   reviewCheckoutDetails,
@@ -17,6 +17,18 @@ export type CartLineSubmission = {
   finish?: string
 }
 
+export type PlaceOrderItem = {
+  id: string
+  productSlug: string
+  productTitle: string
+  size?: string
+  finish?: string
+  quantity: number
+  unitPriceCents: number
+  totalPriceCents: number
+  imageSrc: string
+}
+
 export type PlaceOrderResult =
   | {
       success: true
@@ -26,6 +38,10 @@ export type PlaceOrderResult =
       totalCents: number
       createdAt: number
       itemCount: number
+      customerName: string
+      customerEmail: string
+      shippingAddress: ShippingAddress
+      items: PlaceOrderItem[]
     }
   | {
       success: false
@@ -60,17 +76,7 @@ export async function placeOrderAction(
 
   // 3. Authoritative server pricing and items calculation
   let subtotalCents = 0
-  const processedItems: {
-    id: string
-    productSlug: string
-    productTitle: string
-    size?: string
-    finish?: string
-    quantity: number
-    unitPriceCents: number
-    totalPriceCents: number
-    imageSrc: string
-  }[] = []
+  const processedItems: PlaceOrderItem[] = []
 
   for (const line of cartLines) {
     const product = catalogProducts.find((p) => p.slug === line.slug)
@@ -78,6 +84,19 @@ export async function placeOrderAction(
       return {
         success: false,
         message: `Product "${line.slug}" is no longer available in the catalog.`,
+      }
+    }
+
+    if (line.size && !product.sizes?.some((s) => s.value === line.size)) {
+      return {
+        success: false,
+        message: `Option size "${line.size}" is not valid for ${product.name}.`,
+      }
+    }
+    if (line.finish && !product.finishes?.some((f) => f.value === line.finish)) {
+      return {
+        success: false,
+        message: `Option finish "${line.finish}" is not valid for ${product.name}.`,
       }
     }
 
@@ -132,7 +151,7 @@ export async function placeOrderAction(
   const createdAt = Date.now()
 
   const customerName = `${details.firstName.trim()} ${details.lastName.trim()}`
-  const shippingAddressObj = {
+  const shippingAddressObj: ShippingAddress = {
     addressLine1: details.addressLine1.trim(),
     addressLine2: details.addressLine2?.trim() || undefined,
     city: details.city.trim(),
@@ -141,35 +160,37 @@ export async function placeOrderAction(
     countryRegion: details.countryRegion.trim() || "United States",
   }
 
-  await db.insert(orders).values({
-    id: orderId,
-    userId: authUserId,
-    status: "confirmed",
-    customerName,
-    customerEmail: details.email.trim(),
-    customerPhone: details.phone.trim(),
-    shippingAddress: JSON.stringify(shippingAddressObj),
-    orderNotes: details.orderNotes?.trim() || null,
-    subtotalCents,
-    shippingCents,
-    totalCents,
-    createdAt,
-  })
-
-  for (const item of processedItems) {
-    await db.insert(orderItems).values({
-      id: item.id,
-      orderId,
-      productSlug: item.productSlug,
-      productTitle: item.productTitle,
-      size: item.size || null,
-      finish: item.finish || null,
-      quantity: item.quantity,
-      unitPriceCents: item.unitPriceCents,
-      totalPriceCents: item.totalPriceCents,
-      imageSrc: item.imageSrc,
+  await db.transaction(async (tx) => {
+    await tx.insert(orders).values({
+      id: orderId,
+      userId: authUserId,
+      status: "confirmed",
+      customerName,
+      customerEmail: details.email.trim(),
+      customerPhone: details.phone.trim(),
+      shippingAddress: JSON.stringify(shippingAddressObj),
+      orderNotes: details.orderNotes?.trim() || null,
+      subtotalCents,
+      shippingCents,
+      totalCents,
+      createdAt,
     })
-  }
+
+    for (const item of processedItems) {
+      await tx.insert(orderItems).values({
+        id: item.id,
+        orderId,
+        productSlug: item.productSlug,
+        productTitle: item.productTitle,
+        size: item.size || null,
+        finish: item.finish || null,
+        quantity: item.quantity,
+        unitPriceCents: item.unitPriceCents,
+        totalPriceCents: item.totalPriceCents,
+        imageSrc: item.imageSrc,
+      })
+    }
+  })
 
   return {
     success: true,
@@ -178,6 +199,10 @@ export async function placeOrderAction(
     shippingCents,
     totalCents,
     createdAt,
-    itemCount: processedItems.reduce((acc, item) => acc + item.quantity, 0),
+    itemCount: processedItems.reduce((acc, i) => acc + i.quantity, 0),
+    customerName,
+    customerEmail: details.email.trim(),
+    shippingAddress: shippingAddressObj,
+    items: processedItems,
   }
 }

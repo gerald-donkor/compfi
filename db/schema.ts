@@ -44,3 +44,12 @@ export type OrderItem = typeof orderItems.$inferSelect
 export type NewOrderItem = typeof orderItems.$inferInsert
 export type ContactInquiry = typeof contactInquiries.$inferSelect
 export type NewContactInquiry = typeof contactInquiries.$inferInsert
+
+export type ShippingAddress = {
+  addressLine1: string
+  addressLine2?: string
+  city: string
+  state: string
+  zipCode: string
+  countryRegion: string
+}

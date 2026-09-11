@@ -1,7 +1,7 @@
 import * as React from "react"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { OrderHistory } from "@/components/account/order-history"
 import { CartProvider, useCart } from "@/components/cart/cart-provider"
@@ -10,6 +10,7 @@ import { ContactForm } from "@/components/contact/contact-form"
 import { getCatalogProductBySlug } from "@/lib/catalog"
 import type { OrderWithItems } from "@/db/orders"
 import { checkA11y } from "./a11y"
+import { resetTestClerkState, setTestClerkState } from "./setup"
 
 // Mock Next.js navigation
 vi.mock("next/navigation", () => ({
@@ -30,9 +31,21 @@ function CartSeeder({ children }: { children: React.ReactNode }) {
 }
 
 describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
+  beforeEach(() => {
+    resetTestClerkState()
+  })
+
+  afterEach(() => {
+    resetTestClerkState()
+  })
+
   describe("OrderHistory Component", () => {
-    it("renders accessible empty state when user has no orders", async () => {
-      const { container } = render(<OrderHistory orders={[]} />)
+    it("renders accessible empty state with data-slot and custom className", async () => {
+      const { container } = render(<OrderHistory orders={[]} className="custom-test-class" />)
+
+      const section = container.querySelector("[data-slot='order-history']")
+      expect(section).toBeInTheDocument()
+      expect(section).toHaveClass("custom-test-class")
 
       expect(screen.getByRole("heading", { name: "No orders yet" })).toBeInTheDocument()
       const browseLink = screen.getByRole("link", { name: "Browse furniture" })
@@ -77,7 +90,7 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
               productSlug: "alder-dining-chair",
               productTitle: "Alder Dining Chair",
               size: "Standard",
-              finish: "Natural Ash",
+              finish: "Natural oak",
               quantity: 2,
               unitPriceCents: 32900,
               totalPriceCents: 65800,
@@ -89,10 +102,11 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
 
       const { container } = render(<OrderHistory orders={mockOrders} />)
 
+      expect(container.querySelector("[data-slot='order-history']")).toBeInTheDocument()
       expect(screen.getByText("ORD-123456-ABCD")).toBeInTheDocument()
       expect(screen.getByText("confirmed")).toBeInTheDocument()
       expect(screen.getByText("Alder Dining Chair")).toBeInTheDocument()
-      expect(screen.getByText("Size: Standard • Finish: Natural Ash")).toBeInTheDocument()
+      expect(screen.getByText("Size: Standard • Finish: Natural oak")).toBeInTheDocument()
       expect(screen.getByText("Qty: 2 × $329.00")).toBeInTheDocument()
       expect(screen.getByText("Total: $658.00")).toBeInTheDocument()
 
@@ -101,7 +115,9 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
   })
 
   describe("CheckoutContent Order Placement", () => {
-    it("places order and transitions to order confirmation view", async () => {
+    it("places order and transitions to order confirmation view with itemized details", async () => {
+      // Test signed in state to verify conditional "View in account" link
+      setTestClerkState({ isSignedIn: true, userId: "user_test_sarah" })
       const user = userEvent.setup()
 
       const { container } = render(
@@ -136,9 +152,13 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
         expect(screen.getByRole("heading", { name: "Order confirmed" })).toBeInTheDocument()
       })
 
+      const confirmation = container.querySelector("[data-slot='order-confirmation']")
+      expect(confirmation).toBeInTheDocument()
       expect(screen.getByText(/Order reference:/)).toBeInTheDocument()
+      expect(screen.getByText(/Placed:/)).toBeInTheDocument()
       expect(screen.getByText("Sarah Connor")).toBeInTheDocument()
       expect(screen.getByText("100 Resistance Blvd")).toBeInTheDocument()
+      expect(screen.getByText("Items in this order")).toBeInTheDocument()
       expect(screen.getByRole("link", { name: "Continue shopping" })).toHaveAttribute("href", "/shop")
       expect(screen.getByRole("link", { name: "View in account" })).toHaveAttribute("href", "/account")
 

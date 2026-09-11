@@ -967,10 +967,9 @@ Implemented 2026-09-11 as Phase 10 of the storefront build sequence. Delivers an
   - Automatic `ensureDbSchema()` initialization executing `CREATE TABLE IF NOT EXISTS` DDL statements on startup.
   - Queries for customer order history (`getOrdersByUserId`) and single orders (`getOrderById`).
 - **Checkout Flow & Server Action (`app/actions/checkout.ts`, `components/checkout/checkout-content.tsx`)**:
-  - `placeOrderAction` validates input with Zod, treats client prices as untrusted, and authoritatively re-evaluates catalog pricing from `lib/catalog.ts`.
+  - `placeOrderAction` validates customer input with `reviewCheckoutDetails`, treats client prices as untrusted, authoritatively validates variant options and pricing from `lib/catalog.ts`, and commits the order atomically within a SQLite transaction.
   - Optionally links order to authenticated customer via `await auth()`.
-  - Atomically records order header and items in SQLite.
-  - Client checkout UI submits via Server Action, provides accessible `aria-busy` feedback, clears cart via `useCart().clear()`, and transitions to an accessible `OrderConfirmation` receipt view with order reference, itemized breakdown, and shipping details.
+  - Client checkout UI submits via Server Action, provides accessible `aria-busy` feedback, clears cart via `useCart().clear()`, and transitions to an accessible `OrderConfirmation` receipt view with order reference, placed timestamp, itemized line items, and shipping details.
 - **Cart Persistence (`components/cart/cart-provider.tsx`)**:
   - Synchronizes cart items to `localStorage` (`compfi_cart_v1`) to preserve shopping state across navigation, refresh, and checkout.
 - **Protected Account Order History (`app/account/page.tsx`, `components/account/order-history.tsx`)**:

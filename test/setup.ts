@@ -84,6 +84,10 @@ vi.mock("@clerk/nextjs", () => {
       React.createElement("div", { "data-slot": "sign-in" }, "Sign In Component"),
     SignUp: () =>
       React.createElement("div", { "data-slot": "sign-up" }, "Sign Up Component"),
+    useAuth: () => ({
+      isSignedIn: testClerkState.isSignedIn,
+      userId: testClerkState.userId,
+    }),
   }
 })
 

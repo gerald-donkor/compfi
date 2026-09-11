@@ -42,10 +42,28 @@ describe("Server Actions: checkout and contact persistence", () => {
     }
   })
 
+  it("rejects invalid variant options", async () => {
+    const invalidFinishResult = await placeOrderAction(validDetails, [
+      { slug: "alder-dining-chair", quantity: 1, finish: "non-existent-finish" },
+    ])
+    expect(invalidFinishResult.success).toBe(false)
+    if (!invalidFinishResult.success) {
+      expect(invalidFinishResult.message).toContain("not valid for Alder Dining Chair")
+    }
+
+    const invalidSizeResult = await placeOrderAction(validDetails, [
+      { slug: "alder-dining-chair", quantity: 1, size: "king" },
+    ])
+    expect(invalidSizeResult.success).toBe(false)
+    if (!invalidSizeResult.success) {
+      expect(invalidSizeResult.message).toContain("not valid for Alder Dining Chair")
+    }
+  })
+
   it("calculates authoritative totals and persists order", async () => {
     // Alder dining chair is 32900 cents ($329). 2 chairs = $658, which hits free shipping ($0)
     const result = await placeOrderAction(validDetails, [
-      { slug: "alder-dining-chair", quantity: 2, size: "standard", finish: "natural-ash" },
+      { slug: "alder-dining-chair", quantity: 2, finish: "natural-oak" },
     ])
 
     expect(result.success).toBe(true)
@@ -55,6 +73,8 @@ describe("Server Actions: checkout and contact persistence", () => {
       expect(result.shippingCents).toBe(0)
       expect(result.totalCents).toBe(65800)
       expect(result.itemCount).toBe(2)
+      expect(result.items).toHaveLength(1)
+      expect(result.items[0].productTitle).toBe("Alder Dining Chair")
 
       // Query database directly
       const savedOrder = await getOrderById(result.orderId)

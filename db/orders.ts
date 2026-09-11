@@ -1,16 +1,32 @@
-import { desc, eq } from "drizzle-orm"
+import { desc, eq, inArray } from "drizzle-orm"
 import { db, ensureDbSchema } from "./index"
-import { orders, orderItems, type Order, type OrderItem } from "./schema"
+import { orders, orderItems, type Order, type OrderItem, type ShippingAddress } from "./schema"
 
 export type OrderWithItems = Order & {
   items: OrderItem[]
-  parsedShippingAddress: {
-    addressLine1: string
-    addressLine2?: string
-    city: string
-    state: string
-    zipCode: string
-    countryRegion: string
+  parsedShippingAddress: ShippingAddress
+}
+
+export function parseShippingAddress(raw: string): ShippingAddress {
+  const fallback: ShippingAddress = {
+    addressLine1: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    countryRegion: "United States",
+  }
+  try {
+    const parsed = JSON.parse(raw)
+    return {
+      addressLine1: parsed.addressLine1 || "",
+      addressLine2: parsed.addressLine2 || undefined,
+      city: parsed.city || "",
+      state: parsed.state || "",
+      zipCode: parsed.zipCode || "",
+      countryRegion: parsed.countryRegion || "United States",
+    }
+  } catch {
+    return fallback
   }
 }
 
@@ -23,35 +39,26 @@ export async function getOrdersByUserId(userId: string): Promise<OrderWithItems[
     .where(eq(orders.userId, userId))
     .orderBy(desc(orders.createdAt))
 
-  const results: OrderWithItems[] = []
+  if (userOrders.length === 0) return []
 
-  for (const order of userOrders) {
-    const items = await db
-      .select()
-      .from(orderItems)
-      .where(eq(orderItems.orderId, order.id))
+  const orderIds = userOrders.map((o) => o.id)
+  const allItems = await db
+    .select()
+    .from(orderItems)
+    .where(inArray(orderItems.orderId, orderIds))
 
-    let parsedShippingAddress = {
-      addressLine1: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      countryRegion: "United States",
-    }
-    try {
-      parsedShippingAddress = JSON.parse(order.shippingAddress)
-    } catch {
-      // fallback
-    }
-
-    results.push({
-      ...order,
-      items,
-      parsedShippingAddress,
-    })
+  const itemsByOrderId = new Map<string, OrderItem[]>()
+  for (const item of allItems) {
+    const list = itemsByOrderId.get(item.orderId) ?? []
+    list.push(item)
+    itemsByOrderId.set(item.orderId, list)
   }
 
-  return results
+  return userOrders.map((order) => ({
+    ...order,
+    items: itemsByOrderId.get(order.id) ?? [],
+    parsedShippingAddress: parseShippingAddress(order.shippingAddress),
+  }))
 }
 
 export async function getOrderById(orderId: string): Promise<OrderWithItems | null> {
@@ -70,22 +77,9 @@ export async function getOrderById(orderId: string): Promise<OrderWithItems | nu
     .from(orderItems)
     .where(eq(orderItems.orderId, orderId))
 
-  let parsedShippingAddress = {
-    addressLine1: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    countryRegion: "United States",
-  }
-  try {
-    parsedShippingAddress = JSON.parse(order.shippingAddress)
-  } catch {
-    // fallback
-  }
-
   return {
     ...order,
     items,
-    parsedShippingAddress,
+    parsedShippingAddress: parseShippingAddress(order.shippingAddress),
   }
 }
