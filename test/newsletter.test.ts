@@ -84,8 +84,6 @@ describe("Newsletter service: db/newsletter, lib/newsletter, and subscribeNewsle
       expect(res.success).toBe(true)
       if (res.success) {
         expect(res.message).toBe("Thank you for subscribing to Compfi updates.")
-        expect(res.isNew).toBe(true)
-        expect(res.id).toMatch(/^sub_/)
       }
 
       // Re-subscribing is idempotent
@@ -93,7 +91,6 @@ describe("Newsletter service: db/newsletter, lib/newsletter, and subscribeNewsle
       expect(duplicateRes.success).toBe(true)
       if (duplicateRes.success) {
         expect(duplicateRes.message).toBe("You are already subscribed to Compfi updates.")
-        expect(duplicateRes.isNew).toBe(false)
       }
 
       // Cleanup
@@ -109,7 +106,6 @@ describe("Newsletter service: db/newsletter, lib/newsletter, and subscribeNewsle
       expect(res.success).toBe(true)
       if (res.success) {
         expect(res.message).toBe("Thank you for subscribing to Compfi updates.")
-        expect(res.id).toMatch(/^sub_/)
       }
 
       // Cleanup

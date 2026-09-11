@@ -19,21 +19,11 @@ export function validateNewsletterEmail(
 
   const trimmed = rawEmail.trim().toLowerCase()
 
-  if (!trimmed) {
-    return {
-      valid: false,
-      error: "Please enter a valid email address.",
-    }
-  }
-
-  if (trimmed.length > NEWSLETTER_MAX_EMAIL_LENGTH) {
-    return {
-      valid: false,
-      error: `Email address cannot exceed ${NEWSLETTER_MAX_EMAIL_LENGTH} characters.`,
-    }
-  }
-
-  if (!NEWSLETTER_EMAIL_REGEX.test(trimmed)) {
+  if (
+    !trimmed ||
+    trimmed.length > NEWSLETTER_MAX_EMAIL_LENGTH ||
+    !NEWSLETTER_EMAIL_REGEX.test(trimmed)
+  ) {
     return {
       valid: false,
       error: "Please enter a valid email address.",

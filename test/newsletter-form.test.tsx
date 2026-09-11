@@ -107,6 +107,46 @@ describe("NewsletterForm component", () => {
     // Input retains value so user can edit
     expect(input).toHaveValue("invalid-email")
   })
+
+  it("disables controls and sets aria-busy during in-flight submission", async () => {
+    let resolvePromise: (val: { success: true; message: string }) => void
+    const pendingPromise = new Promise<{ success: true; message: string }>((resolve) => {
+      resolvePromise = resolve
+    })
+
+    const viMock = await import("@/app/actions/newsletter")
+    vi.mocked(viMock.subscribeNewsletterAction).mockImplementationOnce(
+      () => pendingPromise
+    )
+
+    const user = userEvent.setup()
+    render(<NewsletterForm />)
+
+    const form = screen.getByRole("form", { name: "Subscribe to newsletter" })
+    const input = screen.getByLabelText("Email address")
+    const submitBtn = screen.getByRole("button", { name: "SUBSCRIBE" })
+
+    await user.type(input, "inflight@compfi.com")
+    await user.click(submitBtn)
+
+    expect(form).toHaveAttribute("aria-busy", "true")
+    expect(input).toBeDisabled()
+    expect(submitBtn).toBeDisabled()
+    expect(screen.getByRole("button", { name: "Subscribing..." })).toBeInTheDocument()
+
+    // Resolve
+    resolvePromise!({
+      success: true,
+      message: "Thank you for subscribing to Compfi updates.",
+    })
+
+    await waitFor(() => {
+      expect(form).toHaveAttribute("aria-busy", "false")
+      expect(input).not.toBeDisabled()
+      expect(submitBtn).not.toBeDisabled()
+      expect(screen.getByRole("button", { name: "SUBSCRIBE" })).toBeInTheDocument()
+    })
+  })
 })
 
 describe("SiteFooter layout integration", () => {

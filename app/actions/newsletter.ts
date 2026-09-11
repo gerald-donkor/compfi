@@ -7,8 +7,6 @@ export type NewsletterActionResult =
   | {
       success: true
       message: string
-      id?: string
-      isNew?: boolean
     }
   | {
       success: false
@@ -36,16 +34,12 @@ export async function subscribeNewsletterAction(
       return {
         success: true,
         message: "You are already subscribed to Compfi updates.",
-        id: result.id,
-        isNew: false,
       }
     }
 
     return {
       success: true,
       message: "Thank you for subscribing to Compfi updates.",
-      id: result.id,
-      isNew: true,
     }
   } catch {
     return {

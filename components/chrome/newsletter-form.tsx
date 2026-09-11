@@ -13,10 +13,12 @@ interface StatusState {
 
 export type NewsletterFormProps = React.ComponentProps<"form">
 
-export const NewsletterForm = React.forwardRef<
-  HTMLFormElement,
-  NewsletterFormProps
->(function NewsletterForm({ className, onSubmit, ...props }, ref) {
+export function NewsletterForm({
+  className,
+  ref,
+  onSubmit,
+  ...props
+}: NewsletterFormProps) {
   const [email, setEmail] = React.useState("")
   const [isPending, setIsPending] = React.useState(false)
   const [status, setStatus] = React.useState<StatusState | null>(null)
@@ -24,9 +26,6 @@ export const NewsletterForm = React.forwardRef<
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     onSubmit?.(event)
-    if (event.defaultPrevented && !event.isPropagationStopped()) {
-      // Form submission continued
-    }
 
     const validation = validateNewsletterEmail(email)
     if (!validation.valid || !validation.normalized) {
@@ -96,12 +95,12 @@ export const NewsletterForm = React.forwardRef<
           disabled={isPending}
           aria-describedby={status ? "newsletter-status" : undefined}
           aria-invalid={status && !status.success ? "true" : undefined}
-          className="h-11 min-w-0 flex-1 border-b border-foreground/40 bg-transparent px-0 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50 sm:max-w-56"
+          className="h-11 min-w-0 flex-1 border-b border-foreground/40 bg-transparent px-0 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand disabled:opacity-50 sm:max-w-56"
         />
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex h-11 shrink-0 items-center justify-center border-b border-foreground px-2 text-sm font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          className="inline-flex h-11 shrink-0 items-center justify-center border-b border-foreground px-2 text-sm font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-foreground/80 hover:text-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           {isPending ? "Subscribing..." : "SUBSCRIBE"}
         </button>
@@ -127,4 +126,4 @@ export const NewsletterForm = React.forwardRef<
       </div>
     </form>
   )
-})
+}
