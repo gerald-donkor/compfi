@@ -38,12 +38,21 @@ export const contactInquiries = sqliteTable("contact_inquiries", {
   createdAt: integer("created_at").notNull(),
 })
 
+export const newsletterSubscribers = sqliteTable("newsletter_subscribers", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  createdAt: integer("created_at").notNull(),
+  status: text("status").notNull().default("active"),
+})
+
 export type Order = typeof orders.$inferSelect
 export type NewOrder = typeof orders.$inferInsert
 export type OrderItem = typeof orderItems.$inferSelect
 export type NewOrderItem = typeof orderItems.$inferInsert
 export type ContactInquiry = typeof contactInquiries.$inferSelect
 export type NewContactInquiry = typeof contactInquiries.$inferInsert
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect
+export type NewNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert
 
 export type ShippingAddress = {
   addressLine1: string

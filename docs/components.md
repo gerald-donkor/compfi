@@ -154,7 +154,8 @@ therefore owns this one fully documented table composition.
 - **`BenefitsStrip`**: Server-safe four-item content block. Icons are
   decorative; content records use an icon component, title, and description.
 - **`SiteFooter`**: Server-safe navigation block with non-claiming Compfi copy
-  and 44px minimum link targets. It does not model newsletter submission.
+  and 44px minimum link targets, presenting the 4-column reference layout matching
+  `design/1-Home.png` and integrating the `NewsletterForm` client leaf component.
 - **`CartDrawer`**: Focused client leaf with controlled open state and a narrow
   cart-context subscription. It
   composes Base UI's modal Sheet; title and descriptive empty state are always
@@ -551,4 +552,18 @@ Generated components outside this certified inventory (including accordion, aler
   - Interactive `<details open>` / `<summary>` disclosure wrapping itemized line items with responsive thumbnails, size/finish options, quantities, and line totals.
   - Slot attribute: `data-slot="order-history"`.
 - **Real Usage**: Dedicated customer account surface (`/account`).
+
+### NewsletterForm (`components/chrome/newsletter-form.tsx`)
+- **Purpose**: Interactive customer newsletter subscription form integrated into the global footer.
+- **Server/Client**: Client component (`"use client"`).
+- **Features**:
+  - Accessible `<form aria-label="Subscribe to newsletter">` with `aria-busy` during submission.
+  - Visually hidden label `<label htmlFor="newsletter-email" className="sr-only">Email address</label>`.
+  - Transparent email input with bottom border matching reference, `type="email"`, `autoComplete="email"`, and placeholder `"Enter Your Email Address"`.
+  - Uppercase `"SUBSCRIBE"` button with bottom border and minimum 44 × 44 px touch target.
+  - Submits to `subscribeNewsletterAction` with client and server email validation.
+  - Polite live region (`role="status"`, `aria-live="polite"`, `aria-atomic="true"`) for feedback without focus disruption.
+  - Handles idempotent duplicate subscriptions gracefully.
+  - Input reset on successful subscription; retained on validation error for easy editing.
+- **Real Usage**: Global footer (`components/chrome/site-footer.tsx`).
 

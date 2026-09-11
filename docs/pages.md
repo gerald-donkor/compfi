@@ -1,6 +1,7 @@
 # Compfi page build record
 
-Status: Phase 10 complete and verified (100% free stack, local SQLite persistence via Drizzle ORM and @libsql/client, Server Actions for checkout and contact, order confirmation receipt view, and customer order history on /account).
+Status: Phase 10 complete and verified (100% free stack, local SQLite persistence via Drizzle ORM and @libsql/client, Server Actions for checkout, contact, and newsletter subscription, 4-column footer integration matching design reference, order confirmation receipt view, and customer order history on /account).
+Evidence: All routes implemented and verified with Vitest, ESLint, Next.js build, agent-browser, and axe-core.
 
 ## Phase 8 — Accessibility, performance, and visual QA certification
 
@@ -978,20 +979,25 @@ Implemented 2026-09-11 as Phase 10 of the storefront build sequence. Delivers an
 - **Contact Inquiry Persistence (`app/actions/contact.ts`, `components/contact/contact-form.tsx`)**:
   - `submitContactInquiryAction` validates input and persists contact inquiries to `contact_inquiries` table.
   - Contact form renders submitting state and accessible positive confirmation alert banner (`role="status"`).
+- **Newsletter Subscription Persistence (`app/actions/newsletter.ts`, `db/newsletter.ts`, `components/chrome/newsletter-form.tsx`, `components/chrome/site-footer.tsx`)**:
+  - Restores reference 4-column footer layout from `design/1-Home.png` with `"Newsletter"` heading, transparent underlined email input, and uppercase underlined `"SUBSCRIBE"` button.
+  - `subscribeNewsletterAction` validates email format, normalizes email, and persists subscriber to `newsletter_subscribers` table in SQLite.
+  - Handles duplicate subscriptions idempotently with polite informative feedback in `role="status"` live region.
 
 ### Verification
 
-Self-verification on 2026-09-11 (using named session `AGENT_BROWSER_SESSION="compfi-phase10"`):
+Self-verification on 2026-09-11 (using named sessions `compfi-phase10` and `compfi-newsletter`):
 
 | check | result |
 | --- | --- |
-| `npm run test` | passed: 31 files, 166 tests (including `test/db.test.ts`, `test/actions.test.ts`, and `test/phase10-services.test.tsx`) |
+| `npm run test` | passed: 33 files, 175 tests (including `test/db.test.ts`, `test/actions.test.ts`, `test/phase10-services.test.tsx`, `test/newsletter.test.ts`, and `test/newsletter-form.test.tsx`) |
 | `npm run lint` | passed: 0 warnings, 0 errors |
 | `npx tsc --noEmit` | passed: 0 errors |
 | `npm run build` | passed: Turbopack prerendered 22/22 routes successfully |
 | `agent-browser` checkout order placement | verified end-to-end: adding product to cart, submitting checkout form, displaying Order Confirmed receipt, and verifying row in SQLite `orders` and `order_items` tables |
 | `agent-browser` contact inquiry | verified end-to-end: submitting inquiry on `/contact`, displaying confirmation banner, and verifying row in SQLite `contact_inquiries` table |
+| `agent-browser` newsletter subscription | verified end-to-end: invalid format error feedback, successful subscription, polite live region announcement, idempotent duplicate message, and SQLite `newsletter_subscribers` persistence |
 | `agent-browser` responsive | verified zero horizontal overflow (`scrollWidth <= clientWidth`: true) across 1440, 1024, 768, 390, and 320 px viewports |
-| axe accessibility | 0 axe violations across `OrderConfirmation`, `OrderHistory` (empty & populated states), and `/checkout` |
+| axe accessibility | 0 axe violations across `OrderConfirmation`, `OrderHistory`, `/checkout`, `SiteFooter`, and `NewsletterForm` |
 
 

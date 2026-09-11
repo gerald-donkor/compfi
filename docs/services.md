@@ -54,12 +54,18 @@ Schema is defined in `db/schema.ts` using Drizzle SQLite definitions:
 - `message` (`text`, Not Null)
 - `created_at` (`integer`, Not Null) — Unix timestamp in milliseconds
 
+### 2.4 Newsletter Subscribers (`newsletter_subscribers`)
+- `id` (`text`, Primary Key, e.g. `sub_...`)
+- `email` (`text`, Not Null, Unique) — lowercase normalized email address
+- `created_at` (`integer`, Not Null) — Unix timestamp in milliseconds
+- `status` (`text`, Not Null, Default `'active'`) — `'active' | 'unsubscribed'`
+
 ---
 
 ## 3. Automated Schema Initialization
 
 To guarantee zero setup friction and ensure the application boots cleanly on fresh checkouts, `db/init.ts` exports `ensureDbSchema(client)` (re-exported by `db/index.ts`).
-This executes `CREATE TABLE IF NOT EXISTS` DDL statements for `orders`, `order_items`, and `contact_inquiries` before queries run. The SQLite database file resides at `data/compfi.db`.
+This executes `CREATE TABLE IF NOT EXISTS` DDL statements for `orders`, `order_items`, `contact_inquiries`, and `newsletter_subscribers` before queries run. The SQLite database file resides at `data/compfi.db`.
 
 ---
 
@@ -86,6 +92,12 @@ This executes `CREATE TABLE IF NOT EXISTS` DDL statements for `orders`, `order_i
 - **Persistence**: Writes row to `contact_inquiries`.
 - **Return**: `{ success: true, message }` or `{ success: false, errors?, message? }`.
 
+### 4.3 Newsletter Subscription (`app/actions/newsletter.ts`)
+- **Signature**: `subscribeNewsletterAction(input: { email: string } | FormData)`
+- **Validation**: Enforces RFC 5322 regex validation, max length 255 chars, trims and normalizes to lowercase.
+- **Persistence**: Idempotent insert into `newsletter_subscribers` via `db/newsletter.ts`.
+- **Return**: `{ success: true, message: "Thank you for subscribing to Compfi updates.", isNew: true }` for new subscribers; `{ success: true, message: "You are already subscribed to Compfi updates.", isNew: false }` for existing subscribers; `{ success: false, error: string }` on invalid input.
+
 ---
 
 ## 5. UI Surfaces & User Flows
@@ -109,24 +121,36 @@ This executes `CREATE TABLE IF NOT EXISTS` DDL statements for `orders`, `order_i
 - Displays submitting state.
 - On success: displays an accessible green confirmation banner and resets the form.
 
+### 5.4 Newsletter Subscription (`components/chrome/site-footer.tsx`)
+- Footer renders 4 columns on desktop matching `design/1-Home.png`.
+- Fourth column features `"Newsletter"` heading with `NewsletterForm`.
+- Includes accessible visually hidden label, bottom-bordered email input, and bottom-bordered uppercase `"SUBSCRIBE"` button.
+- Live region (`role="status"`, `aria-live="polite"`) delivers immediate feedback for success, duplicates, and errors without disrupting focus.
+
 ---
 
 ## 6. Verification & Automated Testing
 
-1. **Database Layer Tests** (`test/db.test.ts`):
+1. **Database Layer Tests** (`test/db.test.ts`, `test/newsletter.test.ts`):
    - Automated DDL initialization via `ensureDbSchema`.
    - Transactional order insertion.
    - Batch query retrieval via `getOrdersByUserId` and `getOrderById`.
-2. **Server Action Tests** (`test/actions.test.ts`):
+   - Newsletter subscriber creation, retrieval, and idempotent re-subscription.
+2. **Server Action Tests** (`test/actions.test.ts`, `test/newsletter.test.ts`):
    - Checkout validation failure on missing fields.
    - Authoritative catalog price calculation (ignoring client prices).
    - Variant option verification (rejecting invalid options).
    - Clerk user ID association.
    - Contact inquiry validation and persistence.
-3. **Component & Accessibility Tests** (`test/phase10-services.test.tsx`):
+   - Newsletter subscription validation (empty, invalid format, length limit, duplicate handling).
+3. **Component & Accessibility Tests** (`test/phase10-services.test.tsx`, `test/newsletter-form.test.tsx`):
    - Order history empty state rendering and accessibility (0 axe violations).
    - Order history populated state rendering and accessibility (0 axe violations).
    - Order confirmation receipt rendering, line items, and accessibility (0 axe violations).
-4. **End-to-End Browser Automation**:
+   - Newsletter form input, submission, live region announcements, and accessibility (0 axe violations).
+   - SiteFooter 4-column layout and accessibility (0 axe violations).
+4. **End-to-End Browser Automation** (named sessions `compfi-checkout`, `compfi-newsletter`):
    - `/contact` inquiry submission verified with live form submission and database row verification in SQLite.
    - `/checkout` order placement verified with product addition, form submission, receipt confirmation rendering, and SQLite persistence.
+   - Footer newsletter form verified with invalid validation error, valid email subscription, duplicate idempotent confirmation, and SQLite persistence.
+   - Responsive verification across 1440, 768, 390, and 320 px viewports (0 horizontal overflow).

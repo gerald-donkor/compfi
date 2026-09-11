@@ -1,6 +1,7 @@
 import { Container } from "@/components/layout/container"
 import { Link } from "@/components/ui/link"
 import { Separator } from "@/components/ui/separator"
+import { NewsletterForm } from "@/components/chrome/newsletter-form"
 
 const footerGroups = [
   { title: "Explore", links: [{ href: "/", label: "Home" }, { href: "/shop", label: "Shop" }, { href: "/blog", label: "Blog" }] },
@@ -11,7 +12,7 @@ export function SiteFooter() {
   return (
     <footer className="bg-background py-16" data-slot="site-footer">
       <Container>
-        <div className="grid gap-12 md:grid-cols-[minmax(0,1fr)_repeat(2,minmax(9rem,0.5fr))]">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-[minmax(0,1.2fr)_repeat(2,minmax(7rem,0.5fr))_minmax(0,1.4fr)]">
           <div>
             <p className="type-wordmark type-wordmark-footer" translate="no">Compfi</p>
             <p className="type-body text-muted mt-4 max-w-xs">Furniture and home furnishings, thoughtfully presented.</p>
@@ -28,6 +29,12 @@ export function SiteFooter() {
               </ul>
             </section>
           ))}
+          <section aria-labelledby="footer-newsletter">
+            <h2 id="footer-newsletter" className="type-label text-muted">Newsletter</h2>
+            <div className="mt-5">
+              <NewsletterForm />
+            </div>
+          </section>
         </div>
         <Separator className="my-12" />
         <p className="type-body-sm text-muted">© {new Date().getFullYear()} Compfi. All rights reserved.</p>

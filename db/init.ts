@@ -1,11 +1,21 @@
 import type { Client } from "@libsql/client"
 
 let schemaInitialized = false
+let schemaInitPromise: Promise<void> | null = null
 
 export async function ensureDbSchema(client: Client) {
   if (schemaInitialized) return
+  if (schemaInitPromise) return schemaInitPromise
 
-  await client.execute(`
+  schemaInitPromise = (async () => {
+    try {
+      await client.execute("PRAGMA busy_timeout = 5000;")
+      await client.execute("PRAGMA journal_mode = WAL;")
+    } catch {
+      // ignore pragma failure on non-sqlite environments
+    }
+
+    await client.execute(`
     CREATE TABLE IF NOT EXISTS orders (
       id TEXT PRIMARY KEY,
       user_id TEXT,
@@ -47,5 +57,17 @@ export async function ensureDbSchema(client: Client) {
     );
   `)
 
-  schemaInitialized = true
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+      id TEXT PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      created_at INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'active'
+    );
+  `)
+
+    schemaInitialized = true
+  })()
+
+  await schemaInitPromise
 }
