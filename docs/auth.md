@@ -76,7 +76,7 @@ Customer account and authentication routes are excluded from search engine index
 
 - **`app/robots.ts`**: Contains explicit exclusion directives:
   ```typescript
-  disallow: ["/account", "/sign-in", "/sign-up"]
+  disallow: "/account"
   ```
 - **Metadata**: Each auth page sets `robots: { index: false, follow: false }`.
 - **`app/sitemap.ts`**: Omits `/account`, `/sign-in`, and `/sign-up`, containing only public storefront pages and catalog products.
@@ -86,7 +86,7 @@ Customer account and authentication routes are excluded from search engine index
 ## 6. Verification Evidence
 
 1. **Clerk Doctor**: `npx -y clerk@latest doctor --json` reports "All checks passing" (CLI version, authentication, app reachability, environment variables, MCP server).
-2. **Automated Test Suite**: 28 test files and 148 automated tests pass (`npm run test`), including `test/account.test.tsx` verifying signed-out/signed-in chrome, server redirect, and 0 axe accessibility violations.
+2. **Automated Test Suite**: 28 test files and 152 automated tests pass (`npm run test`), including `test/account.test.tsx` verifying signed-out/signed-in chrome, proxy route matching, server redirect, and 0 axe accessibility violations.
 3. **Lint & Typecheck**: Zero ESLint warnings/errors (`npm run lint`), zero TypeScript errors (`npx tsc --noEmit`).
 4. **Next.js Production Build**: `npm run build` succeeds under Next.js 16.3.4 (Turbopack), prerendering 22 static pages and recognizing `ƒ Proxy (Middleware)`.
 5. **Browser Verification (`agent-browser`)**:

@@ -936,7 +936,7 @@ to life using Clerk, the project's contracted identity platform.
   - `/sign-in/[[...sign-in]]`: Renders Compfi `PageHero` and `<SignIn routing="path" path="/sign-in" />`.
   - `/sign-up/[[...sign-up]]`: Renders Compfi `PageHero` and `<SignUp routing="path" path="/sign-up" />`.
 - **Search Engine Directives**:
-  - `app/robots.ts`: Disallows `/account`, `/sign-in`, `/sign-up`.
+  - `app/robots.ts`: Disallows `/account`.
   - Auth route metadata: `robots: { index: false, follow: false }`.
   - `app/sitemap.ts`: Excludes auth routes from sitemap.
 
@@ -947,7 +947,7 @@ Self-verification on 2026-09-11:
 | check | result |
 | --- | --- |
 | `npx -y clerk@latest doctor --json` | passed: All checks passing (CLI 3.3.0, logged in, project linked to Compfi, app reachable, env vars configured) |
-| `npm run test` | passed: 28 files, 148 tests (including `test/account.test.tsx` verifying signed-out/signed-in controls, server redirect, and axe a11y) |
+| `npm run test` | passed: 28 files, 152 tests (including `test/account.test.tsx` verifying signed-out/signed-in controls, proxy route matching, server redirect, and axe a11y) |
 | `npm run lint` | passed: 0 warnings, 0 errors |
 | `npx tsc --noEmit` | passed: 0 errors |
 | `npm run build` | passed: Next.js 16.3.4 (Turbopack) compiled successfully, generated 22 static pages and detected `ƒ Proxy (Middleware)` |
