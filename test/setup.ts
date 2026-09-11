@@ -42,9 +42,12 @@ export function setTestClerkState(state: { isSignedIn: boolean; userId?: string 
   testClerkState.userId = state.isSignedIn ? (state.userId ?? "user_test_compfi_123") : null
 }
 
+export const testProtectSpy = vi.fn()
+
 export function resetTestClerkState() {
   testClerkState.isSignedIn = false
   testClerkState.userId = null
+  testProtectSpy.mockClear()
 }
 
 vi.mock("@clerk/nextjs", () => {
@@ -103,9 +106,21 @@ vi.mock("@clerk/nextjs/server", () => ({
   auth: vi.fn(async () => ({
     isAuthenticated: testClerkState.isSignedIn,
     userId: testClerkState.userId,
-    protect: vi.fn(),
+    protect: testProtectSpy,
   })),
-  clerkMiddleware: vi.fn((handler) => handler),
+  clerkMiddleware: vi.fn((handler) => {
+    return async (req: { nextUrl?: { pathname: string }; url?: string }, evt: unknown) => {
+      const authObj = {
+        isAuthenticated: testClerkState.isSignedIn,
+        userId: testClerkState.userId,
+        protect: testProtectSpy,
+      }
+      if (typeof handler === "function") {
+        return handler(authObj, req, evt)
+      }
+      return null
+    }
+  }),
   createRouteMatcher: vi.fn((patterns: string[]) => (req: { nextUrl?: { pathname: string }; url?: string }) => {
     const pathname = req?.nextUrl?.pathname || req?.url || ""
     return patterns.some((p: string) => {

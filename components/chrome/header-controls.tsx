@@ -5,11 +5,16 @@ import { MenuIcon, UserIcon, XIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { Show, SignInButton, UserButton } from "@clerk/nextjs"
 
+import { cn } from "cn"
+
 import { CartDrawer } from "@/components/chrome/cart-drawer"
 import { IconButton } from "@/components/ui/icon-button"
 import { Link } from "@/components/ui/link"
 
 type NavigationItem = { href: string; label: string }
+
+const mobileAuthItemClasses =
+  "flex min-h-11 w-full items-center gap-3 px-1 text-left font-medium text-compfi-ink hover:text-compfi-brand-action transition-colors"
 
 export function HeaderControls({ navigation }: { navigation: readonly NavigationItem[] }) {
   const [menuOpen, setMenuOpen] = React.useState(false)
@@ -65,6 +70,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
             <UserButton
               userProfileMode="navigation"
               userProfileUrl="/account"
+              aria-label="Open user account menu"
               appearance={{
                 elements: {
                   userButtonAvatarBox: "h-7 w-7",
@@ -113,7 +119,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
               <SignInButton mode="modal">
                 <button
                   type="button"
-                  className="flex min-h-11 w-full items-center gap-3 px-1 text-left font-medium text-compfi-ink hover:text-compfi-brand-action transition-colors"
+                  className={mobileAuthItemClasses}
                   onClick={() => setMenuOpen(false)}
                 >
                   <UserIcon className="h-5 w-5 text-compfi-brand" aria-hidden="true" />
@@ -126,7 +132,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
                 href="/account"
                 variant="default"
                 aria-current={pathname === "/account" ? "page" : undefined}
-                className="flex min-h-11 w-full items-center gap-3 px-1 no-underline font-medium text-compfi-ink hover:text-compfi-brand-action transition-colors"
+                className={cn(mobileAuthItemClasses, "no-underline")}
                 onClick={() => setMenuOpen(false)}
               >
                 <UserIcon className="h-5 w-5 text-compfi-brand" aria-hidden="true" />

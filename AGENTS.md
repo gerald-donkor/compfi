@@ -166,8 +166,8 @@ implementation evidence.
 | `CONTEXT.md` | canonical Compfi domain glossary | current; catalog vocabulary established in Phase 4 |
 | `docs/catalog.md` | static catalog fixture, media, and provenance contract | current; product-detail contract and media added in Phase 4 |
 | `docs/design-system.md` | measured tokens and responsive foundations | current; Phase 8 responsive reflow and text zoom certified |
-| `docs/components.md` | component inventory, APIs, states, and accessibility | current; Phase 8 accessibility and layout contracts certified |
-| `docs/pages.md` | route-by-route build record and reference deltas | current; Phase 8 site-wide QA, a11y, vitals, and metadata certified |
+| `docs/components.md` | component inventory, APIs, states, and accessibility | current; Phase 9 Clerk auth controls and mobile navigation certified |
+| `docs/pages.md` | route-by-route build record and reference deltas | current; Phase 9 Clerk authentication, proxy.ts, and /account route certified |
 | `docs/automation.md` | repeatable measurement and screenshot-diff procedure | current |
 | `docs/agent-browser.md` | project browser-automation installation, safety, and verification runbook | current; installed and verified locally |
 | `docs/auth.md` | Clerk setup, protected surfaces, and verification | current; Phase 9 Clerk authentication, proxy.ts, and /account route certified |

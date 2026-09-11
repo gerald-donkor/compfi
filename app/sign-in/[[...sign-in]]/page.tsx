@@ -3,13 +3,12 @@ import { SignIn } from "@clerk/nextjs"
 
 import { PageHero } from "@/components/chrome/page-hero"
 import { Container } from "@/components/layout/container"
-import { siteUrl } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Sign In",
   description: "Sign in to your Compfi account.",
   alternates: {
-    canonical: `${siteUrl}/sign-in`,
+    canonical: "/sign-in",
   },
   robots: {
     index: false,

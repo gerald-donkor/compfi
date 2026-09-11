@@ -1,6 +1,6 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 8 (Accessibility, performance, and visual QA) fully implemented, audited, and certified across all storefront surfaces and primitives. Next phase: Phase 9 (Authentication when required).
+Status: Phase 9 (Authentication via Clerk, Next.js 16 proxy.ts, and protected account route) fully implemented, audited, and certified across all storefront surfaces and primitives.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
 

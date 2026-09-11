@@ -5,13 +5,12 @@ import { UserProfile } from "@clerk/nextjs"
 
 import { PageHero } from "@/components/chrome/page-hero"
 import { Container } from "@/components/layout/container"
-import { siteUrl } from "@/lib/site"
 
 export const metadata: Metadata = {
-  title: "My Account",
+  title: "Account",
   description: "Manage your Compfi account details, security settings, and preferences.",
   alternates: {
-    canonical: `${siteUrl}/account`,
+    canonical: "/account",
   },
   robots: {
     index: false,

@@ -1,6 +1,6 @@
 # Compfi page build record
 
-Status: Phase 8 complete and verified (Accessibility, performance, and visual QA certified across all storefront surfaces). Next phase: Phase 9 (Clerk authentication setup and protected account route when requested).
+Status: Phase 9 complete and verified (Clerk authentication setup, Next.js 16 proxy.ts, protected /account route, dedicated auth routes, and header integration certified).
 
 ## Phase 8 — Accessibility, performance, and visual QA certification
 

@@ -3,13 +3,12 @@ import { SignUp } from "@clerk/nextjs"
 
 import { PageHero } from "@/components/chrome/page-hero"
 import { Container } from "@/components/layout/container"
-import { siteUrl } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Sign Up",
   description: "Create your Compfi account.",
   alternates: {
-    canonical: `${siteUrl}/sign-up`,
+    canonical: "/sign-up",
   },
   robots: {
     index: false,

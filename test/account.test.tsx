@@ -8,8 +8,11 @@ import { HeaderControls } from "@/components/chrome/header-controls"
 import AccountPage from "@/app/account/page"
 import SignInPage from "@/app/sign-in/[[...sign-in]]/page"
 import SignUpPage from "@/app/sign-up/[[...sign-up]]/page"
+import { NextFetchEvent, NextRequest } from "next/server"
 import { checkA11y } from "./a11y"
-import { resetTestClerkState, setTestClerkState } from "./setup"
+import { resetTestClerkState, setTestClerkState, testProtectSpy } from "./setup"
+
+import proxyHandler, { isProtectedRoute } from "../proxy"
 
 const redirectMock = vi.fn()
 vi.mock("next/navigation", () => ({
@@ -91,6 +94,41 @@ describe("Clerk Authentication & Protected Account (Phase 9)", () => {
     })
   })
 
+  describe("Proxy Route Matcher & Middleware Boundary (proxy.ts)", () => {
+    it("identifies /account and subroutes as protected", () => {
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/account"))).toBe(true)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/account/settings"))).toBe(true)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/account/orders"))).toBe(true)
+    })
+
+    it("allows public storefront routes without protection", () => {
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/shop"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/shop/alder-dining-chair"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/blog"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/cart"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/checkout"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/contact"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/comparison"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/sign-in"))).toBe(false)
+      expect(isProtectedRoute(new NextRequest("https://compfi.com/sign-up"))).toBe(false)
+    })
+
+    it("invokes auth.protect() on protected routes and skips on public routes", async () => {
+      testProtectSpy.mockClear()
+      const event = { waitUntil: vi.fn() } as unknown as NextFetchEvent
+
+      // Protected route triggers auth.protect()
+      await proxyHandler(new NextRequest("https://compfi.com/account"), event)
+      expect(testProtectSpy).toHaveBeenCalledTimes(1)
+
+      // Public route skips auth.protect()
+      testProtectSpy.mockClear()
+      await proxyHandler(new NextRequest("https://compfi.com/shop"), event)
+      expect(testProtectSpy).not.toHaveBeenCalled()
+    })
+  })
+
   describe("Protected Account Route (app/account/page.tsx)", () => {
     it("redirects unauthenticated visitors to sign-in with redirect_url", async () => {
       setTestClerkState({ isSignedIn: false })
@@ -126,6 +164,24 @@ describe("Clerk Authentication & Protected Account (Phase 9)", () => {
       expect(screen.getByRole("heading", { name: "Sign Up" })).toBeInTheDocument()
       expect(screen.getByText("Sign Up Component")).toBeInTheDocument()
       expect(await checkA11y(container)).toEqual([])
+    })
+
+    it("configures non-indexed metadata and canonical URLs for auth surfaces", async () => {
+      const { metadata: accountMeta } = await import("@/app/account/page")
+      const { metadata: signInMeta } = await import("@/app/sign-in/[[...sign-in]]/page")
+      const { metadata: signUpMeta } = await import("@/app/sign-up/[[...sign-up]]/page")
+
+      expect(accountMeta.title).toBe("Account")
+      expect(accountMeta.alternates?.canonical).toBe("/account")
+      expect(accountMeta.robots).toEqual({ index: false, follow: false })
+
+      expect(signInMeta.title).toBe("Sign In")
+      expect(signInMeta.alternates?.canonical).toBe("/sign-in")
+      expect(signInMeta.robots).toEqual({ index: false, follow: false })
+
+      expect(signUpMeta.title).toBe("Sign Up")
+      expect(signUpMeta.alternates?.canonical).toBe("/sign-up")
+      expect(signUpMeta.robots).toEqual({ index: false, follow: false })
     })
   })
 })
