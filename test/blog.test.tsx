@@ -80,6 +80,11 @@ describe("resolveBlogView", () => {
   })
 })
 
+function assertValid2026Time(time: Element) {
+  expect(time.getAttribute("datetime")).toMatch(/^2026-\d{2}-\d{2}$/)
+  expect(time.textContent).toMatch(/^\d{2} [A-Z][a-z]{2} 2026$/)
+}
+
 describe("BlogPage", () => {
   it("renders the editorial feed, sidebar widgets, and pagination in one main landmark", async () => {
     const { container } = render(await BlogPage({ searchParams: Promise.resolve({}) }))
@@ -95,10 +100,7 @@ describe("BlogPage", () => {
 
     const times = container.querySelectorAll("article time")
     expect(times.length).toBe(3)
-    times.forEach((time) => {
-      expect(time.getAttribute("datetime")).toMatch(/^2026-\d{2}-\d{2}$/)
-      expect(time.textContent).toMatch(/^\d{2} [A-Z][a-z]{2} 2026$/)
-    })
+    times.forEach(assertValid2026Time)
 
     expect(screen.getByRole("searchbox", { name: "Search blog posts" })).toBeInTheDocument()
     const searchForm = screen.getByRole("search", { name: "Search blog posts" })
@@ -111,10 +113,7 @@ describe("BlogPage", () => {
 
     const sidebarTimes = sidebar.querySelectorAll("time")
     expect(sidebarTimes.length).toBe(5)
-    sidebarTimes.forEach((time) => {
-      expect(time.getAttribute("datetime")).toMatch(/^2026-\d{2}-\d{2}$/)
-      expect(time.textContent).toMatch(/^\d{2} [A-Z][a-z]{2} 2026$/)
-    })
+    sidebarTimes.forEach(assertValid2026Time)
 
     const pagination = screen.getByRole("navigation", { name: "Blog pagination" })
     expect(within(pagination).getByRole("link", { name: "Page 1, current page" })).toHaveAttribute("aria-current", "page")
