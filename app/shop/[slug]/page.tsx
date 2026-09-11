@@ -20,12 +20,25 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const product = getCatalogProductBySlug(slug)
 
   if (!product) {
-    return { title: "Product not found" }
+    return {
+      title: "Product not found",
+      robots: { index: false, follow: false },
+    }
   }
 
   return {
     title: product.name,
     description: product.description,
+    openGraph: {
+      title: `${product.name} | Compfi`,
+      description: product.description,
+      images: [
+        {
+          url: product.media.path,
+          alt: product.media.alt,
+        },
+      ],
+    },
   }
 }
 

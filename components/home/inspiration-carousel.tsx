@@ -41,7 +41,7 @@ function CarouselControls({ slides }: InspirationCarouselProps) {
         <CarouselPrevious jump={reduceMotion} aria-label="Previous room" />
         <CarouselNext jump={reduceMotion} aria-label="Next room" />
       </div>
-      <div className="home-inspiration__dots" aria-label="Choose a room">
+      <div className="home-inspiration__dots">
         {slides.map((slide, index) => (
           <button key={slide.id} type="button" className="home-inspiration__dot" aria-label={`Go to room ${index + 1}: ${slide.title}`} aria-current={selectedIndex === index ? "true" : undefined} onClick={() => { api?.scrollTo(index, reduceMotion); setSelectedIndex(index) }}>
             <span aria-hidden="true" />

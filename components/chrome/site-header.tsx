@@ -14,7 +14,7 @@ const primaryNavigation = [
 export function SiteHeader() {
   return (
     <header className="border-b border-compfi-border bg-background" data-slot="site-header">
-      <Container className="grid min-h-(--chrome-header-height) grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[minmax(12rem,1fr)_auto_minmax(12rem,1fr)]">
+      <Container className="grid min-h-(--chrome-header-height) grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
         <Link
           className="type-wordmark type-wordmark-header inline-flex min-h-11 w-fit items-center gap-2 no-underline"
           href="/"

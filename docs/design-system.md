@@ -258,6 +258,13 @@ were supplied:
 | 390–768 px | fluid 20–32 px | stack primary groups; wrap control rows |
 | 320–390 px | fluid 16–20 px | single-column samples; labels wrap without overflow |
 
+### Phase 8 Reflow and Text-Zoom Certification
+
+On 2026-09-11, Phase 8 verified all storefront routes (`/`, `/shop`, `/shop/[slug]`, `/comparison`, `/cart`, `/checkout`, `/contact`, `/blog`, `/design-system`, and 404):
+- **Responsive Overflow**: Verified `scrollWidth === clientWidth` at 1440, 1024, 768, 390, and 320 px (zero horizontal page overflow).
+- **200% Text Zoom**: Verified WCAG 1.4.4 text zoom at 200% root font size without horizontal page scroll (`scrollWidth === 1440, innerWidth === 1440`). To ensure robust reflow, `.product-detail-summary__layout` gallery column is capped at `min(52%, calc(...))` and `SiteHeader` uses `1fr auto 1fr` grid columns.
+- **Motion Token Enforcement**: Verified `prefers-reduced-motion: reduce` collapse of all CSS transitions and animations to 0.01ms.
+
 The production spacing scale is 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96,
 and 120 px. Its 32 px step maps to the measured Shop grid gap; the other steps
 form the selected coherent 4 px scale rather than claiming individual crops.

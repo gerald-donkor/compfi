@@ -35,12 +35,27 @@ const poppins = localFont({
   fallback: ["Arial", "sans-serif"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://compfi.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Compfi",
     template: "%s | Compfi",
   },
   description: "Furniture and home furnishings, thoughtfully presented.",
+  openGraph: {
+    title: "Compfi",
+    description: "Furniture and home furnishings, thoughtfully presented.",
+    siteName: "Compfi",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Compfi",
+    description: "Furniture and home furnishings, thoughtfully presented.",
+  },
 };
 
 export const viewport: Viewport = {

@@ -1,8 +1,51 @@
 # Compfi page build record
 
-Status: Phase 7 complete and verified (Unit 1: card overlay, cart-drawer
-modal, motion consistency; Unit 2: galleries, browsing controls, variants,
-pagination). Next phase: Phase 8 (Accessibility, performance, and visual QA).
+Status: Phase 8 complete and verified (Accessibility, performance, and visual QA certified across all storefront surfaces). Next phase: Phase 9 (Clerk authentication setup and protected account route when requested).
+
+## Phase 8 — Accessibility, performance, and visual QA certification
+
+Implemented 2026-09-11 as the Phase 8 site-wide certification gate. All nine storefront surfaces (`/`, `/shop`, `/shop/[slug]`, cart drawer modal, `/comparison`, `/cart`, `/checkout`, `/contact`, `/blog`), the design system specimen (`/design-system`), and the custom branded recovery route (`app/not-found.tsx`) were audited for WCAG 2.2 AA accessibility, Next.js 16 Turbopack build optimization, Core Web Vitals, responsive bounds, and visual fidelity against native 2880px desktop references.
+
+### Scope delivered:
+- **Metadata and SEO foundations**:
+  - `app/robots.ts`: Next.js Route Handler generating crawler exclusion rules (`User-Agent: *`, `Allow: /`, `Disallow: /api/`) and dynamic sitemap reference.
+  - `app/sitemap.ts`: Dynamic sitemap generator providing entries for all static storefront paths (`/`, `/shop`, `/cart`, `/checkout`, `/contact`, `/blog`, `/comparison`) and dynamic catalog products (`/shop/[slug]`), with accurate `changeFrequency` and `priority`.
+  - `app/not-found.tsx`: Custom branded 404 recovery route rendering `PageHero` with breadcrumbs, accessible recovery guidance, and primary/outline actions to browse furniture or return home.
+  - `app/layout.tsx`: Standardized metadataBase (`process.env.NEXT_PUBLIC_SITE_URL || "https://compfi.com"`), Open Graph defaults (`siteName: "Compfi"`, locale `"en_US"`), and Twitter card metadata.
+  - `app/shop/[slug]/page.tsx`: Standardized dynamic `generateMetadata` with Open Graph image and `robots: { index: false, follow: false }` on unlisted product slugs.
+- **Accessibility fixes**:
+  - `components/home/inspiration-carousel.tsx`: Removed redundant `aria-label="Choose a room"` from plain `.home-inspiration__dots` `<div>`, resolving `aria-prohibited-attr` and preserving slide `group` semantics without extraneous landmark wrappers.
+  - `components/chrome/cart-drawer.tsx`: Verified contrast on empty-state recovery action and modal focus trapping.
+  - Automated `axe-core 4.12.1` site-wide audit: reports **0 violations** across all 10 routes (`/`, `/shop`, `/shop/[slug]`, cart drawer modal, `/comparison`, `/cart`, `/checkout`, `/contact`, `/blog`, `/design-system`, and 404).
+- **Responsive reflow & 200% text zoom**:
+  - `components/chrome/site-header.tsx`: Updated grid columns from rigid `minmax(12rem, 1fr) auto minmax(12rem, 1fr)` to flexible `1fr auto 1fr`, maintaining centered navigation while allowing graceful reflow at 200% text zoom.
+  - `app/globals.css`: Capped `.product-detail-summary__layout` gallery column to `min(52%, calc(...))` to prevent gallery from consuming excessive width and crowding out product summary at 200% text zoom; updated `.comparison-picker__select` to `min-width: min(15.125rem, 100%)`.
+  - Responsive audit across 1440, 1024, 768, 390, and 320 px viewports confirmed `document.documentElement.scrollWidth === window.innerWidth` (0 overflow errors across all routes).
+  - 200% root text zoom reflow confirmed across all storefront surfaces with zero horizontal overflow.
+- **Motion & Assistive Technology**:
+  - Verified `prefers-reduced-motion: reduce` collapse of transitions and animations (0.01ms duration) via `agent-browser set media light reduced-motion`.
+  - Verified keyboard skip link focus as first Tab stop, header navigation, Escape key modal drawer dismissal with focus restoration to "Open cart" trigger, and comparison table keyboard scrolling.
+- **Core Web Vitals**:
+  - Home: TTFB 104.7ms, FCP 212ms, LCP 212ms, CLS 0, Hydration 65.9ms.
+  - Shop: TTFB 128.3ms, FCP 204ms, LCP 496ms, CLS 0, Hydration 31.8ms.
+  - Product: TTFB 247.3ms, FCP 408ms, LCP 408ms, CLS 0, Hydration 37.4ms.
+- **Automated test suite**:
+  - `test/phase8-audit.test.tsx`: 6 new comprehensive automated integration tests covering robots, sitemap, 404 rendering/a11y, layout metadata, route metadata consistency, and dynamic product metadata.
+  - Full suite: 27 test files, 137 tests passing cleanly.
+
+### Verification (2026-09-11, named `compfi-phase8-8dbc2e39d5ed` session):
+| check | result |
+| --- | --- |
+| `npm run test` | passed: 27 files, 137 tests |
+| `npm run lint` | passed: 0 warnings, 0 errors |
+| `npx tsc --noEmit` | passed: 0 errors |
+| `npm run build` | passed: Turbopack prerendered 21/21 routes (including /robots.txt and /sitemap.xml) in 1.4s |
+| axe-core audits | 0 violations across all 10 routes (`/`, `/shop`, `/shop/alder-dining-chair`, `/comparison`, `/cart`, `/checkout`, `/contact`, `/blog`, `/design-system`, 404, open cart drawer) |
+| responsive audit | 0 overflow errors across all routes at 1440, 1024, 768, 390, and 320 CSS px |
+| 200% text zoom | all routes verified with `scrollWidth === 1440, innerWidth === 1440` (true) |
+| reduced motion | `window.matchMedia('(prefers-reduced-motion: reduce)').matches === true`; transition duration 0.01ms |
+| desktop screenshots | 11 captures saved under `/tmp/compfi-phase8-qa/*.png`, confirming 2:1 raster scale and 1240px centered container |
+| Web Interface Guidelines | confirmed compliant: visible focus, 44px targets, semantic landmarks, no horizontal scroll, explicit image sizing |
 
 ## Phase 7 unit 2 — interaction polish (galleries, controls, variants, pagination)
 

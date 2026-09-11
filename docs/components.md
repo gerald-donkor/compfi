@@ -1,8 +1,16 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 6 blog and contact pages implemented, verified, and review-closed. Phase 7 unit 1 product-card overlay and cart-drawer contracts implemented, verified, and independently review-closed (Label-in-Name fix applied); Phase 7 as a whole remains open.
+Status: Phase 8 (Accessibility, performance, and visual QA) fully implemented, audited, and certified across all storefront surfaces and primitives. Next phase: Phase 9 (Authentication when required).
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
+
+## Phase 8 Foundations & Accessibility Enhancements
+
+- **`NotFound`** (`app/not-found.tsx`): Branded error recovery route rendering `PageHero` with breadcrumbs, accessible recovery text, and dual actions (`Link` with `buttonVariants({ variant: "default" })` to browse `/shop` and `buttonVariants({ variant: "outline" })` to return home). Tested and axe-certified with 0 violations.
+- **`SiteHeader`** (`components/chrome/site-header.tsx`): Responsive grid container updated from `grid-cols-[minmax(12rem,1fr)_auto_minmax(12rem,1fr)]` to `grid-cols-[1fr_auto_1fr]` on large viewports, maintaining centered navigation while accommodating 200% root text reflow without horizontal viewport overflow.
+- **`InspirationCarousel`** (`components/home/inspiration-carousel.tsx`): Simplified `.home-inspiration__dots` wrapper to a clean structural container without redundant `aria-label`, eliminating `aria-prohibited-attr` while preserving slide `group` semantics and individual dot button accessible names.
+- **`ProductDetail`** (`components/product/product-detail.tsx` / `app/globals.css`): Gallery column capped to `min(52%, calc(...))` ensuring proper proportioning and reflow on high-zoom viewports without crowding out the summary column.
+- **`ComparisonPicker`** (`components/comparison/product-comparison.tsx` / `app/globals.css`): Select element constrained with `min-width: min(15.125rem, 100%)` and `max-width: 100%`, preventing form controls from causing horizontal container overflow during 200% text reflow.
 
 ## Phase 6 Blog blocks
 
