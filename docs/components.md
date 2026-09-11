@@ -556,14 +556,16 @@ Generated components outside this certified inventory (including accordion, aler
 ### NewsletterForm (`components/chrome/newsletter-form.tsx`)
 - **Purpose**: Interactive customer newsletter subscription form integrated into the global footer.
 - **Server/Client**: Client component (`"use client"`).
+- **Exported Props**: `NewsletterFormProps`, extending `React.ComponentProps<"form">`.
 - **Features**:
-  - Accessible `<form aria-label="Subscribe to newsletter">` with `aria-busy` during submission.
+  - Accessible `<form aria-label="Subscribe to newsletter">` with `aria-busy` during submission, ref forwarding, and stable `data-slot="newsletter-form"`.
   - Visually hidden label `<label htmlFor="newsletter-email" className="sr-only">Email address</label>`.
-  - Transparent email input with bottom border matching reference, `type="email"`, `autoComplete="email"`, and placeholder `"Enter Your Email Address"`.
+  - Transparent email input with bottom border matching reference, `type="email"`, `autoComplete="email"`, and placeholder `"Enter Your Email Address"` in accessible `text-muted-foreground`.
   - Uppercase `"SUBSCRIBE"` button with bottom border and minimum 44 × 44 px touch target.
-  - Submits to `subscribeNewsletterAction` with client and server email validation.
+  - Submits to `subscribeNewsletterAction` with shared client and server validation via `lib/newsletter.ts`.
   - Polite live region (`role="status"`, `aria-live="polite"`, `aria-atomic="true"`) for feedback without focus disruption.
   - Handles idempotent duplicate subscriptions gracefully.
   - Input reset on successful subscription; retained on validation error for easy editing.
+- **Slot**: `data-slot="newsletter-form"`.
 - **Real Usage**: Global footer (`components/chrome/site-footer.tsx`).
 

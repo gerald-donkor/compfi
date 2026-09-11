@@ -4,7 +4,7 @@ import { newsletterSubscribers, type NewsletterSubscriber } from "./schema"
 
 export async function getSubscriberByEmail(
   email: string
-): Promise<NewsletterSubscriber | null> {
+): Promise<NewsletterSubscriber | undefined> {
   await ensureDbSchema()
   const normalizedEmail = email.trim().toLowerCase()
   const rows = await db
@@ -12,18 +12,18 @@ export async function getSubscriberByEmail(
     .from(newsletterSubscribers)
     .where(eq(newsletterSubscribers.email, normalizedEmail))
 
-  return rows[0] ?? null
+  return rows[0] ?? undefined
 }
 
 export async function subscribeEmail(
   email: string
-): Promise<{ isNew: boolean; subscriber: NewsletterSubscriber }> {
+): Promise<{ isNew: boolean; id: string }> {
   await ensureDbSchema()
   const normalizedEmail = email.trim().toLowerCase()
 
   const existing = await getSubscriberByEmail(normalizedEmail)
   if (existing) {
-    return { isNew: false, subscriber: existing }
+    return { isNew: false, id: existing.id }
   }
 
   const id = `sub_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
@@ -39,18 +39,13 @@ export async function subscribeEmail(
 
     return {
       isNew: true,
-      subscriber: {
-        id,
-        email: normalizedEmail,
-        createdAt: now,
-        status: "active",
-      },
+      id,
     }
   } catch (error) {
     // Handle concurrent insertion race condition
     const concurrent = await getSubscriberByEmail(normalizedEmail)
     if (concurrent) {
-      return { isNew: false, subscriber: concurrent }
+      return { isNew: false, id: concurrent.id }
     }
     throw error
   }

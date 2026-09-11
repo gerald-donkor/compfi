@@ -65,7 +65,7 @@ Schema is defined in `db/schema.ts` using Drizzle SQLite definitions:
 ## 3. Automated Schema Initialization
 
 To guarantee zero setup friction and ensure the application boots cleanly on fresh checkouts, `db/init.ts` exports `ensureDbSchema(client)` (re-exported by `db/index.ts`).
-This executes `CREATE TABLE IF NOT EXISTS` DDL statements for `orders`, `order_items`, `contact_inquiries`, and `newsletter_subscribers` before queries run. The SQLite database file resides at `data/compfi.db`.
+This configures `PRAGMA busy_timeout = 5000;` and `PRAGMA journal_mode = WAL;` for resilient multi-process concurrency, then executes `CREATE TABLE IF NOT EXISTS` DDL statements for `orders`, `order_items`, `contact_inquiries`, and `newsletter_subscribers`, along with the explicit `idx_newsletter_subscribers_email` index before queries run. The SQLite database file resides at `data/compfi.db`.
 
 ---
 

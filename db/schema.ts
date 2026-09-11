@@ -42,7 +42,7 @@ export const newsletterSubscribers = sqliteTable("newsletter_subscribers", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
   createdAt: integer("created_at").notNull(),
-  status: text("status").notNull().default("active"),
+  status: text("status").notNull().default("active").$type<"active" | "unsubscribed">(),
 })
 
 export type Order = typeof orders.$inferSelect
@@ -53,6 +53,13 @@ export type ContactInquiry = typeof contactInquiries.$inferSelect
 export type NewContactInquiry = typeof contactInquiries.$inferInsert
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect
 export type NewNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert
+
+export interface NewsletterSubscriberRecord {
+  id: string
+  email: string
+  createdAt: number
+  status: "active" | "unsubscribed"
+}
 
 export type ShippingAddress = {
   addressLine1: string

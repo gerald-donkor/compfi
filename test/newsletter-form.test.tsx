@@ -39,6 +39,16 @@ describe("NewsletterForm component", () => {
     expect(await checkA11y(container)).toEqual([])
   })
 
+  it("forwards ref, custom className, and exposes data-slot='newsletter-form'", () => {
+    const ref = React.createRef<HTMLFormElement>()
+    render(<NewsletterForm ref={ref} className="custom-newsletter-form" />)
+
+    const form = screen.getByRole("form", { name: "Subscribe to newsletter" })
+    expect(form).toHaveAttribute("data-slot", "newsletter-form")
+    expect(form).toHaveClass("custom-newsletter-form")
+    expect(ref.current).toBe(form)
+  })
+
   it("handles valid email submission and renders success message", async () => {
     const user = userEvent.setup()
     const { container } = render(<NewsletterForm />)

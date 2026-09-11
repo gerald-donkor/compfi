@@ -3,34 +3,46 @@ import { db, ensureDbSchema } from "@/db"
 import { newsletterSubscribers } from "@/db/schema"
 import { getSubscriberByEmail, subscribeEmail } from "@/db/newsletter"
 import { subscribeNewsletterAction } from "@/app/actions/newsletter"
+import { validateNewsletterEmail } from "@/lib/newsletter"
 import { eq } from "drizzle-orm"
 
-describe("Newsletter service: db/newsletter and subscribeNewsletterAction", () => {
+describe("Newsletter service: db/newsletter, lib/newsletter, and subscribeNewsletterAction", () => {
+  it("validates newsletter email formatting and length", () => {
+    expect(validateNewsletterEmail("").valid).toBe(false)
+    expect(validateNewsletterEmail("   ").valid).toBe(false)
+    expect(validateNewsletterEmail("notanemail").valid).toBe(false)
+    expect(validateNewsletterEmail(123).valid).toBe(false)
+    expect(validateNewsletterEmail("a".repeat(250) + "@example.com").valid).toBe(false)
+
+    const valid = validateNewsletterEmail("  Hello@Compfi.com  ")
+    expect(valid.valid).toBe(true)
+    expect(valid.normalized).toBe("hello@compfi.com")
+  })
+
   it("initializes schema and manages subscriber persistence", async () => {
     await ensureDbSchema()
 
     const testEmail = `test_sub_${Date.now()}@example.com`
 
-    // Initially should be null
+    // Initially should be undefined
     const initial = await getSubscriberByEmail(testEmail)
-    expect(initial).toBeNull()
+    expect(initial).toBeUndefined()
 
     // Subscribe
     const subResult = await subscribeEmail(testEmail)
     expect(subResult.isNew).toBe(true)
-    expect(subResult.subscriber.email).toBe(testEmail)
-    expect(subResult.subscriber.status).toBe("active")
-    expect(subResult.subscriber.id).toMatch(/^sub_/)
+    expect(subResult.id).toMatch(/^sub_/)
 
     // Query again
     const found = await getSubscriberByEmail(testEmail)
-    expect(found).not.toBeNull()
+    expect(found).toBeDefined()
     expect(found?.email).toBe(testEmail)
+    expect(found?.status).toBe("active")
 
     // Resubscribe (idempotent)
     const idempotentResult = await subscribeEmail(testEmail.toUpperCase())
     expect(idempotentResult.isNew).toBe(false)
-    expect(idempotentResult.subscriber.id).toBe(subResult.subscriber.id)
+    expect(idempotentResult.id).toBe(subResult.id)
 
     // Clean up
     await db.delete(newsletterSubscribers).where(eq(newsletterSubscribers.email, testEmail))
@@ -73,6 +85,7 @@ describe("Newsletter service: db/newsletter and subscribeNewsletterAction", () =
       if (res.success) {
         expect(res.message).toBe("Thank you for subscribing to Compfi updates.")
         expect(res.isNew).toBe(true)
+        expect(res.id).toMatch(/^sub_/)
       }
 
       // Re-subscribing is idempotent
@@ -96,6 +109,7 @@ describe("Newsletter service: db/newsletter and subscribeNewsletterAction", () =
       expect(res.success).toBe(true)
       if (res.success) {
         expect(res.message).toBe("Thank you for subscribing to Compfi updates.")
+        expect(res.id).toMatch(/^sub_/)
       }
 
       // Cleanup

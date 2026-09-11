@@ -1,7 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { cn } from "cn"
 import { subscribeNewsletterAction } from "@/app/actions/newsletter"
+import { validateNewsletterEmail } from "@/lib/newsletter"
 
 interface StatusState {
   success: boolean
@@ -9,19 +11,28 @@ interface StatusState {
   error?: string
 }
 
-export function NewsletterForm() {
+export type NewsletterFormProps = React.ComponentProps<"form">
+
+export const NewsletterForm = React.forwardRef<
+  HTMLFormElement,
+  NewsletterFormProps
+>(function NewsletterForm({ className, onSubmit, ...props }, ref) {
   const [email, setEmail] = React.useState("")
   const [isPending, setIsPending] = React.useState(false)
   const [status, setStatus] = React.useState<StatusState | null>(null)
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
+    onSubmit?.(event)
+    if (event.defaultPrevented && !event.isPropagationStopped()) {
+      // Form submission continued
+    }
 
-    const trimmed = email.trim()
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    const validation = validateNewsletterEmail(email)
+    if (!validation.valid || !validation.normalized) {
       setStatus({
         success: false,
-        error: "Please enter a valid email address.",
+        error: validation.error ?? "Please enter a valid email address.",
       })
       return
     }
@@ -30,7 +41,7 @@ export function NewsletterForm() {
     setStatus(null)
 
     try {
-      const result = await subscribeNewsletterAction({ email: trimmed })
+      const result = await subscribeNewsletterAction({ email: validation.normalized })
       if (result.success) {
         setEmail("")
         setStatus({
@@ -55,11 +66,14 @@ export function NewsletterForm() {
 
   return (
     <form
+      ref={ref}
       onSubmit={handleSubmit}
       noValidate
       aria-label="Subscribe to newsletter"
       aria-busy={isPending}
-      className="flex flex-col gap-2"
+      data-slot="newsletter-form"
+      className={cn("flex flex-col gap-2", className)}
+      {...props}
     >
       <div className="flex flex-wrap items-center gap-3">
         <label htmlFor="newsletter-email" className="sr-only">
@@ -82,7 +96,7 @@ export function NewsletterForm() {
           disabled={isPending}
           aria-describedby={status ? "newsletter-status" : undefined}
           aria-invalid={status && !status.success ? "true" : undefined}
-          className="h-11 min-w-0 flex-1 border-b border-foreground/40 bg-transparent px-0 py-2 text-sm text-foreground placeholder:text-muted focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50 sm:max-w-56"
+          className="h-11 min-w-0 flex-1 border-b border-foreground/40 bg-transparent px-0 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50 sm:max-w-56"
         />
         <button
           type="submit"
@@ -113,4 +127,4 @@ export function NewsletterForm() {
       </div>
     </form>
   )
-}
+})
