@@ -5,6 +5,7 @@ import { db, ensureDbSchema } from "@/db"
 import { orders, orderItems, type ShippingAddress } from "@/db/schema"
 import { catalogProducts } from "@/lib/catalog"
 import {
+  calculateShippingCents,
   reviewCheckoutDetails,
   type CheckoutDetails,
   type CheckoutErrors,
@@ -48,9 +49,6 @@ export type PlaceOrderResult =
       errors?: CheckoutErrors
       message?: string
     }
-
-const FREE_SHIPPING_THRESHOLD_CENTS = 50000 // $500
-const STANDARD_SHIPPING_CENTS = 2500 // $25
 
 export async function placeOrderAction(
   details: CheckoutDetails,
@@ -100,7 +98,19 @@ export async function placeOrderAction(
       }
     }
 
-    const quantity = Math.max(1, Math.min(10, Math.floor(line.quantity || 1)))
+    if (
+      typeof line.quantity !== "number" ||
+      !Number.isFinite(line.quantity) ||
+      !Number.isInteger(line.quantity) ||
+      line.quantity < 1 ||
+      line.quantity > 10
+    ) {
+      return {
+        success: false,
+        message: `Quantity for "${product.name}" must be an integer between 1 and 10.`,
+      }
+    }
+    const quantity = line.quantity
     const unitPriceCents = product.priceCents
     const totalPriceCents = unitPriceCents * quantity
     subtotalCents += totalPriceCents
@@ -125,8 +135,7 @@ export async function placeOrderAction(
     })
   }
 
-  const shippingCents =
-    subtotalCents >= FREE_SHIPPING_THRESHOLD_CENTS ? 0 : STANDARD_SHIPPING_CENTS
+  const shippingCents = calculateShippingCents(subtotalCents)
   const totalCents = subtotalCents + shippingCents
 
   // 4. Authenticate caller (optional Clerk user ID)
@@ -144,10 +153,10 @@ export async function placeOrderAction(
   // 5. Database persistence
   await ensureDbSchema()
 
-  const orderId = `ORD-${Date.now().toString().slice(-6)}-${Math.random()
+  const orderId = `ORD-${Date.now()}-${Math.random()
     .toString(36)
     .toUpperCase()
-    .slice(2, 6)}`
+    .slice(2, 7)}`
   const createdAt = Date.now()
 
   const customerName = `${details.firstName.trim()} ${details.lastName.trim()}`

@@ -974,10 +974,10 @@ Implemented 2026-09-11 as Phase 10 of the storefront build sequence. Delivers an
   - Synchronizes cart items to `localStorage` (`compfi_cart_v1`) to preserve shopping state across navigation, refresh, and checkout.
 - **Protected Account Order History (`app/account/page.tsx`, `components/account/order-history.tsx`)**:
   - `/account` Server Component queries `getOrdersByUserId(userId)`.
-  - Renders `OrderHistory` with empty state (call to browse furniture) or populated order cards with order number, formatted placement date, status badge, itemized product list with thumbnails, finish/size details, and total price.
+  - Renders `OrderHistory` with empty state (call to browse furniture) or populated order cards with order number, formatted placement date, status badge, interactive `<details open>` itemized disclosure with thumbnails, finish/size details, and total price.
 - **Contact Inquiry Persistence (`app/actions/contact.ts`, `components/contact/contact-form.tsx`)**:
   - `submitContactInquiryAction` validates input and persists contact inquiries to `contact_inquiries` table.
-  - Contact form renders submitting state and accessible confirmation alert banner.
+  - Contact form renders submitting state and accessible positive confirmation alert banner (`role="status"`).
 
 ### Verification
 
@@ -985,7 +985,7 @@ Self-verification on 2026-09-11 (using named session `AGENT_BROWSER_SESSION="com
 
 | check | result |
 | --- | --- |
-| `npm run test` | passed: 31 files, 163 tests (including `test/db.test.ts`, `test/actions.test.ts`, and `test/phase10-services.test.tsx`) |
+| `npm run test` | passed: 31 files, 166 tests (including `test/db.test.ts`, `test/actions.test.ts`, and `test/phase10-services.test.tsx`) |
 | `npm run lint` | passed: 0 warnings, 0 errors |
 | `npx tsc --noEmit` | passed: 0 errors |
 | `npm run build` | passed: Turbopack prerendered 22/22 routes successfully |

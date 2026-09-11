@@ -5,12 +5,11 @@ import Image from "next/image"
 import { useAuth } from "@clerk/nextjs"
 import { CheckCircle2Icon, ShoppingCartIcon } from "lucide-react"
 
-import { type PlaceOrderItem, placeOrderAction } from "@/app/actions/checkout"
+import { type PlaceOrderResult, placeOrderAction } from "@/app/actions/checkout"
 import { useCart } from "@/components/cart/cart-provider"
 import { Money } from "@/components/commerce/money"
 import { Container } from "@/components/layout/container"
 import { Button, buttonVariants } from "@/components/ui/button"
-import type { ShippingAddress } from "@/db/schema"
 import { cn } from "@/lib/utils"
 import {
   Empty,
@@ -36,6 +35,7 @@ import { cartLineKey, cartLineSelectionLabel, type CartLine } from "@/lib/cart"
 import {
   CHECKOUT_FIELD_NAMES,
   CHECKOUT_MAX_LENGTHS,
+  calculateShippingCents,
   reviewCheckoutDetails,
   type CheckoutDetails,
   type CheckoutErrors,
@@ -92,6 +92,8 @@ function selectionLabel(line: CartLine, product: CatalogProduct): string | undef
 
 function CheckoutSummary() {
   const { lines, productFor, subtotalCents } = useCart()
+  const shippingCents = calculateShippingCents(subtotalCents)
+  const totalCents = subtotalCents + shippingCents
 
   return (
     <section aria-labelledby="checkout-summary-heading">
@@ -129,14 +131,14 @@ function CheckoutSummary() {
       <div className="checkout-summary-subtotal">
         <span className="type-body text-muted-foreground">Shipping</span>
         <span className="type-body font-medium">
-          {subtotalCents >= 50000 ? "Free" : formatMoney(2500)}
+          {shippingCents === 0 ? "Free" : formatMoney(shippingCents)}
         </span>
       </div>
       <Separator className="checkout-summary-separator" />
       <div className="checkout-summary-total">
         <span className="type-heading-sm">Total</span>
         <Money
-          amountCents={subtotalCents + (subtotalCents >= 50000 ? 0 : 2500)}
+          amountCents={totalCents}
           className="type-heading-md text-compfi-brand"
         />
       </div>
@@ -173,18 +175,7 @@ function CheckoutEmpty({ headingRef }: { headingRef: React.RefObject<HTMLHeading
   )
 }
 
-type ConfirmedOrder = {
-  orderId: string
-  subtotalCents: number
-  shippingCents: number
-  totalCents: number
-  createdAt: number
-  itemCount: number
-  customerName: string
-  customerEmail: string
-  shippingAddress: ShippingAddress
-  items?: PlaceOrderItem[]
-}
+type ConfirmedOrder = Extract<PlaceOrderResult, { success: true }>
 
 function OrderConfirmation({ order }: { order: ConfirmedOrder }) {
   const { isSignedIn } = useAuth()
@@ -390,18 +381,7 @@ export function CheckoutContent() {
         return
       }
 
-      setConfirmedOrder({
-        orderId: result.orderId,
-        subtotalCents: result.subtotalCents,
-        shippingCents: result.shippingCents,
-        totalCents: result.totalCents,
-        createdAt: result.createdAt,
-        itemCount: result.itemCount,
-        customerName: result.customerName,
-        customerEmail: result.customerEmail,
-        shippingAddress: result.shippingAddress,
-        items: result.items,
-      })
+      setConfirmedOrder(result)
 
       clearCart()
     } catch {

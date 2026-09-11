@@ -19,6 +19,13 @@ export type CheckoutDetails = Readonly<Record<CheckoutFieldName, string>>
 
 export type CheckoutErrors = Readonly<Partial<Record<CheckoutFieldName, string>>>
 
+export const FREE_SHIPPING_THRESHOLD_CENTS = 50000 // $500
+export const STANDARD_SHIPPING_CENTS = 2500 // $25
+
+export function calculateShippingCents(subtotalCents: number): number {
+  return subtotalCents >= FREE_SHIPPING_THRESHOLD_CENTS ? 0 : STANDARD_SHIPPING_CENTS
+}
+
 export const CHECKOUT_MAX_LENGTHS: Readonly<Record<CheckoutFieldName, number>> = Object.freeze({
   firstName: 80,
   lastName: 80,

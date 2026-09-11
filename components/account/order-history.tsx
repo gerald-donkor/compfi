@@ -98,45 +98,58 @@ export function OrderHistory({ orders, className, ...props }: OrderHistoryProps)
                 </div>
               </div>
 
-              <ul className="divide-y divide-compfi-border py-3">
-                {order.items.map((item) => (
-                  <li key={item.id} className="flex items-center gap-4 py-3">
-                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-compfi-wash border border-compfi-border">
-                      {item.imageSrc ? (
-                        <Image
-                          src={item.imageSrc}
-                          alt={item.productTitle}
-                          fill
-                          sizes="64px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                          <PackageIcon className="h-6 w-6" aria-hidden="true" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-compfi-ink truncate text-sm">
-                        {item.productTitle}
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {item.size ? `Size: ${item.size}` : null}
-                        {item.size && item.finish ? " • " : null}
-                        {item.finish ? `Finish: ${item.finish}` : null}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Qty: {item.quantity} × {formatMoney(item.unitPriceCents)}
-                      </p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className="font-medium text-compfi-ink text-sm">
-                        {formatMoney(item.totalPriceCents)}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <details open className="group py-2">
+                <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-compfi-ink list-none flex items-center justify-between py-1 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-compfi-brand rounded-xs">
+                  <span>
+                    {order.items.length} {order.items.length === 1 ? "item" : "items"} in order
+                  </span>
+                  <span className="text-xs font-normal normal-case text-muted-foreground group-open:hidden">
+                    Show items
+                  </span>
+                  <span className="text-xs font-normal normal-case text-muted-foreground hidden group-open:inline">
+                    Hide items
+                  </span>
+                </summary>
+                <ul className="divide-y divide-compfi-border pt-2" aria-label={`Items in order ${order.id}`}>
+                  {order.items.map((item) => (
+                    <li key={item.id} className="flex items-center gap-4 py-3">
+                      <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-compfi-wash border border-compfi-border">
+                        {item.imageSrc ? (
+                          <Image
+                            src={item.imageSrc}
+                            alt={item.productTitle}
+                            fill
+                            sizes="64px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                            <PackageIcon className="h-6 w-6" aria-hidden="true" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-compfi-ink truncate text-sm">
+                          {item.productTitle}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {item.size ? `Size: ${item.size}` : null}
+                          {item.size && item.finish ? " • " : null}
+                          {item.finish ? `Finish: ${item.finish}` : null}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Qty: {item.quantity} × {formatMoney(item.unitPriceCents)}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="font-medium text-compfi-ink text-sm">
+                          {formatMoney(item.totalPriceCents)}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </details>
 
               <Separator className="my-2" />
 

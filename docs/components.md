@@ -541,3 +541,14 @@ Generated components outside this certified inventory (including accordion, aler
   - Strict WCAG 2.2 AA accessibility: visible focus indicators (`focus-visible:ring-3`), clean accessible names, and 0 axe violations.
 - **Real Usage**: Global navigation chrome across all storefront surfaces.
 
+### OrderHistory (`components/account/order-history.tsx`)
+- **Purpose**: Customer order history display for authenticated members on `/account`.
+- **Server/Client**: Server component.
+- **Exported Props**: `OrderHistoryProps`, extending `React.HTMLAttributes<HTMLElement>` with `orders: readonly OrderWithItems[]`.
+- **Features**:
+  - Empty state using `Empty` compound component with direct link to `/shop`.
+  - Populated state rendering order cards with reference ID, formatted date, status badge, shipping address, and authoritative totals.
+  - Interactive `<details open>` / `<summary>` disclosure wrapping itemized line items with responsive thumbnails, size/finish options, quantities, and line totals.
+  - Slot attribute: `data-slot="order-history"`.
+- **Real Usage**: Dedicated customer account surface (`/account`).
+

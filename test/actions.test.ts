@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { placeOrderAction } from "@/app/actions/checkout"
 import { submitContactInquiryAction } from "@/app/actions/contact"
+import { calculateShippingCents } from "@/lib/checkout"
 import { getOrderById } from "@/db/orders"
 import { db } from "@/db"
 import { orders, contactInquiries } from "@/db/schema"
@@ -58,6 +59,39 @@ describe("Server Actions: checkout and contact persistence", () => {
     if (!invalidSizeResult.success) {
       expect(invalidSizeResult.message).toContain("not valid for Alder Dining Chair")
     }
+  })
+
+  it("rejects invalid or out-of-range quantities", async () => {
+    const zeroResult = await placeOrderAction(validDetails, [
+      { slug: "alder-dining-chair", quantity: 0 },
+    ])
+    expect(zeroResult.success).toBe(false)
+    if (!zeroResult.success) {
+      expect(zeroResult.message).toContain("must be an integer between 1 and 10")
+    }
+
+    const excessiveResult = await placeOrderAction(validDetails, [
+      { slug: "alder-dining-chair", quantity: 11 },
+    ])
+    expect(excessiveResult.success).toBe(false)
+    if (!excessiveResult.success) {
+      expect(excessiveResult.message).toContain("must be an integer between 1 and 10")
+    }
+
+    const floatResult = await placeOrderAction(validDetails, [
+      { slug: "alder-dining-chair", quantity: 2.5 },
+    ])
+    expect(floatResult.success).toBe(false)
+    if (!floatResult.success) {
+      expect(floatResult.message).toContain("must be an integer between 1 and 10")
+    }
+  })
+
+  it("calculates shipping accurately with threshold logic", () => {
+    expect(calculateShippingCents(0)).toBe(2500)
+    expect(calculateShippingCents(49999)).toBe(2500)
+    expect(calculateShippingCents(50000)).toBe(0)
+    expect(calculateShippingCents(100000)).toBe(0)
   })
 
   it("calculates authoritative totals and persists order", async () => {

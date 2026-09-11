@@ -3,6 +3,7 @@ import path from "node:path"
 import { createClient } from "@libsql/client"
 import { drizzle } from "drizzle-orm/libsql"
 
+import { ensureDbSchema as initDbSchema } from "./init"
 import * as schema from "./schema"
 
 const dbDir = path.join(process.cwd(), "data")
@@ -17,10 +18,6 @@ export const client = createClient({
 })
 
 export const db = drizzle(client, { schema })
-
-import { ensureDbSchema as initDbSchema } from "./init"
-
-export { initDbSchema }
 
 export async function ensureDbSchema() {
   await initDbSchema(client)

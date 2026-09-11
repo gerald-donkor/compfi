@@ -2,8 +2,11 @@
 
 import * as React from "react"
 
+import { CheckCircle2Icon } from "lucide-react"
+
 import { submitContactInquiryAction } from "@/app/actions/contact"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import {
   Field,
   FieldDescription,
@@ -211,9 +214,27 @@ export function ContactForm() {
       >
         {isSubmitting ? "Sending…" : "Send message"}
       </Button>
-      <p aria-live="polite" aria-atomic="true" className="type-body-sm font-medium">
-        {status}
-      </p>
+      {status ? (
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className={cn(
+            "rounded-lg p-4 text-sm font-medium border flex items-start gap-3",
+            status === SUCCESS_MESSAGE
+              ? "bg-emerald-50 text-emerald-900 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-200 dark:border-emerald-800"
+              : "bg-destructive/10 text-destructive border-destructive/20",
+          )}
+        >
+          {status === SUCCESS_MESSAGE ? (
+            <CheckCircle2Icon
+              className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5"
+              aria-hidden="true"
+            />
+          ) : null}
+          <span>{status}</span>
+        </div>
+      ) : null}
     </form>
   )
 }
