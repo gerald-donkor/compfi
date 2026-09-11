@@ -520,3 +520,15 @@ Generated components outside this certified inventory (including accordion, aler
   - Forwards `ref` and native DOM attributes.
 - **Slot**: `data-slot="size-selector"`, `data-slot="size-option"`.
 - **Real Usage**: Bed, dining table, and sofa sizing on product detail page.
+
+### HeaderControls Auth Integration (`components/chrome/header-controls.tsx`)
+- **Purpose**: Interactive header utility cluster and mobile drawer incorporating Clerk authentication controls.
+- **Server/Client**: Client component (`"use client"`).
+- **Features**:
+  - Declarative conditional rendering via `@clerk/nextjs` `<Show>`.
+  - **Signed-out state**: Accessible modal `<SignInButton>` wrapping `IconButton` with `UserIcon`, label `"Sign in to account"`, minimum 44 × 44 px touch target.
+  - **Signed-in state**: `<UserButton>` with `userProfileMode="navigation"` pointing to `/account` and custom Compfi avatar styling.
+  - **Mobile navigation**: Drawer mirrors authentication state with a styled button or navigation link (`#mobile-primary-navigation`).
+  - Strict WCAG 2.2 AA accessibility: visible focus indicators (`focus-visible:ring-3`), clean accessible names, and 0 axe violations.
+- **Real Usage**: Global navigation chrome across all storefront surfaces.
+

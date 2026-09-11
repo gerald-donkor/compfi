@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 
+import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/ui/themes";
+
 import { SiteFooter } from "@/components/chrome/site-footer";
 import { SiteHeader } from "@/components/chrome/site-header";
 import { CartProvider } from "@/components/cart/cart-provider";
@@ -65,14 +68,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-US" className={poppins.variable} data-scroll-behavior="smooth">
       <body>
-        <a className="skip-link" href="#main-content">
-          Skip to main content
-        </a>
-        <CartProvider>
-        <SiteHeader />
-        {children}
-        </CartProvider>
-        <SiteFooter />
+        <ClerkProvider dynamic appearance={{ theme: shadcn }}>
+          <a className="skip-link" href="#main-content">
+            Skip to main content
+          </a>
+          <CartProvider>
+            <SiteHeader />
+            {children}
+          </CartProvider>
+          <SiteFooter />
+        </ClerkProvider>
       </body>
     </html>
   );

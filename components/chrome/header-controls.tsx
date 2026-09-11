@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { MenuIcon, XIcon } from "lucide-react"
+import { MenuIcon, UserIcon, XIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
+import { Show, SignInButton, UserButton } from "@clerk/nextjs"
 
 import { CartDrawer } from "@/components/chrome/cart-drawer"
 import { IconButton } from "@/components/ui/icon-button"
@@ -49,6 +50,31 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
       </nav>
 
       <div className="flex items-center justify-end gap-1">
+        <Show when="signed-out">
+          <SignInButton mode="modal">
+            <IconButton
+              icon={UserIcon}
+              label="Sign in to account"
+              variant="ghost"
+              className="min-h-11 min-w-11"
+            />
+          </SignInButton>
+        </Show>
+        <Show when="signed-in">
+          <div className="flex min-h-11 min-w-11 items-center justify-center">
+            <UserButton
+              userProfileMode="navigation"
+              userProfileUrl="/account"
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: "h-7 w-7",
+                  userButtonTrigger:
+                    "min-h-11 min-w-11 rounded-full p-1 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-compfi-brand-focus",
+                },
+              }}
+            />
+          </div>
+        </Show>
         <CartDrawer />
         <IconButton
           ref={menuButton}
@@ -82,8 +108,35 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
               </Link>
             </li>
           ))}
+          <li className="border-t border-compfi-border pt-2 mt-2">
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button
+                  type="button"
+                  className="flex min-h-11 w-full items-center gap-3 px-1 text-left font-medium text-compfi-ink hover:text-compfi-brand-action transition-colors"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <UserIcon className="h-5 w-5 text-compfi-brand" aria-hidden="true" />
+                  <span>Sign in</span>
+                </button>
+              </SignInButton>
+            </Show>
+            <Show when="signed-in">
+              <Link
+                href="/account"
+                variant="default"
+                aria-current={pathname === "/account" ? "page" : undefined}
+                className="flex min-h-11 w-full items-center gap-3 px-1 no-underline font-medium text-compfi-ink hover:text-compfi-brand-action transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                <UserIcon className="h-5 w-5 text-compfi-brand" aria-hidden="true" />
+                <span>My Account</span>
+              </Link>
+            </Show>
+          </li>
         </ul>
       </nav>
     </>
   )
 }
+

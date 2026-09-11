@@ -42,7 +42,7 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
       const rules = Array.isArray(result.rules) ? result.rules[0] : result.rules
       expect(rules.userAgent).toBe("*")
       expect(rules.allow).toBe("/")
-      expect(rules.disallow).toBeUndefined()
+      expect(rules.disallow).toEqual(["/account", "/sign-in", "/sign-up"])
       expect(result.sitemap).toMatch(/https:\/\/.*\/sitemap\.xml/)
     })
   })

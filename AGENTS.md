@@ -170,7 +170,7 @@ implementation evidence.
 | `docs/pages.md` | route-by-route build record and reference deltas | current; Phase 8 site-wide QA, a11y, vitals, and metadata certified |
 | `docs/automation.md` | repeatable measurement and screenshot-diff procedure | current |
 | `docs/agent-browser.md` | project browser-automation installation, safety, and verification runbook | current; installed and verified locally |
-| `docs/auth.md` | Clerk setup, protected surfaces, and verification | planned when authentication is needed |
+| `docs/auth.md` | Clerk setup, protected surfaces, and verification | current; Phase 9 Clerk authentication, proxy.ts, and /account route certified |
 
 Once a planned file exists, replace `planned` with a truthful status and read it
 before touching its area. The repository and Git history—not this table or a

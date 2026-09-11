@@ -916,3 +916,42 @@ the full 21-file/101-test suite passes with one worker after the unconstrained
 run exceeded two existing 5-second per-test limits under host load. Final
 independent re-review from the original `e2bfa6c` base reported 0 Standards
 findings and 0 Spec findings. Phase 5 is complete and reviewed.
+
+## Clerk Authentication and Protected Account (`/account`, `/sign-in`, `/sign-up`) (Phase 9)
+
+Implemented 2026-09-11 as Phase 9 of the storefront build sequence. Brings the
+presentational account affordance in the desktop and mobile navigation chrome
+to life using Clerk, the project's contracted identity platform.
+
+### Surfaces and Architecture
+
+- **Root Layout (`app/layout.tsx`)**: Integrates `<ClerkProvider dynamic appearance={{ theme: shadcn }}>` within `<body>` with `@import "@clerk/ui/themes/shadcn.css";` loaded in `app/globals.css`.
+- **Server Proxy (`proxy.ts`)**: Adheres to the Next.js 16 `proxy.ts` convention, protecting `/account(.*)` with `clerkMiddleware` while keeping catalog, blog, cart, and checkout routes public and prerenderable.
+- **Header Auth Controls (`components/chrome/header-controls.tsx`)**:
+  - Signed-out state: Modal `<SignInButton>` wrapping `IconButton` with `UserIcon`, label `"Sign in to account"`, and min 44 × 44 px touch target.
+  - Signed-in state: `<UserButton userProfileMode="navigation" userProfileUrl="/account" />`.
+  - Mobile drawer: Mirrors auth actions with accessible touch targets.
+- **Protected Account Route (`app/account/page.tsx`)**: Server Component verifying `await auth()`. Redirects unauthenticated requests to `/sign-in?redirect_url=/account`. Renders `PageHero` ("My Account") and `<UserProfile routing="hash" />`.
+- **Dedicated Auth Routes**:
+  - `/sign-in/[[...sign-in]]`: Renders Compfi `PageHero` and `<SignIn routing="path" path="/sign-in" />`.
+  - `/sign-up/[[...sign-up]]`: Renders Compfi `PageHero` and `<SignUp routing="path" path="/sign-up" />`.
+- **Search Engine Directives**:
+  - `app/robots.ts`: Disallows `/account`, `/sign-in`, `/sign-up`.
+  - Auth route metadata: `robots: { index: false, follow: false }`.
+  - `app/sitemap.ts`: Excludes auth routes from sitemap.
+
+### Verification
+
+Self-verification on 2026-09-11:
+
+| check | result |
+| --- | --- |
+| `npx -y clerk@latest doctor --json` | passed: All checks passing (CLI 3.3.0, logged in, project linked to Compfi, app reachable, env vars configured) |
+| `npm run test` | passed: 28 files, 148 tests (including `test/account.test.tsx` verifying signed-out/signed-in controls, server redirect, and axe a11y) |
+| `npm run lint` | passed: 0 warnings, 0 errors |
+| `npx tsc --noEmit` | passed: 0 errors |
+| `npm run build` | passed: Next.js 16.3.4 (Turbopack) compiled successfully, generated 22 static pages and detected `ƒ Proxy (Middleware)` |
+| `agent-browser` interaction | modal sign-in opens on Account click, traps focus, dismisses with Escape; direct navigation to `/account` redirects with HTTP 307 to `/sign-in?redirect_url=...`; dedicated sign-in/up routes render inside Compfi layout |
+| `agent-browser` responsive | verified zero horizontal overflow (`scrollWidth <= clientWidth`) across 1440, 1024, 768, 390, and 320 px viewports; mobile drawer menu contains sign-in / account action |
+| axe accessibility | 0 accessibility violations across header chrome, `/account`, `/sign-in`, and `/sign-up` |
+
