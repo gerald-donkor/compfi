@@ -171,6 +171,7 @@ implementation evidence.
 | `docs/automation.md` | repeatable measurement and screenshot-diff procedure | current |
 | `docs/agent-browser.md` | project browser-automation installation, safety, and verification runbook | current; installed and verified locally |
 | `docs/auth.md` | Clerk setup, protected surfaces, and verification | current; Phase 9 Clerk authentication, proxy.ts, and /account route certified |
+| `docs/services.md` | free local stack: SQLite schema, Drizzle ORM persistence, and Server Actions | current; Phase 10 order & inquiry persistence certified |
 
 Once a planned file exists, replace `planned` with a truthful status and read it
 before touching its area. The repository and Git history—not this table or a

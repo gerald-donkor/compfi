@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { submitContactInquiryAction } from "@/app/actions/contact"
 import { Button } from "@/components/ui/button"
 import {
   Field,
@@ -23,7 +24,7 @@ import {
   type ContactFieldName,
 } from "@/lib/contact"
 
-const SUCCESS_MESSAGE = "Message checked. It was not sent and no email was delivered."
+const SUCCESS_MESSAGE = "Thank you! Your message has been sent. We'll be in touch soon."
 
 const FIELD_LABELS: Readonly<Record<ContactFieldName, string>> = Object.freeze({
   name: "Name",
@@ -71,11 +72,14 @@ function isContactFieldName(value: string): value is ContactFieldName {
 export function ContactForm() {
   const [errors, setErrors] = React.useState<ContactErrors>({})
   const [status, setStatus] = React.useState("")
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const formRef = React.useRef<HTMLFormElement>(null)
   const errorSummaryRef = React.useRef<HTMLDivElement>(null)
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const nextErrors = reviewContactDetails(detailsFrom(event.currentTarget))
+    const details = detailsFrom(event.currentTarget)
+    const nextErrors = reviewContactDetails(details)
     setStatus("")
     setErrors(nextErrors)
 
@@ -84,7 +88,26 @@ export function ContactForm() {
       return
     }
 
-    setStatus(SUCCESS_MESSAGE)
+    setIsSubmitting(true)
+    try {
+      const result = await submitContactInquiryAction(details)
+      if (!result.success) {
+        if (result.errors) {
+          setErrors(result.errors)
+          requestAnimationFrame(() => errorSummaryRef.current?.focus())
+        } else if (result.message) {
+          setStatus(result.message)
+        }
+        return
+      }
+
+      formRef.current?.reset()
+      setStatus(SUCCESS_MESSAGE)
+    } catch {
+      setStatus("An unexpected error occurred while sending your message. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   function handleChange(event: React.FormEvent<HTMLFormElement>) {
@@ -104,7 +127,8 @@ export function ContactForm() {
 
   return (
     <form
-      aria-label="Contact message review"
+      ref={formRef}
+      aria-label="Send a message to Compfi"
       className="contact-form"
       noValidate
       onSubmit={handleSubmit}
@@ -113,7 +137,7 @@ export function ContactForm() {
       <FieldSet>
         <FieldLegend className="type-heading-lg">Send us a message</FieldLegend>
         <FieldDescription>
-          Review your details below. Nothing is sent, stored, or emailed in this preview.
+          Fill out the form below. We typically respond within one business day.
         </FieldDescription>
         {Object.keys(errors).length ? (
           <div ref={errorSummaryRef} tabIndex={-1} role="alert" className="contact-error-summary">
@@ -172,14 +196,20 @@ export function ContactForm() {
               }
             />
             <FieldDescription id="contact-message-description">
-              Messages are reviewed locally and are not sent or saved.
+              Share details about your space, dimensions, or design questions.
             </FieldDescription>
             {messageError ? <FieldError id="contact-message-error">{messageError}</FieldError> : null}
           </Field>
         </FieldGroup>
       </FieldSet>
-      <Button type="submit" size="lg" className="contact-submit">
-        Check message
+      <Button
+        type="submit"
+        size="lg"
+        disabled={isSubmitting}
+        aria-busy={isSubmitting}
+        className="contact-submit"
+      >
+        {isSubmitting ? "Sending…" : "Send message"}
       </Button>
       <p aria-live="polite" aria-atomic="true" className="type-body-sm font-medium">
         {status}

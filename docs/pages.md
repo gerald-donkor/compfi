@@ -1,6 +1,6 @@
 # Compfi page build record
 
-Status: Phase 9 complete and verified (Clerk authentication setup, Next.js 16 proxy.ts, protected /account route, dedicated auth routes, and header integration certified).
+Status: Phase 10 complete and verified (100% free stack, local SQLite persistence via Drizzle ORM and @libsql/client, Server Actions for checkout and contact, order confirmation receipt view, and customer order history on /account).
 
 ## Phase 8 — Accessibility, performance, and visual QA certification
 
@@ -954,4 +954,45 @@ Self-verification on 2026-09-11:
 | `agent-browser` interaction | modal sign-in opens on Account click, traps focus, dismisses with Escape; direct navigation to `/account` redirects with HTTP 307 to `/sign-in?redirect_url=...`; dedicated sign-in/up routes render inside Compfi layout |
 | `agent-browser` responsive | verified zero horizontal overflow (`scrollWidth <= clientWidth`) across 1440, 1024, 768, 390, and 320 px viewports; mobile drawer menu contains sign-in / account action |
 | axe accessibility | 0 accessibility violations across header chrome, `/account`, `/sign-in`, and `/sign-up` |
+
+## 100% Free Stack: SQLite Persistence, Server Actions, and Services (Phase 10)
+
+Implemented 2026-09-11 as Phase 10 of the storefront build sequence. Delivers an entirely free, zero-cost, self-contained local persistence and backend architecture using embedded SQLite via Drizzle ORM and `@libsql/client`. Replaces mock operations with real transactional database persistence without external paid APIs, cloud databases, or payment gateways.
+
+### Surfaces and Architecture
+
+- **Embedded Database (`db/schema.ts`, `db/index.ts`, `db/orders.ts`)**:
+  - Embedded SQLite database at `file:data/compfi.db`, untracked via `.gitignore` (`data/`, `*.db*`).
+  - Drizzle ORM schema for `orders`, `order_items`, and `contact_inquiries`.
+  - Automatic `ensureDbSchema()` initialization executing `CREATE TABLE IF NOT EXISTS` DDL statements on startup.
+  - Queries for customer order history (`getOrdersByUserId`) and single orders (`getOrderById`).
+- **Checkout Flow & Server Action (`app/actions/checkout.ts`, `components/checkout/checkout-content.tsx`)**:
+  - `placeOrderAction` validates input with Zod, treats client prices as untrusted, and authoritatively re-evaluates catalog pricing from `lib/catalog.ts`.
+  - Optionally links order to authenticated customer via `await auth()`.
+  - Atomically records order header and items in SQLite.
+  - Client checkout UI submits via Server Action, provides accessible `aria-busy` feedback, clears cart via `useCart().clear()`, and transitions to an accessible `OrderConfirmation` receipt view with order reference, itemized breakdown, and shipping details.
+- **Cart Persistence (`components/cart/cart-provider.tsx`)**:
+  - Synchronizes cart items to `localStorage` (`compfi_cart_v1`) to preserve shopping state across navigation, refresh, and checkout.
+- **Protected Account Order History (`app/account/page.tsx`, `components/account/order-history.tsx`)**:
+  - `/account` Server Component queries `getOrdersByUserId(userId)`.
+  - Renders `OrderHistory` with empty state (call to browse furniture) or populated order cards with order number, formatted placement date, status badge, itemized product list with thumbnails, finish/size details, and total price.
+- **Contact Inquiry Persistence (`app/actions/contact.ts`, `components/contact/contact-form.tsx`)**:
+  - `submitContactInquiryAction` validates input and persists contact inquiries to `contact_inquiries` table.
+  - Contact form renders submitting state and accessible confirmation alert banner.
+
+### Verification
+
+Self-verification on 2026-09-11 (using named session `AGENT_BROWSER_SESSION="compfi-phase10"`):
+
+| check | result |
+| --- | --- |
+| `npm run test` | passed: 31 files, 163 tests (including `test/db.test.ts`, `test/actions.test.ts`, and `test/phase10-services.test.tsx`) |
+| `npm run lint` | passed: 0 warnings, 0 errors |
+| `npx tsc --noEmit` | passed: 0 errors |
+| `npm run build` | passed: Turbopack prerendered 22/22 routes successfully |
+| `agent-browser` checkout order placement | verified end-to-end: adding product to cart, submitting checkout form, displaying Order Confirmed receipt, and verifying row in SQLite `orders` and `order_items` tables |
+| `agent-browser` contact inquiry | verified end-to-end: submitting inquiry on `/contact`, displaying confirmation banner, and verifying row in SQLite `contact_inquiries` table |
+| `agent-browser` responsive | verified zero horizontal overflow (`scrollWidth <= clientWidth`: true) across 1440, 1024, 768, 390, and 320 px viewports |
+| axe accessibility | 0 axe violations across `OrderConfirmation`, `OrderHistory` (empty & populated states), and `/checkout` |
+
 

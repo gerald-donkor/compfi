@@ -10,12 +10,11 @@ export function ContactContent() {
             Questions about furniture or your space?
           </h2>
           <p className="type-body text-muted-foreground">
-            Use the message form to review what you would share with Compfi, such as the
-            furniture you are considering and the room you are planning.
+            Use the message form below to reach Compfi with details about the furniture you
+            are considering and the room you are planning.
           </p>
           <p className="type-body text-muted-foreground">
-            This preview checks your details in your browser only. Nothing is sent,
-            stored, or emailed.
+            Our design team reviews inquiries promptly and will respond to your email.
           </p>
         </section>
         <ContactForm />

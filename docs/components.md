@@ -1,8 +1,17 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 9 (Authentication via Clerk, Next.js 16 proxy.ts, and protected account route) fully implemented, audited, and certified across all storefront surfaces and primitives.
+Status: Phase 10 (100% free stack, local SQLite persistence via Drizzle ORM and @libsql/client, Server Actions, Order Confirmation receipt, and Customer Order History) fully implemented, audited, and certified.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
+
+## Phase 10 Services, Persistence & Order Management Components
+
+- **`OrderHistory`** (`components/account/order-history.tsx`, `data-slot="order-history"`):
+  Renders customer order history inside the protected `/account` route. If `orders.length === 0`, renders accessible `Empty` composition (`EmptyMedia`, `EmptyTitle`, `EmptyDescription`, and button link to browse `/shop`). When populated, renders an accessible list of order cards with `ORD-...` order number, formatted placement date (`Intl.DateTimeFormat("en-US")`), status badge (`Confirmed`), itemized product list with responsive thumbnails, size/finish metadata, catalog unit prices, and grand total via `Money`. Fully axe-tested and compliant with zero violations.
+- **`OrderConfirmation`** (`components/checkout/checkout-content.tsx`, `data-slot="order-confirmation"`):
+  Accessible receipt view rendered upon successful order placement via `placeOrderAction`. Contains `role="status"` live region, `h2` heading ("Order confirmed"), order reference ID, itemized order summary, shipping address, and actions to continue shopping (`/shop`) or view orders in account (`/account`). Clears the client cart on mount.
+- **`CartProvider`** (`components/cart/cart-provider.tsx`):
+  Updated with `compfi_cart_v1` `localStorage` persistence so cart state seamlessly survives full page reloads, tab switches, and checkout transitions. Exposes `clear` / `clearCart` methods and live message announcements for screen readers.
 
 ## Phase 8 Foundations & Accessibility Enhancements
 

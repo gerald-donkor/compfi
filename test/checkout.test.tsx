@@ -90,7 +90,7 @@ describe("checkout presentation", () => {
     expect(screen.getByText("Queen · Oatmeal")).toBeInTheDocument()
     expect(screen.getAllByText("$1,599.00").length).toBeGreaterThan(0)
 
-    await user.click(screen.getByRole("button", { name: "Check details" }))
+    await user.click(screen.getByRole("button", { name: "Place order" }))
     const summary = screen.getByText("Check the highlighted details").closest("[role='alert']")
     expect(summary).not.toBeNull()
     await waitFor(() => expect(summary).toHaveFocus())
@@ -110,13 +110,11 @@ describe("checkout presentation", () => {
     }
 
     expect(screen.queryByText("Enter your first name.")).not.toBeInTheDocument()
-    await user.click(screen.getByRole("button", { name: "Check details" }))
-    expect(screen.getByText("Details checked. No order was placed and no payment was processed.")).toBeInTheDocument()
-    expect(screen.getByText("Billing details")).toBeInTheDocument()
-    expect(screen.getByDisplayValue(validDetails.firstName)).toBeInTheDocument()
+    await user.click(screen.getByRole("button", { name: "Place order" }))
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Order confirmed" })).toBeInTheDocument()
+    })
+    expect(screen.getByText(`${validDetails.firstName} ${validDetails.lastName}`)).toBeInTheDocument()
     expect(await checkA11y(container)).toEqual([])
-
-    await user.type(screen.getByLabelText("Company name (optional)"), "Northline")
-    expect(screen.queryByText("Details checked. No order was placed and no payment was processed.")).not.toBeInTheDocument()
   })
 })

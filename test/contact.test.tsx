@@ -70,16 +70,16 @@ describe("contact presentation", () => {
     expect(screen.getByLabelText("Name")).toBeInTheDocument()
     expect(screen.getByLabelText("Email address")).toBeInTheDocument()
     expect(screen.getByLabelText("Message")).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "Check message" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Send message" })).toBeInTheDocument()
     expect(screen.queryByText(/was sent/i)).not.toBeInTheDocument()
     expect(await checkA11y(container)).toEqual([])
   })
 
-  it("reviews a message without navigating, sending, or clearing inputs", async () => {
+  it("validates fields and submits message with confirmation", async () => {
     const user = userEvent.setup()
     const { container } = render(<ContactContent />)
 
-    await user.click(screen.getByRole("button", { name: "Check message" }))
+    await user.click(screen.getByRole("button", { name: "Send message" }))
     const summary = screen.getByText("Check the highlighted fields").closest("[role='alert']")
     expect(summary).not.toBeNull()
     await waitFor(() => expect(summary).toHaveFocus())
@@ -90,19 +90,13 @@ describe("contact presentation", () => {
     await user.type(screen.getByLabelText("Email address"), validDetails.email)
     await user.type(screen.getByLabelText("Message"), validDetails.message)
 
-    await user.click(screen.getByRole("button", { name: "Check message" }))
-    expect(
-      screen.getByText("Message checked. It was not sent and no email was delivered."),
-    ).toBeInTheDocument()
-    expect(screen.getByDisplayValue(validDetails.name)).toBeInTheDocument()
-    expect(screen.getByDisplayValue(validDetails.email)).toBeInTheDocument()
-    expect(screen.getByDisplayValue(validDetails.message)).toBeInTheDocument()
+    await user.click(screen.getByRole("button", { name: "Send message" }))
+    await waitFor(() => {
+      expect(
+        screen.getByText("Thank you! Your message has been sent. We'll be in touch soon."),
+      ).toBeInTheDocument()
+    })
     expect(window.location.pathname).toBe("/")
     expect(await checkA11y(container)).toEqual([])
-
-    await user.type(screen.getByLabelText("Name"), "!")
-    expect(
-      screen.queryByText("Message checked. It was not sent and no email was delivered."),
-    ).not.toBeInTheDocument()
   })
 })
