@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import robots from "@/app/robots"
 import sitemap from "@/app/sitemap"
-import NotFound from "@/app/not-found"
+import NotFound, { metadata as notFoundMetadata } from "@/app/not-found"
 import { metadata as layoutMetadata } from "@/app/layout"
 import { metadata as homeMetadata } from "@/app/page"
 import { metadata as shopMetadata } from "@/app/shop/page"
@@ -14,6 +14,9 @@ import { metadata as comparisonMetadata } from "@/app/comparison/page"
 import { metadata as contactMetadata } from "@/app/contact/page"
 import { metadata as blogMetadata } from "@/app/blog/page"
 import { generateMetadata as generateProductMetadata } from "@/app/shop/[slug]/page"
+import { SiteHeader } from "@/components/chrome/site-header"
+import { SiteFooter } from "@/components/chrome/site-footer"
+import { CartProvider } from "@/components/cart/cart-provider"
 import { catalogProducts } from "@/lib/catalog"
 import { checkA11y } from "./a11y"
 
@@ -39,7 +42,7 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
       const rules = Array.isArray(result.rules) ? result.rules[0] : result.rules
       expect(rules.userAgent).toBe("*")
       expect(rules.allow).toBe("/")
-      expect(rules.disallow).toContain("/api/")
+      expect(rules.disallow).toBeUndefined()
       expect(result.sitemap).toMatch(/https:\/\/.*\/sitemap\.xml/)
     })
   })
@@ -69,6 +72,7 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
       for (const entry of result) {
         expect(entry.url).toBeDefined()
         expect(entry.lastModified).toBeInstanceOf(Date)
+        expect((entry.lastModified as Date).toISOString()).toBe("2026-09-11T00:00:00.000Z")
         expect(["daily", "weekly", "monthly", "yearly"]).toContain(entry.changeFrequency)
         expect(entry.priority).toBeGreaterThanOrEqual(0)
         expect(entry.priority).toBeLessThanOrEqual(1)
@@ -77,6 +81,11 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
   })
 
   describe("Branded 404 page (app/not-found.tsx)", () => {
+    it("exports metadata for 404 page", () => {
+      expect(notFoundMetadata.title).toBe("Page Not Found")
+      expect(notFoundMetadata.description).toBe("The requested page could not be found.")
+    })
+
     it("renders branded PageHero, recovery message, and navigation links", async () => {
       const { container } = render(<NotFound />)
 
@@ -95,12 +104,15 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
   })
 
   describe("Metadata consistency across routes", () => {
-    it("defines root layout metadata with siteName, Open Graph, and Twitter cards", () => {
+    it("defines root layout metadata with siteName, Open Graph, Twitter cards, and canonical URL", () => {
       expect(layoutMetadata.title).toEqual({
         default: "Compfi",
         template: "%s | Compfi",
       })
       expect(layoutMetadata.description).toBe("Furniture and home furnishings, thoughtfully presented.")
+      expect(layoutMetadata.alternates).toEqual({
+        canonical: "/",
+      })
       expect(layoutMetadata.openGraph).toMatchObject({
         title: "Compfi",
         siteName: "Compfi",
@@ -135,6 +147,24 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
       })
       expect(invalidMeta.title).toBe("Product not found")
       expect(invalidMeta.robots).toEqual({ index: false, follow: false })
+    })
+  })
+
+  describe("Chrome shell accessibility (SiteHeader and SiteFooter)", () => {
+    it("renders SiteHeader with 0 axe violations", async () => {
+      const { container } = render(
+        <CartProvider>
+          <SiteHeader />
+        </CartProvider>
+      )
+      const violations = await checkA11y(container)
+      expect(violations).toEqual([])
+    })
+
+    it("renders SiteFooter with 0 axe violations", async () => {
+      const { container } = render(<SiteFooter />)
+      const violations = await checkA11y(container)
+      expect(violations).toEqual([])
     })
   })
 })

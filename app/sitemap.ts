@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
 import { catalogProducts } from "@/lib/catalog";
+import { siteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://compfi.com";
-  const lastModified = new Date();
+  const lastModified = new Date("2026-09-11T00:00:00.000Z");
 
   const staticPaths = [
     { path: "", changeFrequency: "daily" as const, priority: 1.0 },

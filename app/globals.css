@@ -148,6 +148,7 @@
   --product-detail-gallery-thumb-width: 4.75rem;
   --product-detail-gallery-thumb-height: 5rem;
   --product-detail-gallery-gap: 1.875rem;
+  --product-detail-gallery-max-share: 52%;
   --product-detail-information-media-gap: 1.8125rem;
   --product-detail-information-media-ratio: 605 / 348;
   --chrome-benefits-block-padding: 6.75rem;
@@ -178,6 +179,7 @@
   --comparison-product-frame-height: 11.25rem;
   --comparison-table-attribute-width: 22.1875rem;
   --comparison-table-product-width: 21.5rem;
+  --comparison-picker-width: 15.125rem;
   /* Checkout presentation geometry */
   --checkout-content-padding-top: 6.9375rem;
   --checkout-content-padding-bottom: 7.5rem;
@@ -254,7 +256,7 @@
 
 .product-detail-summary__layout {
   display: grid;
-  grid-template-columns: minmax(0, min(52%, calc(var(--product-detail-gallery-thumb-width) + var(--product-detail-gallery-gap) + var(--product-detail-gallery-lead-width)))) minmax(0, 1fr);
+  grid-template-columns: minmax(0, min(var(--product-detail-gallery-max-share), calc(var(--product-detail-gallery-thumb-width) + var(--product-detail-gallery-gap) + var(--product-detail-gallery-lead-width)))) minmax(0, 1fr);
   gap: var(--product-detail-summary-gap);
   align-items: start;
 }
@@ -722,7 +724,7 @@ textarea {
 .comparison-summary__remove { min-height: var(--control-min); margin-top: var(--space-2); font-size: var(--type-body-sm-size); }
 .comparison-picker { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); padding: var(--space-4); background: var(--color-wash); min-width: 0; }
 .comparison-picker__field { gap: var(--space-2); max-width: 100%; }
-.comparison-picker__select { min-width: min(15.125rem, 100%); max-width: 100%; min-height: var(--control-min); }
+.comparison-picker__select { min-width: min(var(--comparison-picker-width), 100%); max-width: 100%; min-height: var(--control-min); }
 .comparison-picker__select [data-slot="native-select"] { min-height: var(--control-min); }
 .product-comparison__full { margin: 0; padding: var(--space-4); color: var(--color-muted); }
 .product-comparison__empty { display: grid; gap: var(--space-8); max-width: 32rem; }

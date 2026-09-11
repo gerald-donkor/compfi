@@ -8,10 +8,11 @@ Implemented 2026-09-11 as the Phase 8 site-wide certification gate. All nine sto
 
 ### Scope delivered:
 - **Metadata and SEO foundations**:
-  - `app/robots.ts`: Next.js Route Handler generating crawler exclusion rules (`User-Agent: *`, `Allow: /`, `Disallow: /api/`) and dynamic sitemap reference.
-  - `app/sitemap.ts`: Dynamic sitemap generator providing entries for all static storefront paths (`/`, `/shop`, `/cart`, `/checkout`, `/contact`, `/blog`, `/comparison`) and dynamic catalog products (`/shop/[slug]`), with accurate `changeFrequency` and `priority`.
-  - `app/not-found.tsx`: Custom branded 404 recovery route rendering `PageHero` with breadcrumbs, accessible recovery guidance, and primary/outline actions to browse furniture or return home.
-  - `app/layout.tsx`: Standardized metadataBase (`process.env.NEXT_PUBLIC_SITE_URL || "https://compfi.com"`), Open Graph defaults (`siteName: "Compfi"`, locale `"en_US"`), and Twitter card metadata.
+  - `lib/site.ts`: Centralized `siteUrl` fallback (`process.env.NEXT_PUBLIC_SITE_URL || "https://compfi.com"`).
+  - `app/robots.ts`: Next.js Route Handler generating crawler exclusion rules (`User-Agent: *`, `Allow: /`) and dynamic sitemap reference (omitted speculative `/api/` rule).
+  - `app/sitemap.ts`: Dynamic sitemap generator providing entries for all static storefront paths (`/`, `/shop`, `/cart`, `/checkout`, `/contact`, `/blog`, `/comparison`) and dynamic catalog products (`/shop/[slug]`), with deterministic `lastModified` timestamp, accurate `changeFrequency`, and `priority`.
+  - `app/not-found.tsx`: Custom branded 404 recovery route exporting `metadata` (`title: "Page Not Found"`), rendering `PageHero` with breadcrumbs, accessible recovery guidance, and primary/outline actions to browse furniture or return home.
+  - `app/layout.tsx`: Standardized metadataBase, canonical URL (`alternates: { canonical: "/" }`), Open Graph defaults (`siteName: "Compfi"`, locale `"en_US"`), and Twitter card metadata.
   - `app/shop/[slug]/page.tsx`: Standardized dynamic `generateMetadata` with Open Graph image and `robots: { index: false, follow: false }` on unlisted product slugs.
 - **Accessibility fixes**:
   - `components/home/inspiration-carousel.tsx`: Removed redundant `aria-label="Choose a room"` from plain `.home-inspiration__dots` `<div>`, resolving `aria-prohibited-attr` and preserving slide `group` semantics without extraneous landmark wrappers.
@@ -19,7 +20,7 @@ Implemented 2026-09-11 as the Phase 8 site-wide certification gate. All nine sto
   - Automated `axe-core 4.12.1` site-wide audit: reports **0 violations** across all 10 routes (`/`, `/shop`, `/shop/[slug]`, cart drawer modal, `/comparison`, `/cart`, `/checkout`, `/contact`, `/blog`, `/design-system`, and 404).
 - **Responsive reflow & 200% text zoom**:
   - `components/chrome/site-header.tsx`: Updated grid columns from rigid `minmax(12rem, 1fr) auto minmax(12rem, 1fr)` to flexible `1fr auto 1fr`, maintaining centered navigation while allowing graceful reflow at 200% text zoom.
-  - `app/globals.css`: Capped `.product-detail-summary__layout` gallery column to `min(52%, calc(...))` to prevent gallery from consuming excessive width and crowding out product summary at 200% text zoom; updated `.comparison-picker__select` to `min-width: min(15.125rem, 100%)`.
+  - `app/globals.css`: Capped `.product-detail-summary__layout` gallery column using tokenized `--product-detail-gallery-max-share: 52%` (`min(var(--product-detail-gallery-max-share), calc(...))`); constrained `.comparison-picker__select` using `--comparison-picker-width: 15.125rem` (`min-width: min(var(--comparison-picker-width), 100%)`).
   - Responsive audit across 1440, 1024, 768, 390, and 320 px viewports confirmed `document.documentElement.scrollWidth === window.innerWidth` (0 overflow errors across all routes).
   - 200% root text zoom reflow confirmed across all storefront surfaces with zero horizontal overflow.
 - **Motion & Assistive Technology**:
@@ -30,13 +31,13 @@ Implemented 2026-09-11 as the Phase 8 site-wide certification gate. All nine sto
   - Shop: TTFB 128.3ms, FCP 204ms, LCP 496ms, CLS 0, Hydration 31.8ms.
   - Product: TTFB 247.3ms, FCP 408ms, LCP 408ms, CLS 0, Hydration 37.4ms.
 - **Automated test suite**:
-  - `test/phase8-audit.test.tsx`: 6 new comprehensive automated integration tests covering robots, sitemap, 404 rendering/a11y, layout metadata, route metadata consistency, and dynamic product metadata.
-  - Full suite: 27 test files, 137 tests passing cleanly.
+  - `test/phase8-audit.test.tsx`: 9 automated integration tests covering robots, sitemap, 404 rendering/a11y/metadata, layout metadata with canonical URL, route metadata consistency, dynamic product metadata, and `SiteHeader`/`SiteFooter` axe checks.
+  - Full suite: 27 test files, 140 tests passing cleanly.
 
 ### Verification (2026-09-11, named `compfi-phase8-8dbc2e39d5ed` session):
 | check | result |
 | --- | --- |
-| `npm run test` | passed: 27 files, 137 tests |
+| `npm run test` | passed: 27 files, 140 tests |
 | `npm run lint` | passed: 0 warnings, 0 errors |
 | `npx tsc --noEmit` | passed: 0 errors |
 | `npm run build` | passed: Turbopack prerendered 21/21 routes (including /robots.txt and /sitemap.xml) in 1.4s |
@@ -46,6 +47,8 @@ Implemented 2026-09-11 as the Phase 8 site-wide certification gate. All nine sto
 | reduced motion | `window.matchMedia('(prefers-reduced-motion: reduce)').matches === true`; transition duration 0.01ms |
 | desktop screenshots | 11 captures saved under `/tmp/compfi-phase8-qa/*.png`, confirming 2:1 raster scale and 1240px centered container |
 | Web Interface Guidelines | confirmed compliant: visible focus, 44px targets, semantic landmarks, no horizontal scroll, explicit image sizing |
+
+Implementation commit `774540b` received the required independent review on 2026-09-11. Standards reported 2 tokenization violations and 3 baseline smells (duplicated site URL, speculative `/api/` disallow, and volatile date). Spec reported missing canonical URL metadata, unbranded 404 title, and omitted chrome a11y tests. All findings were accepted and resolved in fix commit: CSS tokens `--product-detail-gallery-max-share` and `--comparison-picker-width` declared; `siteUrl` centralized; speculative rule removed; sitemap date stabilized; canonical and 404 metadata added; test suite expanded to 140 tests. All 27 test files, lint, TypeScript, and Turbopack build pass. Phase 8 is complete and certified.
 
 ## Phase 7 unit 2 — interaction polish (galleries, controls, variants, pagination)
 

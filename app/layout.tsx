@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { SiteFooter } from "@/components/chrome/site-footer";
 import { SiteHeader } from "@/components/chrome/site-header";
 import { CartProvider } from "@/components/cart/cart-provider";
+import { siteUrl } from "@/lib/site";
 
 import "./globals.css";
 
@@ -35,10 +36,11 @@ const poppins = localFont({
   fallback: ["Arial", "sans-serif"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://compfi.com";
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: "/",
+  },
   title: {
     default: "Compfi",
     template: "%s | Compfi",

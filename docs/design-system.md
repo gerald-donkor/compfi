@@ -262,7 +262,7 @@ were supplied:
 
 On 2026-09-11, Phase 8 verified all storefront routes (`/`, `/shop`, `/shop/[slug]`, `/comparison`, `/cart`, `/checkout`, `/contact`, `/blog`, `/design-system`, and 404):
 - **Responsive Overflow**: Verified `scrollWidth === clientWidth` at 1440, 1024, 768, 390, and 320 px (zero horizontal page overflow).
-- **200% Text Zoom**: Verified WCAG 1.4.4 text zoom at 200% root font size without horizontal page scroll (`scrollWidth === 1440, innerWidth === 1440`). To ensure robust reflow, `.product-detail-summary__layout` gallery column is capped at `min(52%, calc(...))` and `SiteHeader` uses `1fr auto 1fr` grid columns.
+- **200% Text Zoom**: Verified WCAG 1.4.4 text zoom at 200% root font size without horizontal page scroll (`scrollWidth === 1440, innerWidth === 1440`). To ensure robust reflow, `.product-detail-summary__layout` gallery column is capped at `min(var(--product-detail-gallery-max-share), calc(...))` (`--product-detail-gallery-max-share: 52%`), `.comparison-picker__select` uses `min(var(--comparison-picker-width), 100%)` (`--comparison-picker-width: 15.125rem`), and `SiteHeader` uses `1fr auto 1fr` grid columns.
 - **Motion Token Enforcement**: Verified `prefers-reduced-motion: reduce` collapse of all CSS transitions and animations to 0.01ms.
 
 The production spacing scale is 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96,
