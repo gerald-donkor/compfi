@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { ArrowRightIcon, SearchIcon, XIcon } from "lucide-react"
+import { SearchIcon, XIcon } from "lucide-react"
 
 import { cn } from "cn"
 
@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/empty"
 import { IconButton } from "@/components/ui/icon-button"
 import { Link } from "@/components/ui/link"
-import { searchStorefront, type SearchResults } from "@/lib/search"
+import { searchStorefront, type SearchResultItem, type SearchResults } from "@/lib/search"
 
 export interface HeaderSearchProps {
   open?: boolean
@@ -35,13 +35,104 @@ export interface HeaderSearchProps {
   triggerClassName?: string
 }
 
+const suggestedCategories = ["Dining", "Living", "Bedroom"] as const
 const popularSearches = ["Sofa", "Chair", "Table", "Bed", "Bench", "Wood", "Interior"] as const
 
-const browseRooms = [
-  { name: "Dining Room", href: "/shop?category=dining" },
-  { name: "Living Room", href: "/shop?category=living" },
-  { name: "Bedroom", href: "/shop?category=bedroom" },
-] as const
+function HighlightMatch({ text, query }: { text: string; query: string }) {
+  const trimmed = query.trim()
+  if (!trimmed) return <>{text}</>
+
+  const terms = trimmed
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+
+  if (terms.length === 0) return <>{text}</>
+
+  const regex = new RegExp(`(${terms.join("|")})`, "gi")
+  const parts = text.split(regex)
+  const isMatchTerm = new RegExp(`^(?:${terms.join("|")})$`, "i")
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        isMatchTerm.test(part) ? (
+          <mark key={i} className="bg-wash font-semibold text-compfi-ink rounded-xs px-0.5">
+            {part}
+          </mark>
+        ) : (
+          part
+        )
+      )}
+    </>
+  )
+}
+
+interface SearchResultRowProps {
+  item: SearchResultItem
+  isSelected: boolean
+  activeItemRef: React.RefObject<HTMLAnchorElement | null>
+  query: string
+  onSelect: () => void
+}
+
+function SearchResultRow({
+  item,
+  isSelected,
+  activeItemRef,
+  query,
+  onSelect,
+}: SearchResultRowProps) {
+  return (
+    <li role="none">
+      <Link
+        id={item.id}
+        ref={isSelected ? activeItemRef : null}
+        href={item.href}
+        role="option"
+        aria-selected={isSelected}
+        onClick={onSelect}
+        className={cn(
+          "group flex min-h-11 items-center gap-3.5 rounded-lg p-2.5 transition-colors no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus",
+          isSelected ? "bg-wash text-foreground" : "hover:bg-wash/70 text-compfi-ink"
+        )}
+      >
+        <Image
+          src={item.imageSrc}
+          alt={item.imageAlt}
+          width={56}
+          height={56}
+          className="size-14 shrink-0 rounded-control object-cover bg-wash"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="truncate text-sm font-medium text-foreground group-hover:text-compfi-brand-action transition-colors">
+              <HighlightMatch text={item.title} query={query} />
+            </span>
+            {item.badge && (
+              <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-4.5">
+                {item.badge}
+              </Badge>
+            )}
+          </div>
+          <p className="truncate text-xs text-muted-foreground mt-0.5">
+            {item.subtitle}
+          </p>
+        </div>
+        {item.priceFormatted ? (
+          <span className="shrink-0 text-sm font-semibold text-primary">
+            {item.priceFormatted}
+          </span>
+        ) : (
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">
+            Article
+          </span>
+        )}
+      </Link>
+    </li>
+  )
+}
 
 export function HeaderSearch({
   open: controlledOpen,
@@ -80,13 +171,10 @@ export function HeaderSearch({
     return [...results.products, ...results.articles]
   }, [results.products, results.articles])
 
-  // Focus management on dialog open
+  // Focus input when dialog opens
   React.useEffect(() => {
     if (open) {
-      const timer = setTimeout(() => {
-        inputRef.current?.focus()
-      }, 50)
-      return () => clearTimeout(timer)
+      inputRef.current?.focus()
     }
   }, [open])
 
@@ -107,9 +195,13 @@ export function HeaderSearch({
       if (allItems.length === 0) return
       setActiveIndex((prev) => (prev <= 0 ? allItems.length - 1 : prev - 1))
     } else if (event.key === "Enter") {
+      event.preventDefault()
       if (activeIndex >= 0 && activeItemRef.current) {
-        event.preventDefault()
         activeItemRef.current.click()
+      } else if (allItems.length > 0) {
+        // Instant Enter submission fallback to first result
+        const firstLink = document.getElementById(allItems[0].id) as HTMLAnchorElement | null
+        firstLink?.click()
       }
     }
   }
@@ -127,6 +219,8 @@ export function HeaderSearch({
     } found for ${trimmed}`
   }, [deferredQuery, results])
 
+  const activeDescendantId = activeIndex >= 0 && activeIndex < allItems.length ? allItems[activeIndex].id : undefined
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
@@ -141,6 +235,7 @@ export function HeaderSearch({
       />
 
       <DialogContent
+        data-slot="header-search"
         showCloseButton={false}
         className="top-[10%] sm:top-1/2 translate-y-0 sm:-translate-y-1/2 flex flex-col p-0 gap-0 sm:max-w-2xl max-h-[82vh] overflow-hidden bg-background border border-compfi-border shadow-2xl rounded-2xl"
       >
@@ -162,6 +257,12 @@ export function HeaderSearch({
           <input
             ref={inputRef}
             type="search"
+            role="combobox"
+            aria-expanded={open}
+            aria-haspopup="listbox"
+            aria-controls="search-results-list"
+            aria-autocomplete="list"
+            aria-activedescendant={activeDescendantId}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value)
@@ -170,6 +271,7 @@ export function HeaderSearch({
             onKeyDown={handleKeyDown}
             placeholder="Search furniture, rooms, articles..."
             aria-label="Search furniture and articles"
+            autoFocus
             autoComplete="off"
             spellCheck={false}
             className="h-11 w-full bg-transparent text-sm sm:text-base text-compfi-ink placeholder:text-muted-foreground focus:outline-none"
@@ -184,7 +286,7 @@ export function HeaderSearch({
                 inputRef.current?.focus()
               }}
               aria-label="Clear search input"
-              className="flex size-9 min-h-9 min-w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:text-compfi-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus transition-colors"
+              className="flex size-11 min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:text-compfi-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus transition-colors"
             >
               <XIcon className="size-4" aria-hidden="true" />
             </button>
@@ -205,9 +307,27 @@ export function HeaderSearch({
         {/* Body content */}
         <div className="min-h-0 flex-1 overflow-y-auto">
           {!query.trim() ? (
-            /* Open default state: suggestions & room browsing */
+            /* Open default state: suggestions & category chips */
             <div className="p-5 space-y-6">
               <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
+                  Suggested Categories
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {suggestedCategories.map((category) => (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => setQuery(category)}
+                      className="inline-flex min-h-11 items-center rounded-full bg-wash px-4 py-2 text-xs font-medium text-compfi-ink hover:bg-compfi-border hover:text-compfi-brand-action transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus"
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t border-compfi-border pt-5">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
                   Popular Searches
                 </p>
@@ -217,29 +337,10 @@ export function HeaderSearch({
                       key={term}
                       type="button"
                       onClick={() => setQuery(term)}
-                      className="inline-flex min-h-9 items-center rounded-full bg-wash px-3.5 py-1.5 text-xs font-medium text-compfi-ink hover:bg-compfi-border hover:text-compfi-brand-action transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus"
+                      className="inline-flex min-h-11 items-center rounded-full bg-wash px-4 py-2 text-xs font-medium text-compfi-ink hover:bg-compfi-border hover:text-compfi-brand-action transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus"
                     >
                       {term}
                     </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t border-compfi-border pt-5">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
-                  Browse Rooms
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                  {browseRooms.map((room) => (
-                    <Link
-                      key={room.name}
-                      href={room.href}
-                      onClick={() => setOpen(false)}
-                      className="flex min-h-11 items-center justify-between rounded-lg border border-compfi-border bg-wash/50 px-3.5 py-2 text-sm font-medium text-compfi-ink hover:border-compfi-brand-action hover:bg-wash transition-colors no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus"
-                    >
-                      <span>{room.name}</span>
-                      <ArrowRightIcon className="size-3.5 text-muted-foreground" aria-hidden="true" />
-                    </Link>
                   ))}
                 </div>
               </div>
@@ -272,57 +373,23 @@ export function HeaderSearch({
             </div>
           ) : (
             /* Results listing */
-            <div className="p-4 divide-y divide-compfi-border">
+            <div id="search-results-list" role="listbox" aria-label="Search results" className="p-4 divide-y divide-compfi-border">
               {results.products.length > 0 && (
                 <div className="pb-4 first:pt-0">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
                     Products ({results.products.length})
                   </p>
-                  <ul role="list" className="space-y-1">
-                    {results.products.map((product, idx) => {
-                      const isSelected = activeIndex === idx
-                      return (
-                        <li key={product.id} role="listitem">
-                          <Link
-                            ref={isSelected ? activeItemRef : null}
-                            href={product.href}
-                            onClick={() => setOpen(false)}
-                            className={cn(
-                              "group flex items-center gap-3.5 rounded-lg p-2.5 transition-colors no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus",
-                              isSelected ? "bg-wash text-foreground" : "hover:bg-wash/70 text-compfi-ink"
-                            )}
-                          >
-                            <Image
-                              src={product.imageSrc}
-                              alt={product.imageAlt}
-                              width={56}
-                              height={56}
-                              className="size-14 shrink-0 rounded-control object-cover bg-wash"
-                            />
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2">
-                                <span className="truncate text-sm font-medium text-foreground group-hover:text-compfi-brand-action transition-colors">
-                                  {product.title}
-                                </span>
-                                {product.badge && (
-                                  <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-4.5">
-                                    {product.badge}
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="truncate text-xs text-muted-foreground mt-0.5">
-                                {product.subtitle}
-                              </p>
-                            </div>
-                            {product.priceFormatted && (
-                              <span className="shrink-0 text-sm font-semibold text-primary">
-                                {product.priceFormatted}
-                              </span>
-                            )}
-                          </Link>
-                        </li>
-                      )
-                    })}
+                  <ul role="presentation" className="space-y-1">
+                    {results.products.map((product, idx) => (
+                      <SearchResultRow
+                        key={product.id}
+                        item={product}
+                        isSelected={activeIndex === idx}
+                        activeItemRef={activeItemRef}
+                        query={query}
+                        onSelect={() => setOpen(false)}
+                      />
+                    ))}
                   </ul>
                 </div>
               )}
@@ -332,50 +399,17 @@ export function HeaderSearch({
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
                     Editorial Articles ({results.articles.length})
                   </p>
-                  <ul role="list" className="space-y-1">
-                    {results.articles.map((article, idx) => {
-                      const itemIndex = results.products.length + idx
-                      const isSelected = activeIndex === itemIndex
-                      return (
-                        <li key={article.id} role="listitem">
-                          <Link
-                            ref={isSelected ? activeItemRef : null}
-                            href={article.href}
-                            onClick={() => setOpen(false)}
-                            className={cn(
-                              "group flex items-center gap-3.5 rounded-lg p-2.5 transition-colors no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus",
-                              isSelected ? "bg-wash text-foreground" : "hover:bg-wash/70 text-compfi-ink"
-                            )}
-                          >
-                            <Image
-                              src={article.imageSrc}
-                              alt={article.imageAlt}
-                              width={56}
-                              height={56}
-                              className="size-14 shrink-0 rounded-control object-cover bg-wash"
-                            />
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2">
-                                <span className="truncate text-sm font-medium text-foreground group-hover:text-compfi-brand-action transition-colors">
-                                  {article.title}
-                                </span>
-                                {article.badge && (
-                                  <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-4.5">
-                                    {article.badge}
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="truncate text-xs text-muted-foreground mt-0.5">
-                                {article.subtitle}
-                              </p>
-                            </div>
-                            <span className="shrink-0 text-xs font-medium text-muted-foreground">
-                              Article
-                            </span>
-                          </Link>
-                        </li>
-                      )
-                    })}
+                  <ul role="presentation" className="space-y-1">
+                    {results.articles.map((article, idx) => (
+                      <SearchResultRow
+                        key={article.id}
+                        item={article}
+                        isSelected={activeIndex === results.products.length + idx}
+                        activeItemRef={activeItemRef}
+                        query={query}
+                        onSelect={() => setOpen(false)}
+                      />
+                    ))}
                   </ul>
                 </div>
               )}

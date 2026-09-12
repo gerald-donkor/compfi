@@ -14,7 +14,7 @@ import { Link } from "@/components/ui/link"
 
 type NavigationItem = { href: string; label: string }
 
-const mobileAuthItemClasses =
+const mobileDrawerActionClasses =
   "flex min-h-11 w-full items-center gap-3 px-1 text-left font-medium text-compfi-ink hover:text-compfi-brand-action transition-colors"
 
 export function HeaderControls({ navigation }: { navigation: readonly NavigationItem[] }) {
@@ -120,7 +120,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
           <li className="border-t border-compfi-border pt-2 mt-2">
             <button
               type="button"
-              className={mobileAuthItemClasses}
+              className={mobileDrawerActionClasses}
               onClick={() => {
                 setMenuOpen(false)
                 setSearchOpen(true)
@@ -135,7 +135,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
               <SignInButton mode="modal">
                 <button
                   type="button"
-                  className={mobileAuthItemClasses}
+                  className={mobileDrawerActionClasses}
                   onClick={() => setMenuOpen(false)}
                 >
                   <UserIcon className="h-5 w-5 text-compfi-brand" aria-hidden="true" />
@@ -148,7 +148,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
                 href="/account"
                 variant="default"
                 aria-current={pathname === "/account" ? "page" : undefined}
-                className={cn(mobileAuthItemClasses, "no-underline")}
+                className={cn(mobileDrawerActionClasses, "no-underline")}
                 onClick={() => setMenuOpen(false)}
               >
                 <UserIcon className="h-5 w-5 text-compfi-brand" aria-hidden="true" />

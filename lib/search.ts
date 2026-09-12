@@ -1,7 +1,6 @@
-import { blogPosts, type BlogPost } from "@/lib/blog"
+import { blogPosts } from "@/lib/blog"
 import { catalogProducts } from "@/lib/catalog"
 import { formatMoney } from "@/lib/money"
-import type { CatalogProduct } from "@/types/commerce"
 
 export interface SearchResultItem {
   type: "product" | "article"
@@ -31,17 +30,29 @@ const categoryDisplayMap: Record<string, string> = {
   bedroom: "Bedroom",
 }
 
-function scoreProduct(product: CatalogProduct, query: string, terms: string[]): number {
-  const name = normalize(product.name)
-  const category = normalize(product.category)
-  const categoryDisplay = normalize(categoryDisplayMap[product.category] || "")
-  const description = normalize(product.description)
-  const detail = normalize(product.detailDescription)
+interface SearchableEntity {
+  name: string
+  category: string
+  categoryAlt?: string
+  description?: string
+  detail?: string
+}
+
+function scoreEntity(
+  entity: SearchableEntity,
+  query: string,
+  terms: string[]
+): number {
+  const name = normalize(entity.name)
+  const category = normalize(entity.category)
+  const categoryAlt = entity.categoryAlt ? normalize(entity.categoryAlt) : ""
+  const description = entity.description ? normalize(entity.description) : ""
+  const detail = entity.detail ? normalize(entity.detail) : ""
 
   if (name === query) return 100
   if (name.startsWith(query)) return 80
   if (name.includes(query)) return 60
-  if (category.includes(query) || categoryDisplay.includes(query)) return 50
+  if (category.includes(query) || (categoryAlt && categoryAlt.includes(query))) return 50
 
   let score = 0
   let matchedTerms = 0
@@ -50,7 +61,7 @@ function scoreProduct(product: CatalogProduct, query: string, terms: string[]): 
     if (name.includes(term)) {
       score += 25
       matchedTerms++
-    } else if (category.includes(term) || categoryDisplay.includes(term)) {
+    } else if (category.includes(term) || (categoryAlt && categoryAlt.includes(term))) {
       score += 20
       matchedTerms++
     } else if (description.includes(term)) {
@@ -65,37 +76,21 @@ function scoreProduct(product: CatalogProduct, query: string, terms: string[]): 
   return matchedTerms > 0 ? score : 0
 }
 
-function scoreArticle(post: BlogPost, query: string, terms: string[]): number {
-  const title = normalize(post.title)
-  const category = normalize(post.category)
-  const excerpt = normalize(post.excerpt)
-  const author = normalize(post.author)
-
-  if (title === query) return 100
-  if (title.startsWith(query)) return 80
-  if (title.includes(query)) return 60
-  if (category.includes(query)) return 50
-
-  let score = 0
-  let matchedTerms = 0
-
-  for (const term of terms) {
-    if (title.includes(term)) {
-      score += 25
-      matchedTerms++
-    } else if (category.includes(term)) {
-      score += 20
-      matchedTerms++
-    } else if (excerpt.includes(term)) {
-      score += 10
-      matchedTerms++
-    } else if (author.includes(term)) {
-      score += 5
-      matchedTerms++
+function rankEntities<T>(
+  items: readonly T[],
+  toEntity: (item: T) => SearchableEntity,
+  query: string,
+  terms: string[]
+): T[] {
+  const scored: { item: T; score: number }[] = []
+  for (const item of items) {
+    const score = scoreEntity(toEntity(item), query, terms)
+    if (score > 0) {
+      scored.push({ item, score })
     }
   }
-
-  return matchedTerms > 0 ? score : 0
+  scored.sort((a, b) => b.score - a.score)
+  return scored.map((s) => s.item)
 }
 
 export function searchStorefront(rawQuery: string): SearchResults {
@@ -114,16 +109,20 @@ export function searchStorefront(rawQuery: string): SearchResults {
     return { products: [], articles: [], totalCount: 0 }
   }
 
-  const scoredProducts: { product: CatalogProduct; score: number }[] = []
-  for (const product of catalogProducts) {
-    const score = scoreProduct(product, query, terms)
-    if (score > 0) {
-      scoredProducts.push({ product, score })
-    }
-  }
-  scoredProducts.sort((a, b) => b.score - a.score)
+  const rankedProducts = rankEntities(
+    catalogProducts,
+    (product) => ({
+      name: product.name,
+      category: product.category,
+      categoryAlt: categoryDisplayMap[product.category],
+      description: product.description,
+      detail: product.detailDescription,
+    }),
+    query,
+    terms
+  )
 
-  const productResults: SearchResultItem[] = scoredProducts.map(({ product }) => ({
+  const productResults: SearchResultItem[] = rankedProducts.map((product) => ({
     type: "product",
     id: product.id,
     title: product.name,
@@ -135,16 +134,19 @@ export function searchStorefront(rawQuery: string): SearchResults {
     priceFormatted: formatMoney(product.priceCents),
   }))
 
-  const scoredArticles: { post: BlogPost; score: number }[] = []
-  for (const post of blogPosts) {
-    const score = scoreArticle(post, query, terms)
-    if (score > 0) {
-      scoredArticles.push({ post, score })
-    }
-  }
-  scoredArticles.sort((a, b) => b.score - a.score)
+  const rankedArticles = rankEntities(
+    blogPosts,
+    (post) => ({
+      name: post.title,
+      category: post.category,
+      description: post.excerpt,
+      detail: post.author,
+    }),
+    query,
+    terms
+  )
 
-  const articleResults: SearchResultItem[] = scoredArticles.map(({ post }) => ({
+  const articleResults: SearchResultItem[] = rankedArticles.map((post) => ({
     type: "article",
     id: post.id,
     title: post.title,
