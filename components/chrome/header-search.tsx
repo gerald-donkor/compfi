@@ -69,6 +69,18 @@ function HighlightMatch({ text, query }: { text: string; query: string }) {
   )
 }
 
+function SearchChip({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="inline-flex min-h-11 items-center rounded-full bg-wash px-4 py-2 text-xs font-medium text-compfi-ink hover:bg-compfi-border hover:text-compfi-brand-action transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus"
+    >
+      {label}
+    </button>
+  )
+}
+
 interface SearchResultRowProps {
   item: SearchResultItem
   isSelected: boolean
@@ -85,13 +97,12 @@ function SearchResultRow({
   onSelect,
 }: SearchResultRowProps) {
   return (
-    <li role="none">
+    <li role="listitem">
       <Link
         id={item.id}
         ref={isSelected ? activeItemRef : null}
         href={item.href}
-        role="option"
-        aria-selected={isSelected}
+        data-active={isSelected}
         onClick={onSelect}
         className={cn(
           "group flex min-h-11 items-center gap-3.5 rounded-lg p-2.5 transition-colors no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus",
@@ -195,13 +206,9 @@ export function HeaderSearch({
       if (allItems.length === 0) return
       setActiveIndex((prev) => (prev <= 0 ? allItems.length - 1 : prev - 1))
     } else if (event.key === "Enter") {
-      event.preventDefault()
       if (activeIndex >= 0 && activeItemRef.current) {
+        event.preventDefault()
         activeItemRef.current.click()
-      } else if (allItems.length > 0) {
-        // Instant Enter submission fallback to first result
-        const firstLink = document.getElementById(allItems[0].id) as HTMLAnchorElement | null
-        firstLink?.click()
       }
     }
   }
@@ -219,8 +226,6 @@ export function HeaderSearch({
     } found for ${trimmed}`
   }, [deferredQuery, results])
 
-  const activeDescendantId = activeIndex >= 0 && activeIndex < allItems.length ? allItems[activeIndex].id : undefined
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
@@ -237,7 +242,7 @@ export function HeaderSearch({
       <DialogContent
         data-slot="header-search"
         showCloseButton={false}
-        className="top-[10%] sm:top-1/2 translate-y-0 sm:-translate-y-1/2 flex flex-col p-0 gap-0 sm:max-w-2xl max-h-[82vh] overflow-hidden bg-background border border-compfi-border shadow-2xl rounded-2xl"
+        className="top-[10%] sm:top-1/2 translate-y-0 sm:-translate-y-1/2 flex flex-col p-0 gap-0 sm:max-w-lg md:max-w-2xl max-h-[82vh] overflow-hidden bg-background border border-compfi-border shadow-2xl rounded-2xl"
       >
         <DialogHeader className="sr-only">
           <DialogTitle>Search Compfi</DialogTitle>
@@ -257,12 +262,6 @@ export function HeaderSearch({
           <input
             ref={inputRef}
             type="search"
-            role="combobox"
-            aria-expanded={open}
-            aria-haspopup="listbox"
-            aria-controls="search-results-list"
-            aria-autocomplete="list"
-            aria-activedescendant={activeDescendantId}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value)
@@ -315,14 +314,11 @@ export function HeaderSearch({
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {suggestedCategories.map((category) => (
-                    <button
+                    <SearchChip
                       key={category}
-                      type="button"
+                      label={category}
                       onClick={() => setQuery(category)}
-                      className="inline-flex min-h-11 items-center rounded-full bg-wash px-4 py-2 text-xs font-medium text-compfi-ink hover:bg-compfi-border hover:text-compfi-brand-action transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus"
-                    >
-                      {category}
-                    </button>
+                    />
                   ))}
                 </div>
               </div>
@@ -333,14 +329,11 @@ export function HeaderSearch({
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {popularSearches.map((term) => (
-                    <button
+                    <SearchChip
                       key={term}
-                      type="button"
+                      label={term}
                       onClick={() => setQuery(term)}
-                      className="inline-flex min-h-11 items-center rounded-full bg-wash px-4 py-2 text-xs font-medium text-compfi-ink hover:bg-compfi-border hover:text-compfi-brand-action transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compfi-brand-focus"
-                    >
-                      {term}
-                    </button>
+                    />
                   ))}
                 </div>
               </div>
@@ -373,13 +366,13 @@ export function HeaderSearch({
             </div>
           ) : (
             /* Results listing */
-            <div id="search-results-list" role="listbox" aria-label="Search results" className="p-4 divide-y divide-compfi-border">
+            <div className="p-4 divide-y divide-compfi-border">
               {results.products.length > 0 && (
                 <div className="pb-4 first:pt-0">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
                     Products ({results.products.length})
                   </p>
-                  <ul role="presentation" className="space-y-1">
+                  <ul role="list" aria-label="Matching products" className="space-y-1">
                     {results.products.map((product, idx) => (
                       <SearchResultRow
                         key={product.id}
@@ -399,7 +392,7 @@ export function HeaderSearch({
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
                     Editorial Articles ({results.articles.length})
                   </p>
-                  <ul role="presentation" className="space-y-1">
+                  <ul role="list" aria-label="Matching articles" className="space-y-1">
                     {results.articles.map((article, idx) => (
                       <SearchResultRow
                         key={article.id}

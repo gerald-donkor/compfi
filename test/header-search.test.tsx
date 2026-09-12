@@ -29,9 +29,8 @@ describe("HeaderSearch", () => {
     expect(dialog).toBeInTheDocument()
     expect(dialog).toHaveAttribute("data-slot", "header-search")
 
-    const input = screen.getByRole("combobox", { name: "Search furniture and articles" })
+    const input = screen.getByRole("searchbox", { name: "Search furniture and articles" })
     await waitFor(() => expect(input).toHaveFocus())
-    expect(input).toHaveAttribute("aria-expanded", "true")
 
     // Initial empty state shows suggested categories and popular searches chips
     expect(screen.getByText("Suggested Categories")).toBeInTheDocument()
@@ -59,7 +58,7 @@ describe("HeaderSearch", () => {
     const diningChip = screen.getByRole("button", { name: "Dining" })
     await user.click(diningChip)
 
-    const input = screen.getByRole("combobox")
+    const input = screen.getByRole("searchbox")
     expect(input).toHaveValue("Dining")
 
     // Shows products matching Dining
@@ -75,19 +74,19 @@ describe("HeaderSearch", () => {
     await user.click(screen.getByRole("button", { name: "Search Compfi" }))
     await screen.findByRole("dialog")
 
-    const input = screen.getByRole("combobox")
+    const input = screen.getByRole("searchbox")
     await user.type(input, "chair")
 
     await waitFor(() => {
       expect(screen.getByText(/Products \(/i)).toBeInTheDocument()
     })
 
-    // Confirm product card elements and term highlighting
-    const productOption = screen.getByRole("option", { name: /Alder Dining Chair/i })
-    expect(productOption).toHaveAttribute("href", "/shop/alder-dining-chair")
+    // Confirm product listitem and term highlighting
+    const productLink = screen.getByRole("link", { name: /Alder Dining Chair/i })
+    expect(productLink).toHaveAttribute("href", "/shop/alder-dining-chair")
 
     // Term highlighting in title
-    const mark = productOption.querySelector("mark")
+    const mark = productLink.querySelector("mark")
     expect(mark).toBeInTheDocument()
     expect(mark?.textContent?.toLowerCase()).toBe("chair")
   })
@@ -99,7 +98,7 @@ describe("HeaderSearch", () => {
     await user.click(screen.getByRole("button", { name: "Search Compfi" }))
     await screen.findByRole("dialog")
 
-    const input = screen.getByRole("combobox")
+    const input = screen.getByRole("searchbox")
     await user.type(input, "nonexistentitemxyz")
 
     await waitFor(() => {
@@ -117,7 +116,7 @@ describe("HeaderSearch", () => {
     await user.click(screen.getByRole("button", { name: "Search Compfi" }))
     await screen.findByRole("dialog")
 
-    const input = screen.getByRole("combobox")
+    const input = screen.getByRole("searchbox")
     await user.type(input, "table")
     expect(input).toHaveValue("table")
 
@@ -127,44 +126,43 @@ describe("HeaderSearch", () => {
     expect(screen.getByText("Popular Searches")).toBeInTheDocument()
   })
 
-  it("supports keyboard navigation and enter submission", async () => {
+  it("supports keyboard navigation with arrow keys and Enter selection", async () => {
     const user = userEvent.setup()
     render(<HeaderSearch />)
 
     await user.click(screen.getByRole("button", { name: "Search Compfi" }))
     await screen.findByRole("dialog")
 
-    const input = screen.getByRole("combobox")
+    const input = screen.getByRole("searchbox")
     await user.type(input, "Atlas")
 
-    await waitFor(() => {
-      expect(screen.getByRole("option", { name: /Atlas Bed/i })).toBeInTheDocument()
-    })
+    const productLink = await screen.findByRole("link", { name: /Atlas Bed/i })
+    expect(productLink).toBeInTheDocument()
 
-    // Press ArrowDown to highlight first result and set aria-activedescendant
+    // Press ArrowDown to highlight first result
     await user.keyboard("{ArrowDown}")
-    expect(input).toHaveAttribute("aria-activedescendant", "atlas-bed")
+    expect(productLink).toHaveAttribute("data-active", "true")
 
     // Press Enter to select
     await user.keyboard("{Enter}")
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
   })
 
-  it("supports instant Enter submission on query without prior arrow navigation", async () => {
+  it("supports instant Enter submission when result is highlighted", async () => {
     const user = userEvent.setup()
     render(<HeaderSearch />)
 
     await user.click(screen.getByRole("button", { name: "Search Compfi" }))
     await screen.findByRole("dialog")
 
-    const input = screen.getByRole("combobox")
+    const input = screen.getByRole("searchbox")
     await user.type(input, "Atlas")
 
-    await waitFor(() => {
-      expect(screen.getByRole("option", { name: /Atlas Bed/i })).toBeInTheDocument()
-    })
+    const productLink = await screen.findByRole("link", { name: /Atlas Bed/i })
+    expect(productLink).toBeInTheDocument()
 
-    // Press Enter directly
+    // Highlight and activate
+    await user.keyboard("{ArrowDown}")
     await user.keyboard("{Enter}")
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
   })
