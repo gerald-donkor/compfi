@@ -94,7 +94,7 @@ Customer account and authentication routes are excluded from search engine index
 ## 6. Verification Evidence
 
 1. **Clerk Doctor**: `npx -y clerk@latest doctor --json` reports "All checks passing" (CLI version, authentication, app reachability, environment variables, MCP server).
-2. **Automated Test Suite**: 28 test files and 152 automated tests pass (`npm run test`), including `test/account.test.tsx` verifying signed-out/signed-in chrome, proxy route matching, server redirect, and 0 axe accessibility violations.
+2. **Automated Test Suite**: 39 test files and 217 automated tests pass (`npm run test`), including `test/account.test.tsx` verifying signed-out/signed-in chrome, proxy route matching, server redirect, and 0 axe accessibility violations.
 3. **Lint & Typecheck**: Zero ESLint warnings/errors (`npm run lint`), zero TypeScript errors (`npx tsc --noEmit`).
 4. **Next.js Production Build**: `npm run build` succeeds under Next.js 16.3.4 (Turbopack), prerendering 22 static pages and recognizing `ƒ Proxy (Middleware)`.
 5. **Browser Verification (`agent-browser`)**:
@@ -105,8 +105,10 @@ Customer account and authentication routes are excluded from search engine index
 
 ### Vercel app-origin proxy repair (September 12, 2026)
 
-- Local automated verification covers the explicit `"/__clerk/(.*)"` proxy
-  matcher and preserves the existing `/account*` protection behavior.
+- On September 12, 2026, the focused proxy test passed 13 tests and the full
+  suite passed 39 files / 217 tests. They cover the explicit
+  `"/__clerk/(.*)"` matcher while preserving the existing `/account*`
+  protection behavior.
 - Production verification is intentionally pending an authorized push and Vercel
   deployment. After deployment, use an isolated named `agent-browser` session
   to confirm `/sign-in` renders Clerk controls, the Clerk JavaScript assets no
