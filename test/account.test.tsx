@@ -12,7 +12,7 @@ import { NextFetchEvent, NextRequest } from "next/server"
 import { checkA11y } from "./a11y"
 import { resetTestClerkState, setTestClerkState, testProtectSpy } from "./setup"
 
-import proxyHandler, { isProtectedRoute } from "../proxy"
+import proxyHandler, { config, isProtectedRoute } from "../proxy"
 
 const redirectMock = vi.fn()
 vi.mock("next/navigation", () => ({
@@ -95,6 +95,10 @@ describe("Clerk Authentication & Protected Account (Phase 9)", () => {
   })
 
   describe("Proxy Route Matcher & Middleware Boundary (proxy.ts)", () => {
+    it("routes Clerk frontend API assets through the proxy", () => {
+      expect(config.matcher).toContain("/__clerk/(.*)")
+    })
+
     it("identifies /account and subroutes as protected", () => {
       expect(isProtectedRoute(new NextRequest("https://compfi.com/account"))).toBe(true)
       expect(isProtectedRoute(new NextRequest("https://compfi.com/account/settings"))).toBe(true)

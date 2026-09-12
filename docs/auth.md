@@ -16,6 +16,14 @@ client boundaries:
 1. **Server Proxy Boundary (`proxy.ts`)**:
    - Implemented under the Next.js 16 `proxy.ts` convention (replacing legacy `middleware.ts`).
    - Uses `clerkMiddleware` with `createRouteMatcher(["/account(.*)"])`.
+   - Includes Clerk's explicit `"/__clerk/(.*)"` matcher in addition to the
+     generic non-static matcher. This ensures Clerk frontend API assets such as
+     `/__clerk/npm/.../clerk.browser.js` are handled by `clerkMiddleware` even
+     though their `.js` extension is excluded from general storefront traffic.
+     On eligible Vercel production hosts, Clerk 7.9.2 derives the app-origin
+     proxy URL as `https://compfi.vercel.app/__clerk`; Compfi does not set
+     `NEXT_PUBLIC_CLERK_PROXY_URL` or use a custom route, rewrite, or DNS
+     domain for this behavior.
    - Protects customer surfaces (`/account*`) while allowing all storefront catalog,
      cart, checkout, comparison, contact, blog, and static asset routes to remain
      public and statically prerenderable.
@@ -94,3 +102,12 @@ Customer account and authentication routes are excluded from search engine index
    - Navigating to `/account` redirects with HTTP 307 to `/sign-in?redirect_url=...`.
    - Dedicated `/sign-in` and `/sign-up` render within Compfi `PageHero` and `Container`.
    - Verified 0 horizontal overflow across 1440, 1024, 768, 390, and 320 px viewports.
+
+### Vercel app-origin proxy repair (September 12, 2026)
+
+- Local automated verification covers the explicit `"/__clerk/(.*)"` proxy
+  matcher and preserves the existing `/account*` protection behavior.
+- Production verification is intentionally pending an authorized push and Vercel
+  deployment. After deployment, use an isolated named `agent-browser` session
+  to confirm `/sign-in` renders Clerk controls, the Clerk JavaScript assets no
+  longer return 404, and the browser has no console or runtime errors.
