@@ -14,7 +14,7 @@ export function ContactContent() {
             are considering and the room you are planning.
           </p>
           <p className="type-body text-muted-foreground">
-            Our design team reviews inquiries promptly and will respond to your email.
+            Your message is stored for the Compfi team to review and answer by email.
           </p>
         </section>
         <ContactForm />

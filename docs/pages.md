@@ -957,7 +957,65 @@ Self-verification on 2026-09-11:
 | `agent-browser` responsive | verified zero horizontal overflow (`scrollWidth <= clientWidth`) across 1440, 1024, 768, 390, and 320 px viewports; mobile drawer menu contains sign-in / account action |
 | axe accessibility | 0 accessibility violations across header chrome, `/account`, `/sign-in`, and `/sign-up` |
 
-## 100% Free Stack: SQLite Persistence, Server Actions, and Services (Phase 10)
+## Production Payments, Database, and Transactional Email (Phase 10)
+
+Implemented 2026-09-12 from `prompts/30-production-payments-database-email.md`.
+Compfi now uses a configuration-ready Ghana-compatible production stack:
+Flutterwave Standard hosted USD card checkout, Turso/libSQL with Drizzle for
+production persistence (local SQLite remains the development/test fallback), and
+Resend for paid-order and contact notifications. Stripe is explicitly excluded.
+
+`/checkout` preserves the certified details/summary hierarchy but replaces the
+temporary direct-confirmation behavior with `Continue to secure payment`. A
+server-priced pending order is durable before the hosted checkout is initialized;
+the browser receives no provider or database credentials and clears no cart at
+this stage. Provider/configuration errors are announced without losing the cart.
+
+`/checkout/complete` is a new dynamic, noindex result route with paid, pending,
+canceled, failed, and invalid states. Successful query parameters and signed
+webhooks both require an independent Flutterwave API verification of reference,
+USD currency, amount, and status. Only the verified paid state mounts the small
+cart-clearing client leaf. The callback route is intentionally absent from the
+sitemap. The payment UI does not reproduce Flutterwave branding; it truthfully
+names the hosted provider and explains that Compfi never handles card details.
+
+`/contact` still persists first, then attempts the merchant notification and
+customer acknowledgment. Its success copy now says the message was received,
+which remains true when email delivery is unavailable. `/account` uses explicit
+human-readable payment labels and no longer describes every stored record as a
+placed order.
+
+The checkout reference does not prove a live provider, callback, or mobile layout.
+Hosted payment disclosure, completion states, secure reconciliation, responsive
+reflow, and recovery actions are implementation deltas required by the production
+contract. Live provider execution remains blocked on dashboard provisioning and
+separately authorized sandbox verification.
+
+### Verification
+
+Self-verification on 2026-09-12 used the required named
+`compfi-prod-services-8dbc2e39d5ed` browser session:
+
+| check | result |
+| --- | --- |
+| `npm run test` | passed: 37 files, 205 tests |
+| `npm run lint` | passed: 0 errors |
+| `npx tsc --noEmit` | passed: 0 errors |
+| `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind its internal port (`Operation not permitted`) |
+| `npm run build -- --webpack` | passed; 23 pages generated and the webhook plus completion routes are dynamic |
+| checkout interaction | fixture product added; valid billing details submitted without provider secrets; actionable configuration error rendered and cart remained at 1 item |
+| completion route | invalid state rendered with checkout/contact recovery; `robots` was `noindex, nofollow`; cart remained at 1 item |
+| responsive visual inspection | checkout inspected at 1440, 1024, 768, 390, and 320 CSS px; completion inspected at 1440 and 320; all measured `scrollWidth === clientWidth` |
+| axe accessibility | 0 violations and 0 incomplete checks on populated checkout and invalid completion state |
+| Web Interface Guidelines | fresh 2026-09-12 rules reviewed against changed UI; brand translation guards and balanced result heading added; no unresolved changed-file finding |
+| live providers | intentionally not run; blocked on Ghana Flutterwave account/USD approval, Turso credentials, Resend domain/API key, and separate sandbox authorization |
+
+## Historical Local Persistence Baseline (Phase 10, superseded)
+
+This section records the 2026-09-11 local-only implementation as historical
+evidence. The 2026-09-12 production-services section above and
+`docs/services.md` supersede its architecture and checkout behavior; do not use
+the statements below as the current contract.
 
 Implemented 2026-09-11 as Phase 10 of the storefront build sequence. Delivers an entirely free, zero-cost, self-contained local persistence and backend architecture using embedded SQLite via Drizzle ORM and `@libsql/client`. Replaces mock operations with real transactional database persistence without external paid APIs, cloud databases, or payment gateways.
 
@@ -1021,6 +1079,3 @@ Implemented 2026-09-12 as the completion of the header utility cluster defined i
 | `agent-browser` search dialog | verified: opening dialog, popular search chips, live filtering, empty state with recovery link, and Escape dismissal |
 | `agent-browser` responsive | verified zero horizontal overflow (`scrollWidth <= clientWidth`: true) across 1440, 1024, 768, 390, and 320 px viewports |
 | axe accessibility | 0 axe violations reported on search trigger and open dialog modal |
-
-
-

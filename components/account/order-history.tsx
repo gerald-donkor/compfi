@@ -20,6 +20,14 @@ export type OrderHistoryProps = React.HTMLAttributes<HTMLElement> & {
   orders: readonly OrderWithItems[]
 }
 
+const ORDER_STATUS_LABELS = {
+  confirmed: "Confirmed (legacy)",
+  pending_payment: "Awaiting payment",
+  paid: "Paid",
+  payment_failed: "Payment failed",
+  payment_canceled: "Payment canceled",
+} as const
+
 export function OrderHistory({ orders, className, ...props }: OrderHistoryProps) {
   if (orders.length === 0) {
     return (
@@ -64,7 +72,7 @@ export function OrderHistory({ orders, className, ...props }: OrderHistoryProps)
           Order History
         </h2>
         <span className="text-sm font-medium text-muted-foreground">
-          {orders.length} {orders.length === 1 ? "order" : "orders"} placed
+          {orders.length} {orders.length === 1 ? "order record" : "order records"}
         </span>
       </div>
 
@@ -92,8 +100,8 @@ export function OrderHistory({ orders, className, ...props }: OrderHistoryProps)
                   <p className="text-xs text-muted-foreground">Placed on {formattedDate}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="capitalize text-xs px-2.5 py-0.5">
-                    {order.status}
+                  <Badge variant="outline" className="text-xs px-2.5 py-0.5">
+                    {ORDER_STATUS_LABELS[order.status]}
                   </Badge>
                 </div>
               </div>

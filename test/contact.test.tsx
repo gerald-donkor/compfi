@@ -35,7 +35,10 @@ describe("contact detail review", () => {
     expect(blankErrors.email).toBe("Enter your email address.")
     expect(blankErrors.message).toBe("Enter your message.")
 
-    const emailErrors = reviewContactDetails({ ...validDetails, email: "avery@example" })
+    const emailErrors = reviewContactDetails({
+      ...validDetails,
+      email: "avery@example",
+    })
     expect(emailErrors.email).toBe("Enter a valid email address.")
   })
 
@@ -65,7 +68,9 @@ describe("contact presentation", () => {
   it("renders guidance and a blank form with no delivery claim", async () => {
     const { container } = render(<ContactContent />)
     expect(
-      screen.getByRole("heading", { name: "Questions about furniture or your space?" }),
+      screen.getByRole("heading", {
+        name: "Questions about furniture or your space?",
+      })
     ).toBeInTheDocument()
     expect(screen.getByLabelText("Name")).toBeInTheDocument()
     expect(screen.getByLabelText("Email address")).toBeInTheDocument()
@@ -93,7 +98,7 @@ describe("contact presentation", () => {
     await user.click(screen.getByRole("button", { name: "Send message" }))
     await waitFor(() => {
       expect(
-        screen.getByText("Thank you! Your message has been sent. We'll be in touch soon."),
+        screen.getByText("Thank you! Your message was received. We'll be in touch soon.")
       ).toBeInTheDocument()
     })
     expect(window.location.pathname).toBe("/")

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { ensureDbSchema, db } from "@/db"
-import { orders, orderItems, contactInquiries } from "@/db/schema"
+import { createPendingOrder, getOrderById, markOrderPaid } from "@/db/orders"
+import { orders, orderItems, contactInquiries, processedPaymentEvents } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
 describe("db schema and connection", () => {
@@ -42,19 +43,13 @@ describe("db schema and connection", () => {
       imageSrc: "/images/products/alder-dining-chair-1.webp",
     })
 
-    const retrievedOrders = await db
-      .select()
-      .from(orders)
-      .where(eq(orders.id, orderId))
+    const retrievedOrders = await db.select().from(orders).where(eq(orders.id, orderId))
 
     expect(retrievedOrders).toHaveLength(1)
     expect(retrievedOrders[0].customerName).toBe("Jane Doe")
     expect(retrievedOrders[0].totalCents).toBe(50000)
 
-    const retrievedItems = await db
-      .select()
-      .from(orderItems)
-      .where(eq(orderItems.orderId, orderId))
+    const retrievedItems = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId))
 
     expect(retrievedItems).toHaveLength(1)
     expect(retrievedItems[0].productTitle).toBe("Alder Dining Chair")
@@ -86,5 +81,52 @@ describe("db schema and connection", () => {
 
     // Clean up
     await db.delete(contactInquiries).where(eq(contactInquiries.id, inquiryId))
+  })
+
+  it("transitions a pending order to paid once and ignores a replayed event", async () => {
+    const orderId = `test_payment_${Date.now()}`
+    await createPendingOrder(
+      {
+        id: orderId,
+        status: "pending_payment",
+        customerName: "Pat Doe",
+        customerEmail: "pat@example.com",
+        customerPhone: "555-555-0100",
+        shippingAddress: JSON.stringify({
+          addressLine1: "1 Main St",
+          city: "Accra",
+          state: "GA",
+          zipCode: "00000",
+          countryRegion: "United States",
+        }),
+        subtotalCents: 10000,
+        shippingCents: 2500,
+        totalCents: 12500,
+        paymentProvider: "flutterwave",
+        paymentReference: orderId,
+        paymentCurrency: "USD",
+        createdAt: Date.now(),
+      },
+      []
+    )
+
+    const first = await markOrderPaid({
+      orderId,
+      transactionId: "42",
+      eventId: "flutterwave:test-42",
+    })
+    const replay = await markOrderPaid({
+      orderId,
+      transactionId: "42",
+      eventId: "flutterwave:test-42",
+    })
+    expect(first.transitioned).toBe(true)
+    expect(replay.transitioned).toBe(false)
+    expect((await getOrderById(orderId))?.status).toBe("paid")
+
+    await db
+      .delete(processedPaymentEvents)
+      .where(eq(processedPaymentEvents.id, "flutterwave:test-42"))
+    await db.delete(orders).where(eq(orders.id, orderId))
   })
 })

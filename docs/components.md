@@ -572,6 +572,31 @@ Generated components outside this certified inventory (including accordion, aler
   - Interactive `<details open>` / `<summary>` disclosure wrapping itemized line items with responsive thumbnails, size/finish options, quantities, and line totals.
   - Slot attribute: `data-slot="order-history"`.
 - **Real Usage**: Dedicated customer account surface (`/account`).
+- **Payment states**: Renders explicit text labels for awaiting payment, paid,
+  failed, canceled, and legacy confirmed records. The aggregate count says
+  “order records,” so an unpaid record is not described as placed or paid.
+
+### CheckoutContent (`components/checkout/checkout-content.tsx`)
+
+- **Purpose**: Collects validated US billing/delivery data, presents the
+  authoritative cart summary, and initiates Flutterwave's hosted payment flow.
+- **Server/Client**: Focused client form; provider initialization remains in a
+  Server Action and card entry remains on Flutterwave.
+- **Behavior**: Uses persistent labels, linked validation summaries, `aria-busy`,
+  and a polite status region. It accepts only an HTTPS Flutterwave checkout host,
+  preserves the cart for validation/configuration/provider failures, and does not
+  render a paid state locally.
+- **Action copy**: `Continue to secure payment` / `Opening secure payment…`.
+
+### PaymentResult (`components/checkout/payment-result.tsx`)
+
+- **Purpose**: Server-rendered completion surface for paid, pending, canceled,
+  failed, and invalid callback states.
+- **Server/Client**: Server component. `ClearPaidCart` is the only client leaf and
+  mounts only for a server-verified paid order.
+- **Accessibility**: One labeled result heading, icon plus textual status,
+  semantic order-reference/total description list, and 44px recovery actions.
+- **Slot**: `data-slot="payment-result"`.
 
 ### NewsletterForm (`components/chrome/newsletter-form.tsx`)
 - **Purpose**: Interactive customer newsletter subscription form integrated into the global footer.
@@ -588,4 +613,3 @@ Generated components outside this certified inventory (including accordion, aler
   - Input reset on successful subscription; retained on validation error for easy editing.
 - **Slot**: `data-slot="newsletter-form"`.
 - **Real Usage**: Global footer (`components/chrome/site-footer.tsx`).
-

@@ -1,8 +1,10 @@
 "use server"
 
 import { auth } from "@clerk/nextjs/server"
-import { db, ensureDbSchema } from "@/db"
-import { orders, orderItems, type ShippingAddress } from "@/db/schema"
+import { randomUUID } from "node:crypto"
+
+import { createPendingOrder, markOrderPaymentState } from "@/db/orders"
+import { type ShippingAddress } from "@/db/schema"
 import { catalogProducts } from "@/lib/catalog"
 import {
   calculateShippingCents,
@@ -10,6 +12,8 @@ import {
   type CheckoutDetails,
   type CheckoutErrors,
 } from "@/lib/checkout"
+import { initializeFlutterwavePayment } from "@/lib/payments/flutterwave"
+import { siteUrl } from "@/lib/site"
 
 export type CartLineSubmission = {
   slug: string
@@ -34,15 +38,7 @@ export type PlaceOrderResult =
   | {
       success: true
       orderId: string
-      subtotalCents: number
-      shippingCents: number
-      totalCents: number
-      createdAt: number
-      itemCount: number
-      customerName: string
-      customerEmail: string
-      shippingAddress: ShippingAddress
-      items: PlaceOrderItem[]
+      authorizationUrl: string
     }
   | {
       success: false
@@ -116,10 +112,10 @@ export async function placeOrderAction(
     subtotalCents += totalPriceCents
 
     const sizeLabel = line.size
-      ? product.sizes?.find((s) => s.value === line.size)?.label ?? line.size
+      ? (product.sizes?.find((s) => s.value === line.size)?.label ?? line.size)
       : undefined
     const finishLabel = line.finish
-      ? product.finishes?.find((f) => f.value === line.finish)?.label ?? line.finish
+      ? (product.finishes?.find((f) => f.value === line.finish)?.label ?? line.finish)
       : undefined
 
     processedItems.push({
@@ -150,13 +146,8 @@ export async function placeOrderAction(
     authUserId = null
   }
 
-  // 5. Database persistence
-  await ensureDbSchema()
-
-  const orderId = `ORD-${Date.now()}-${Math.random()
-    .toString(36)
-    .toUpperCase()
-    .slice(2, 7)}`
+  // 5. Persist an unpaid order before asking the provider for a hosted checkout.
+  const orderId = `ORD-${randomUUID().toUpperCase()}`
   const createdAt = Date.now()
 
   const customerName = `${details.firstName.trim()} ${details.lastName.trim()}`
@@ -169,11 +160,11 @@ export async function placeOrderAction(
     countryRegion: details.countryRegion.trim() || "United States",
   }
 
-  await db.transaction(async (tx) => {
-    await tx.insert(orders).values({
+  await createPendingOrder(
+    {
       id: orderId,
       userId: authUserId,
-      status: "confirmed",
+      status: "pending_payment",
       customerName,
       customerEmail: details.email.trim(),
       customerPhone: details.phone.trim(),
@@ -182,36 +173,46 @@ export async function placeOrderAction(
       subtotalCents,
       shippingCents,
       totalCents,
+      paymentProvider: "flutterwave",
+      paymentReference: orderId,
+      paymentCurrency: "USD",
       createdAt,
+    },
+    processedItems.map((item) => ({
+      id: item.id,
+      orderId,
+      productSlug: item.productSlug,
+      productTitle: item.productTitle,
+      size: item.size || null,
+      finish: item.finish || null,
+      quantity: item.quantity,
+      unitPriceCents: item.unitPriceCents,
+      totalPriceCents: item.totalPriceCents,
+      imageSrc: item.imageSrc,
+    }))
+  )
+
+  try {
+    const payment = await initializeFlutterwavePayment({
+      orderId,
+      amountCents: totalCents,
+      customer: {
+        email: details.email.trim(),
+        name: customerName,
+        phone: details.phone.trim(),
+      },
+      callbackUrl: new URL("/checkout/complete", siteUrl).toString(),
     })
-
-    for (const item of processedItems) {
-      await tx.insert(orderItems).values({
-        id: item.id,
-        orderId,
-        productSlug: item.productSlug,
-        productTitle: item.productTitle,
-        size: item.size || null,
-        finish: item.finish || null,
-        quantity: item.quantity,
-        unitPriceCents: item.unitPriceCents,
-        totalPriceCents: item.totalPriceCents,
-        imageSrc: item.imageSrc,
-      })
+    return {
+      success: true,
+      orderId,
+      authorizationUrl: payment.authorizationUrl,
     }
-  })
-
-  return {
-    success: true,
-    orderId,
-    subtotalCents,
-    shippingCents,
-    totalCents,
-    createdAt,
-    itemCount: processedItems.reduce((acc, i) => acc + i.quantity, 0),
-    customerName,
-    customerEmail: details.email.trim(),
-    shippingAddress: shippingAddressObj,
-    items: processedItems,
+  } catch {
+    await markOrderPaymentState(orderId, "payment_failed")
+    return {
+      success: false,
+      message: "Secure payment is unavailable right now. Your cart is unchanged; please try again.",
+    }
   }
 }

@@ -1,13 +1,26 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { CartProvider } from "@/components/cart/cart-provider"
 import { CheckoutContent } from "@/components/checkout/checkout-content"
 import { ProductOptions } from "@/components/product/product-options"
 import { catalogProducts } from "@/lib/catalog"
-import { CHECKOUT_MAX_LENGTHS, reviewCheckoutDetails, type CheckoutDetails, type CheckoutFieldName } from "@/lib/checkout"
+import {
+  CHECKOUT_MAX_LENGTHS,
+  reviewCheckoutDetails,
+  type CheckoutDetails,
+  type CheckoutFieldName,
+} from "@/lib/checkout"
 import { checkA11y } from "./a11y"
+
+const { assignHostedCheckout, placeOrderAction } = vi.hoisted(() => ({
+  assignHostedCheckout: vi.fn(),
+  placeOrderAction: vi.fn(),
+}))
+
+vi.mock("@/app/actions/checkout", () => ({ placeOrderAction }))
+vi.mock("@/lib/payments/checkout-navigation", () => ({ assignHostedCheckout }))
 
 const atlas = catalogProducts.find((product) => product.slug === "atlas-bed")!
 
@@ -35,7 +48,11 @@ describe("checkout detail review", () => {
   })
 
   it("rejects trimmed blanks and invalid ZIP, phone, and email values", () => {
-    const blankErrors = reviewCheckoutDetails({ ...validDetails, firstName: "   ", city: "\t" })
+    const blankErrors = reviewCheckoutDetails({
+      ...validDetails,
+      firstName: "   ",
+      city: "\t",
+    })
     expect(blankErrors.firstName).toBe("Enter your first name.")
     expect(blankErrors.city).toBe("Enter your city.")
 
@@ -49,7 +66,7 @@ describe("checkout detail review", () => {
     expect(formatErrors.phone).toBe("Enter a phone number with 10 to 15 digits.")
     expect(formatErrors.email).toBe("Enter a valid email address.")
     expect(reviewCheckoutDetails({ ...validDetails, phone: "call5035550198" }).phone).toBe(
-      "Enter a phone number with 10 to 15 digits.",
+      "Enter a phone number with 10 to 15 digits."
     )
   })
 
@@ -67,8 +84,21 @@ describe("checkout detail review", () => {
 })
 
 describe("checkout presentation", () => {
+  beforeEach(() => {
+    assignHostedCheckout.mockClear()
+    placeOrderAction.mockResolvedValue({
+      success: true,
+      orderId: "ORD-CHECKOUT-TEST",
+      authorizationUrl: "https://checkout.flutterwave.com/v3/hosted/pay/test",
+    })
+  })
+
   it("renders a useful empty state without checkout controls", async () => {
-    const { container } = render(<CartProvider><CheckoutContent /></CartProvider>)
+    const { container } = render(
+      <CartProvider>
+        <CheckoutContent />
+      </CartProvider>
+    )
     expect(screen.getByRole("heading", { name: "Your cart is empty" })).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "Browse furniture" })).toHaveAttribute("href", "/shop")
     expect(screen.queryByRole("form")).not.toBeInTheDocument()
@@ -80,7 +110,13 @@ describe("checkout presentation", () => {
     const user = userEvent.setup()
     const { container } = render(
       <CartProvider>
-        <ProductOptions product={atlas} sizes={atlas.sizes} defaultSize={atlas.defaultSize} finishes={atlas.finishes} defaultFinish={atlas.defaultFinish} />
+        <ProductOptions
+          product={atlas}
+          sizes={atlas.sizes}
+          defaultSize={atlas.defaultSize}
+          finishes={atlas.finishes}
+          defaultFinish={atlas.defaultFinish}
+        />
         <CheckoutContent />
       </CartProvider>
     )
@@ -90,7 +126,7 @@ describe("checkout presentation", () => {
     expect(screen.getByText("Queen · Oatmeal")).toBeInTheDocument()
     expect(screen.getAllByText("$1,599.00").length).toBeGreaterThan(0)
 
-    await user.click(screen.getByRole("button", { name: "Place order" }))
+    await user.click(screen.getByRole("button", { name: "Continue to secure payment" }))
     const summary = screen.getByText("Check the highlighted details").closest("[role='alert']")
     expect(summary).not.toBeNull()
     await waitFor(() => expect(summary).toHaveFocus())
@@ -110,11 +146,14 @@ describe("checkout presentation", () => {
     }
 
     expect(screen.queryByText("Enter your first name.")).not.toBeInTheDocument()
-    await user.click(screen.getByRole("button", { name: "Place order" }))
+    await user.click(screen.getByRole("button", { name: "Continue to secure payment" }))
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Order confirmed" })).toBeInTheDocument()
+      expect(assignHostedCheckout).toHaveBeenCalledWith(
+        "https://checkout.flutterwave.com/v3/hosted/pay/test"
+      )
     })
-    expect(screen.getByText(`${validDetails.firstName} ${validDetails.lastName}`)).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Continue to secure payment" })).toBeInTheDocument()
+    expect(screen.getByText("Atlas Bed")).toBeInTheDocument()
     expect(await checkA11y(container)).toEqual([])
   })
 })

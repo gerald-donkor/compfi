@@ -1,16 +1,13 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
-import { useAuth } from "@clerk/nextjs"
-import { CheckCircle2Icon, ShoppingCartIcon } from "lucide-react"
+import { ShoppingCartIcon } from "lucide-react"
 
-import { type PlaceOrderResult, placeOrderAction } from "@/app/actions/checkout"
+import { placeOrderAction } from "@/app/actions/checkout"
 import { useCart } from "@/components/cart/cart-provider"
 import { Money } from "@/components/commerce/money"
 import { Container } from "@/components/layout/container"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Empty,
   EmptyContent,
@@ -42,6 +39,7 @@ import {
   type CheckoutFieldName,
 } from "@/lib/checkout"
 import { formatMoney } from "@/lib/money"
+import { assignHostedCheckout } from "@/lib/payments/checkout-navigation"
 import type { CatalogProduct } from "@/types/commerce"
 
 const FIELD_LABELS: Readonly<Record<CheckoutFieldName, string>> = Object.freeze({
@@ -66,8 +64,6 @@ type CheckoutInputFieldProps = Omit<InputProps, "id" | "name"> & {
 
 function CheckoutInputField({ name, error, ...props }: CheckoutInputFieldProps) {
   const id = `checkout-${name}`
-  const errorId = `${id}-error`
-
   return (
     <Field data-invalid={error ? "true" : undefined}>
       <FieldLabel htmlFor={id}>{FIELD_LABELS[name]}</FieldLabel>
@@ -76,10 +72,10 @@ function CheckoutInputField({ name, error, ...props }: CheckoutInputFieldProps) 
         id={id}
         name={name}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? errorId : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
         className="checkout-field-control"
       />
-      {error ? <FieldError id={errorId}>{error}</FieldError> : null}
+      {error ? <FieldError id={`${id}-error`}>{error}</FieldError> : null}
     </Field>
   )
 }
@@ -93,8 +89,6 @@ function selectionLabel(line: CartLine, product: CatalogProduct): string | undef
 function CheckoutSummary() {
   const { lines, productFor, subtotalCents } = useCart()
   const shippingCents = calculateShippingCents(subtotalCents)
-  const totalCents = subtotalCents + shippingCents
-
   return (
     <section aria-labelledby="checkout-summary-heading">
       <div className="checkout-summary-heading">
@@ -108,18 +102,17 @@ function CheckoutSummary() {
           const product = productFor(line)
           if (!product) return null
           const details = selectionLabel(line, product)
-          const lineTotalCents = product.priceCents * line.quantity
-
           return (
             <li key={cartLineKey(line)} className="checkout-summary-line">
               <div className="min-w-0 break-words">
                 <span className="font-medium">{product.name}</span>
                 <span className="ml-2 whitespace-nowrap">× {line.quantity}</span>
-                {details ? (
-                  <p className="type-body-sm text-muted-foreground">{details}</p>
-                ) : null}
+                {details ? <p className="type-body-sm text-muted-foreground">{details}</p> : null}
               </div>
-              <Money amountCents={lineTotalCents} className="text-right tabular-nums font-medium" />
+              <Money
+                amountCents={product.priceCents * line.quantity}
+                className="text-right tabular-nums font-medium"
+              />
             </li>
           )
         })}
@@ -138,7 +131,7 @@ function CheckoutSummary() {
       <div className="checkout-summary-total">
         <span className="type-heading-sm">Total</span>
         <Money
-          amountCents={totalCents}
+          amountCents={subtotalCents + shippingCents}
           className="type-heading-md text-compfi-brand"
         />
       </div>
@@ -154,11 +147,7 @@ function CheckoutEmpty({ headingRef }: { headingRef: React.RefObject<HTMLHeading
           <ShoppingCartIcon aria-hidden="true" />
         </EmptyMedia>
         <EmptyHeader>
-          <h2
-            ref={headingRef}
-            tabIndex={-1}
-            className="type-heading-lg focus-visible:outline-none"
-          >
+          <h2 ref={headingRef} tabIndex={-1} className="type-heading-lg focus-visible:outline-none">
             Your cart is empty
           </h2>
           <EmptyDescription>
@@ -175,177 +164,33 @@ function CheckoutEmpty({ headingRef }: { headingRef: React.RefObject<HTMLHeading
   )
 }
 
-type ConfirmedOrder = Extract<PlaceOrderResult, { success: true }>
-
-function OrderConfirmation({ order }: { order: ConfirmedOrder }) {
-  const { isSignedIn } = useAuth()
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(order.createdAt)
-
-  return (
-    <Container className="py-16">
-      <div
-        data-slot="order-confirmation"
-        role="status"
-        aria-labelledby="order-confirmed-heading"
-        className="mx-auto max-w-2xl rounded-2xl border border-compfi-border bg-card p-6 md:p-10 shadow-xs"
-      >
-        <div className="flex flex-col items-center text-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-compfi-wash text-compfi-brand mb-4">
-            <CheckCircle2Icon className="h-8 w-8" aria-hidden="true" />
-          </div>
-          <h2 id="order-confirmed-heading" className="type-heading-lg text-compfi-ink">Order confirmed</h2>
-          <p className="mt-2 type-body text-muted-foreground">
-            Thank you for shopping with Compfi. Your order has been placed and saved to our database.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-compfi-ink">
-            <span className="rounded-md bg-compfi-wash px-3 py-1.5 font-medium">
-              Order reference: <span className="font-semibold ml-1.5">{order.orderId}</span>
-            </span>
-            <span className="rounded-md bg-compfi-wash px-3 py-1.5 font-medium text-muted-foreground">
-              Placed: <time dateTime={new Date(order.createdAt).toISOString()}>{formattedDate}</time>
-            </span>
-          </div>
-        </div>
-
-        <Separator className="my-8" />
-
-        {order.items && order.items.length > 0 ? (
-          <div className="mb-8">
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
-              Items in this order
-            </h3>
-            <ul className="divide-y divide-compfi-border" aria-label="Ordered items">
-              {order.items.map((item) => (
-                <li key={item.id} className="flex items-center gap-4 py-3">
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-compfi-border bg-muted">
-                    <Image
-                      src={item.imageSrc}
-                      alt={item.productTitle}
-                      fill
-                      sizes="56px"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="font-medium text-compfi-ink truncate">{item.productTitle}</h4>
-                    {item.size || item.finish ? (
-                      <p className="text-xs text-muted-foreground">
-                        {[item.size, item.finish].filter(Boolean).join(" · ")}
-                      </p>
-                    ) : null}
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {item.quantity} × {formatMoney(item.unitPriceCents)}
-                    </p>
-                  </div>
-                  <div className="text-right font-medium text-compfi-ink">
-                    {formatMoney(item.totalPriceCents)}
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <Separator className="my-6" />
-          </div>
-        ) : null}
-
-        <div className="grid gap-6 sm:grid-cols-2 text-left">
-          <div>
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Shipping to
-            </h3>
-            <p className="mt-2 font-medium text-compfi-ink">{order.customerName}</p>
-            <p className="text-sm text-muted-foreground">{order.shippingAddress.addressLine1}</p>
-            {order.shippingAddress.addressLine2 ? (
-              <p className="text-sm text-muted-foreground">{order.shippingAddress.addressLine2}</p>
-            ) : null}
-            <p className="text-sm text-muted-foreground">
-              {order.shippingAddress.city}, {order.shippingAddress.state}{" "}
-              {order.shippingAddress.zipCode}
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">{order.customerEmail}</p>
-          </div>
-          <div>
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Order Summary
-            </h3>
-            <div className="mt-2 space-y-1.5 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Items ({order.itemCount}):</span>
-                <span className="font-medium text-compfi-ink">
-                  {formatMoney(order.subtotalCents)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Shipping:</span>
-                <span className="font-medium text-compfi-ink">
-                  {order.shippingCents === 0 ? "Free" : formatMoney(order.shippingCents)}
-                </span>
-              </div>
-              <div className="flex justify-between border-t border-compfi-border pt-1.5 font-semibold text-compfi-brand">
-                <span>Total:</span>
-                <span>{formatMoney(order.totalCents)}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            href="/shop"
-            className={cn(buttonVariants({ variant: "default" }), "min-h-11 min-w-44 justify-center")}
-          >
-            Continue shopping
-          </Link>
-          {isSignedIn ? (
-            <Link
-              href="/account"
-              className={cn(buttonVariants({ variant: "outline" }), "min-h-11 min-w-44 justify-center")}
-            >
-              View in account
-            </Link>
-          ) : null}
-        </div>
-      </div>
-    </Container>
-  )
-}
-
 function detailsFrom(form: HTMLFormElement): CheckoutDetails {
   const formData = new FormData(form)
   return Object.freeze(
     Object.fromEntries(
-      CHECKOUT_FIELD_NAMES.map((fieldName) => [fieldName, String(formData.get(fieldName) ?? "")]),
-    ) as Record<CheckoutFieldName, string>,
+      CHECKOUT_FIELD_NAMES.map((name) => [name, String(formData.get(name) ?? "")])
+    ) as Record<CheckoutFieldName, string>
   )
 }
 
 function isCheckoutFieldName(value: string): value is CheckoutFieldName {
-  return CHECKOUT_FIELD_NAMES.some((fieldName) => fieldName === value)
+  return CHECKOUT_FIELD_NAMES.some((name) => name === value)
 }
 
 export function CheckoutContent() {
-  const { lines, clearCart } = useCart()
+  const { lines } = useCart()
   const [errors, setErrors] = React.useState<CheckoutErrors>({})
   const [status, setStatus] = React.useState("")
   const [isSubmitting, setIsSubmitting] = React.useState(false)
-  const [confirmedOrder, setConfirmedOrder] = React.useState<ConfirmedOrder | null>(null)
   const previouslyPopulated = React.useRef(lines.length > 0)
   const emptyHeadingRef = React.useRef<HTMLHeadingElement>(null)
   const errorSummaryRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
-    if (!lines.length && previouslyPopulated.current && !confirmedOrder) {
-      const activeModal = document.querySelector("[role='dialog']")
-      if (!activeModal) emptyHeadingRef.current?.focus()
-    }
+    if (!lines.length && previouslyPopulated.current && !document.querySelector("[role='dialog']"))
+      emptyHeadingRef.current?.focus()
     previouslyPopulated.current = lines.length > 0
-  }, [lines.length, confirmedOrder])
-
-  if (confirmedOrder) {
-    return <OrderConfirmation order={confirmedOrder} />
-  }
+  }, [lines.length])
 
   if (!lines.length) return <CheckoutEmpty headingRef={emptyHeadingRef} />
 
@@ -355,37 +200,31 @@ export function CheckoutContent() {
     const nextErrors = reviewCheckoutDetails(details)
     setStatus("")
     setErrors(nextErrors)
-
     if (Object.keys(nextErrors).length) {
       requestAnimationFrame(() => errorSummaryRef.current?.focus())
       return
     }
-
     setIsSubmitting(true)
     try {
-      const submissionLines = lines.map((line) => ({
-        slug: line.slug,
-        quantity: line.quantity,
-        size: line.size,
-        finish: line.finish,
-      }))
-
-      const result = await placeOrderAction(details, submissionLines)
+      const result = await placeOrderAction(
+        details,
+        lines.map(({ slug, quantity, size, finish }) => ({
+          slug,
+          quantity,
+          size,
+          finish,
+        }))
+      )
       if (!result.success) {
         if (result.errors) {
           setErrors(result.errors)
           requestAnimationFrame(() => errorSummaryRef.current?.focus())
-        } else if (result.message) {
-          setStatus(result.message)
-        }
+        } else setStatus(result.message ?? "Secure payment is unavailable. Please try again.")
         return
       }
-
-      setConfirmedOrder(result)
-
-      clearCart()
+      assignHostedCheckout(result.authorizationUrl)
     } catch {
-      setStatus("An unexpected error occurred while placing your order. Please try again.")
+      setStatus("Secure payment could not be opened. Your cart is unchanged; please try again.")
     } finally {
       setIsSubmitting(false)
     }
@@ -394,20 +233,36 @@ export function CheckoutContent() {
   function handleChange(event: React.FormEvent<HTMLFormElement>) {
     setStatus("")
     const target = event.target
-    if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement)) return
-    if (!isCheckoutFieldName(target.name) || !errors[target.name]) return
-    const fieldName = target.name
-    setErrors((currentErrors) => {
-      const nextErrors = { ...currentErrors }
-      delete nextErrors[fieldName]
-      return Object.freeze(nextErrors)
+    if (
+      !(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) ||
+      !isCheckoutFieldName(target.name) ||
+      !errors[target.name]
+    )
+      return
+    const name = target.name
+    setErrors((current) => {
+      const next = { ...current }
+      delete next[name]
+      return Object.freeze(next)
     })
   }
+
+  const field = (
+    name: CheckoutFieldName,
+    props: Omit<CheckoutInputFieldProps, "name" | "error"> = {}
+  ) => (
+    <CheckoutInputField
+      name={name}
+      error={errors[name]}
+      maxLength={CHECKOUT_MAX_LENGTHS[name]}
+      {...props}
+    />
+  )
 
   return (
     <Container className="checkout-content">
       <form
-        aria-label="Checkout details and order placement"
+        aria-label="Checkout details and payment"
         className="checkout-layout"
         noValidate
         onSubmit={handleSubmit}
@@ -424,105 +279,62 @@ export function CheckoutContent() {
             >
               <h2 className="font-semibold">Check the highlighted details</h2>
               <ul className="mt-2 list-disc pl-5">
-                {CHECKOUT_FIELD_NAMES.flatMap((fieldName) =>
-                  errors[fieldName]
+                {CHECKOUT_FIELD_NAMES.flatMap((name) =>
+                  errors[name]
                     ? [
-                        <li key={fieldName}>
-                          <a href={`#checkout-${fieldName}`}>
-                            {FIELD_LABELS[fieldName]}: {errors[fieldName]}
+                        <li key={name}>
+                          <a href={`#checkout-${name}`}>
+                            {FIELD_LABELS[name]}: {errors[name]}
                           </a>
                         </li>,
                       ]
-                    : [],
+                    : []
                 )}
               </ul>
             </div>
           ) : null}
           <FieldGroup className="checkout-field-group">
             <div className="checkout-name-fields">
-              <CheckoutInputField
-                name="firstName"
-                error={errors.firstName}
-                required
-                maxLength={CHECKOUT_MAX_LENGTHS.firstName}
-                autoComplete="given-name"
-              />
-              <CheckoutInputField
-                name="lastName"
-                error={errors.lastName}
-                required
-                maxLength={CHECKOUT_MAX_LENGTHS.lastName}
-                autoComplete="family-name"
-              />
+              {field("firstName", {
+                required: true,
+                autoComplete: "given-name",
+              })}
+              {field("lastName", {
+                required: true,
+                autoComplete: "family-name",
+              })}
             </div>
-            <CheckoutInputField
-              name="company"
-              error={errors.company}
-              maxLength={CHECKOUT_MAX_LENGTHS.company}
-              autoComplete="organization"
-            />
-            <CheckoutInputField
-              name="countryRegion"
-              error={errors.countryRegion}
-              readOnly
-              defaultValue="United States"
-              maxLength={CHECKOUT_MAX_LENGTHS.countryRegion}
-              autoComplete="country-name"
-            />
-            <CheckoutInputField
-              name="addressLine1"
-              error={errors.addressLine1}
-              required
-              maxLength={CHECKOUT_MAX_LENGTHS.addressLine1}
-              autoComplete="address-line1"
-            />
-            <CheckoutInputField
-              name="addressLine2"
-              error={errors.addressLine2}
-              maxLength={CHECKOUT_MAX_LENGTHS.addressLine2}
-              autoComplete="address-line2"
-            />
-            <CheckoutInputField
-              name="city"
-              error={errors.city}
-              required
-              maxLength={CHECKOUT_MAX_LENGTHS.city}
-              autoComplete="address-level2"
-            />
-            <CheckoutInputField
-              name="state"
-              error={errors.state}
-              required
-              maxLength={CHECKOUT_MAX_LENGTHS.state}
-              autoComplete="address-level1"
-            />
-            <CheckoutInputField
-              name="zipCode"
-              error={errors.zipCode}
-              required
-              maxLength={CHECKOUT_MAX_LENGTHS.zipCode}
-              inputMode="numeric"
-              autoComplete="postal-code"
-            />
-            <CheckoutInputField
-              name="phone"
-              error={errors.phone}
-              required
-              type="tel"
-              maxLength={CHECKOUT_MAX_LENGTHS.phone}
-              inputMode="tel"
-              autoComplete="tel"
-            />
-            <CheckoutInputField
-              name="email"
-              error={errors.email}
-              required
-              type="email"
-              maxLength={CHECKOUT_MAX_LENGTHS.email}
-              inputMode="email"
-              autoComplete="email"
-              spellCheck={false}
-            />
+            {field("company", { autoComplete: "organization" })}
+            {field("countryRegion", {
+              readOnly: true,
+              defaultValue: "United States",
+              autoComplete: "country-name",
+            })}
+            {field("addressLine1", {
+              required: true,
+              autoComplete: "address-line1",
+            })}
+            {field("addressLine2", { autoComplete: "address-line2" })}
+            {field("city", { required: true, autoComplete: "address-level2" })}
+            {field("state", { required: true, autoComplete: "address-level1" })}
+            {field("zipCode", {
+              required: true,
+              inputMode: "numeric",
+              autoComplete: "postal-code",
+            })}
+            {field("phone", {
+              required: true,
+              type: "tel",
+              inputMode: "tel",
+              autoComplete: "tel",
+            })}
+            {field("email", {
+              required: true,
+              type: "email",
+              inputMode: "email",
+              autoComplete: "email",
+              spellCheck: false,
+            })}
             <Field data-invalid={errors.orderNotes ? "true" : undefined}>
               <FieldLabel htmlFor="checkout-orderNotes">{FIELD_LABELS.orderNotes}</FieldLabel>
               <Textarea
@@ -547,7 +359,6 @@ export function CheckoutContent() {
             </Field>
           </FieldGroup>
         </FieldSet>
-
         <div className="checkout-review">
           <CheckoutSummary />
           <section aria-labelledby="checkout-payment-heading" className="checkout-payment">
@@ -555,9 +366,11 @@ export function CheckoutContent() {
               Payment method
             </h2>
             <div className="mt-3 rounded-lg border border-compfi-border bg-compfi-wash/50 p-4">
-              <p className="type-body font-medium text-compfi-ink">Free Direct Order</p>
+              <p className="type-body font-medium text-compfi-ink">Secure online payment</p>
               <p className="mt-1 type-body-sm text-muted-foreground">
-                Your order will be confirmed and saved directly. No payment card required.
+                Continue to <span translate="no">Flutterwave</span>’s hosted checkout. Your card
+                details are entered there and are never handled or stored by{" "}
+                <span translate="no">Compfi</span>.
               </p>
             </div>
           </section>
@@ -568,7 +381,7 @@ export function CheckoutContent() {
             aria-busy={isSubmitting}
             className="checkout-submit"
           >
-            {isSubmitting ? "Placing order…" : "Place order"}
+            {isSubmitting ? "Opening secure payment…" : "Continue to secure payment"}
           </Button>
           <p aria-live="polite" aria-atomic="true" className="type-body-sm font-medium">
             {status}

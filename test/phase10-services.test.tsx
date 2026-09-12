@@ -12,6 +12,14 @@ import type { OrderWithItems } from "@/db/orders"
 import { checkA11y } from "./a11y"
 import { resetTestClerkState, setTestClerkState } from "./setup"
 
+const { assignHostedCheckout, placeOrderAction } = vi.hoisted(() => ({
+  assignHostedCheckout: vi.fn(),
+  placeOrderAction: vi.fn(),
+}))
+
+vi.mock("@/app/actions/checkout", () => ({ placeOrderAction }))
+vi.mock("@/lib/payments/checkout-navigation", () => ({ assignHostedCheckout }))
+
 // Mock Next.js navigation
 vi.mock("next/navigation", () => ({
   usePathname: () => "/checkout",
@@ -33,6 +41,11 @@ function CartSeeder({ children }: { children: React.ReactNode }) {
 describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
   beforeEach(() => {
     resetTestClerkState()
+    placeOrderAction.mockResolvedValue({
+      success: true,
+      orderId: "ORD-TEST-PAYMENT",
+      authorizationUrl: "https://checkout.flutterwave.com/v3/hosted/pay/test",
+    })
   })
 
   afterEach(() => {
@@ -75,6 +88,13 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
           subtotalCents: 65800,
           shippingCents: 0,
           totalCents: 65800,
+          paymentProvider: null,
+          paymentReference: null,
+          paymentTransactionId: null,
+          paymentCurrency: null,
+          paidAt: null,
+          receiptStatus: null,
+          receiptSentAt: null,
           createdAt: 1726070400000,
           parsedShippingAddress: {
             addressLine1: "123 Main St",
@@ -104,7 +124,7 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
 
       expect(container.querySelector("[data-slot='order-history']")).toBeInTheDocument()
       expect(screen.getByText("ORD-123456-ABCD")).toBeInTheDocument()
-      expect(screen.getByText("confirmed")).toBeInTheDocument()
+      expect(screen.getByText("Confirmed (legacy)")).toBeInTheDocument()
       expect(screen.getByText("Alder Dining Chair")).toBeInTheDocument()
       expect(screen.getByText("Size: Standard • Finish: Natural oak")).toBeInTheDocument()
       expect(screen.getByText("Qty: 2 × $329.00")).toBeInTheDocument()
@@ -115,8 +135,7 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
   })
 
   describe("CheckoutContent Order Placement", () => {
-    it("places order and transitions to order confirmation view with itemized details", async () => {
-      // Test signed in state to verify conditional "View in account" link
+    it("opens the validated hosted checkout without clearing the local cart", async () => {
       setTestClerkState({ isSignedIn: true, userId: "user_test_sarah" })
       const user = userEvent.setup()
 
@@ -130,7 +149,9 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
 
       // Wait for cart to be seeded and checkout form to render
       await waitFor(() => {
-        expect(screen.getByRole("button", { name: "Place order" })).toBeInTheDocument()
+        expect(
+          screen.getByRole("button", { name: "Continue to secure payment" })
+        ).toBeInTheDocument()
       })
 
       // Fill in required fields
@@ -144,23 +165,17 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
       await user.type(screen.getByLabelText(/^Email address/), "sarah@resistance.org")
 
       // Submit order
-      const placeOrderBtn = screen.getByRole("button", { name: "Place order" })
+      const placeOrderBtn = screen.getByRole("button", {
+        name: "Continue to secure payment",
+      })
       await user.click(placeOrderBtn)
 
-      // Verify order confirmation view appears
       await waitFor(() => {
-        expect(screen.getByRole("heading", { name: "Order confirmed" })).toBeInTheDocument()
+        expect(assignHostedCheckout).toHaveBeenCalledWith(
+          "https://checkout.flutterwave.com/v3/hosted/pay/test"
+        )
       })
-
-      const confirmation = container.querySelector("[data-slot='order-confirmation']")
-      expect(confirmation).toBeInTheDocument()
-      expect(screen.getByText(/Order reference:/)).toBeInTheDocument()
-      expect(screen.getByText(/Placed:/)).toBeInTheDocument()
-      expect(screen.getByText("Sarah Connor")).toBeInTheDocument()
-      expect(screen.getByText("100 Resistance Blvd")).toBeInTheDocument()
-      expect(screen.getByText("Items in this order")).toBeInTheDocument()
-      expect(screen.getByRole("link", { name: "Continue shopping" })).toHaveAttribute("href", "/shop")
-      expect(screen.getByRole("link", { name: "View in account" })).toHaveAttribute("href", "/account")
+      expect(screen.getByText("Alder Dining Chair")).toBeInTheDocument()
 
       expect(await checkA11y(container)).toEqual([])
     })
@@ -183,7 +198,7 @@ describe("Phase 10: Real Services (Local SQLite Persistence & Orders)", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText("Thank you! Your message has been sent. We'll be in touch soon.")
+          screen.getByText("Thank you! Your message was received. We'll be in touch soon.")
         ).toBeInTheDocument()
       })
 

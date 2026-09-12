@@ -27,7 +27,7 @@ import {
   type ContactFieldName,
 } from "@/lib/contact"
 
-const SUCCESS_MESSAGE = "Thank you! Your message has been sent. We'll be in touch soon."
+const SUCCESS_MESSAGE = "Thank you! Your message was received. We'll be in touch soon."
 
 const FIELD_LABELS: Readonly<Record<ContactFieldName, string>> = Object.freeze({
   name: "Name",
@@ -140,7 +140,7 @@ export function ContactForm() {
       <FieldSet>
         <FieldLegend className="type-heading-lg">Send us a message</FieldLegend>
         <FieldDescription>
-          Fill out the form below. We typically respond within one business day.
+          Share your question and the best email address for a reply.
         </FieldDescription>
         {Object.keys(errors).length ? (
           <div ref={errorSummaryRef} tabIndex={-1} role="alert" className="contact-error-summary">

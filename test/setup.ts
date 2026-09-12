@@ -2,6 +2,8 @@ import "@testing-library/jest-dom/vitest"
 import * as React from "react"
 import { vi } from "vitest"
 
+vi.mock("server-only", () => ({}))
+
 class TestResizeObserver implements ResizeObserver {
   observe() {}
   unobserve() {}

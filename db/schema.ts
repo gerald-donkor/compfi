@@ -1,9 +1,18 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
+export type OrderStatus =
+  | "confirmed"
+  | "pending_payment"
+  | "paid"
+  | "payment_failed"
+  | "payment_canceled"
+
+export type NotificationStatus = "pending" | "sent" | "failed"
+
 export const orders = sqliteTable("orders", {
   id: text("id").primaryKey(),
   userId: text("user_id"),
-  status: text("status").notNull().default("confirmed"),
+  status: text("status").notNull().default("confirmed").$type<OrderStatus>(),
   customerName: text("customer_name").notNull(),
   customerEmail: text("customer_email").notNull(),
   customerPhone: text("customer_phone").notNull(),
@@ -12,6 +21,13 @@ export const orders = sqliteTable("orders", {
   subtotalCents: integer("subtotal_cents").notNull(),
   shippingCents: integer("shipping_cents").notNull().default(0),
   totalCents: integer("total_cents").notNull(),
+  paymentProvider: text("payment_provider").$type<"flutterwave">(),
+  paymentReference: text("payment_reference"),
+  paymentTransactionId: text("payment_transaction_id"),
+  paymentCurrency: text("payment_currency"),
+  paidAt: integer("paid_at"),
+  receiptStatus: text("receipt_status").$type<NotificationStatus>(),
+  receiptSentAt: integer("receipt_sent_at"),
   createdAt: integer("created_at").notNull(),
 })
 
@@ -35,7 +51,18 @@ export const contactInquiries = sqliteTable("contact_inquiries", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   message: text("message").notNull(),
+  customerNotificationStatus: text("customer_notification_status").$type<NotificationStatus>(),
+  customerNotifiedAt: integer("customer_notified_at"),
+  merchantNotificationStatus: text("merchant_notification_status").$type<NotificationStatus>(),
+  merchantNotifiedAt: integer("merchant_notified_at"),
   createdAt: integer("created_at").notNull(),
+})
+
+export const processedPaymentEvents = sqliteTable("processed_payment_events", {
+  id: text("id").primaryKey(),
+  provider: text("provider").notNull().$type<"flutterwave">(),
+  eventType: text("event_type").notNull(),
+  processedAt: integer("processed_at").notNull(),
 })
 
 export const newsletterSubscribers = sqliteTable("newsletter_subscribers", {

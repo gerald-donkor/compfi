@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { placeOrderAction } from "@/app/actions/checkout"
 import { submitContactInquiryAction } from "@/app/actions/contact"
 import { calculateShippingCents } from "@/lib/checkout"
@@ -8,6 +8,29 @@ import { orders, contactInquiries } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
 describe("Server Actions: checkout and contact persistence", () => {
+  beforeEach(() => {
+    vi.stubEnv("FLUTTERWAVE_SECRET_KEY", "test-secret")
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            status: "success",
+            data: {
+              link: "https://checkout.flutterwave.com/v3/hosted/pay/test",
+            },
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+      )
+    )
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.unstubAllGlobals()
+  })
+
   const validDetails = {
     firstName: "John",
     lastName: "Appleseed",
@@ -32,7 +55,11 @@ describe("Server Actions: checkout and contact persistence", () => {
   })
 
   it("rejects invalid billing details", async () => {
-    const invalidDetails = { ...validDetails, firstName: "", email: "invalid-email" }
+    const invalidDetails = {
+      ...validDetails,
+      firstName: "",
+      email: "invalid-email",
+    }
     const result = await placeOrderAction(invalidDetails, [
       { slug: "alder-dining-chair", quantity: 1 },
     ])
@@ -45,7 +72,11 @@ describe("Server Actions: checkout and contact persistence", () => {
 
   it("rejects invalid variant options", async () => {
     const invalidFinishResult = await placeOrderAction(validDetails, [
-      { slug: "alder-dining-chair", quantity: 1, finish: "non-existent-finish" },
+      {
+        slug: "alder-dining-chair",
+        quantity: 1,
+        finish: "non-existent-finish",
+      },
     ])
     expect(invalidFinishResult.success).toBe(false)
     if (!invalidFinishResult.success) {
@@ -103,12 +134,7 @@ describe("Server Actions: checkout and contact persistence", () => {
     expect(result.success).toBe(true)
     if (result.success) {
       expect(result.orderId).toMatch(/^ORD-/)
-      expect(result.subtotalCents).toBe(65800)
-      expect(result.shippingCents).toBe(0)
-      expect(result.totalCents).toBe(65800)
-      expect(result.itemCount).toBe(2)
-      expect(result.items).toHaveLength(1)
-      expect(result.items[0].productTitle).toBe("Alder Dining Chair")
+      expect(result.authorizationUrl).toMatch(/^https:\/\/checkout\.flutterwave\.com\//)
 
       // Query database directly
       const savedOrder = await getOrderById(result.orderId)
@@ -118,6 +144,10 @@ describe("Server Actions: checkout and contact persistence", () => {
       expect(savedOrder?.items[0].productTitle).toBe("Alder Dining Chair")
       expect(savedOrder?.items[0].quantity).toBe(2)
       expect(savedOrder?.items[0].unitPriceCents).toBe(32900)
+      expect(savedOrder?.subtotalCents).toBe(65800)
+      expect(savedOrder?.shippingCents).toBe(0)
+      expect(savedOrder?.totalCents).toBe(65800)
+      expect(savedOrder?.status).toBe("pending_payment")
 
       // Cleanup
       await db.delete(orders).where(eq(orders.id, result.orderId))
@@ -132,9 +162,10 @@ describe("Server Actions: checkout and contact persistence", () => {
 
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.subtotalCents).toBe(32900)
-      expect(result.shippingCents).toBe(2500)
-      expect(result.totalCents).toBe(35400)
+      const savedOrder = await getOrderById(result.orderId)
+      expect(savedOrder?.subtotalCents).toBe(32900)
+      expect(savedOrder?.shippingCents).toBe(2500)
+      expect(savedOrder?.totalCents).toBe(35400)
 
       // Cleanup
       await db.delete(orders).where(eq(orders.id, result.orderId))
