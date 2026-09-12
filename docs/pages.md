@@ -1,6 +1,6 @@
 # Compfi page build record
 
-Status: Phase 10 complete and verified (100% free stack, local SQLite persistence via Drizzle ORM and @libsql/client, Server Actions for checkout, contact, and newsletter subscription, 4-column footer integration matching design reference, order confirmation receipt view, and customer order history on /account).
+Status: Phase 10 & Shared Chrome Search Dialog complete and verified (100% free stack, local SQLite persistence via Drizzle ORM and @libsql/client, Server Actions for checkout, contact, and newsletter subscription, 4-column footer integration, order confirmation receipt view, customer order history on /account, and instant HeaderSearch dialog).
 Evidence: All routes implemented and verified with Vitest, ESLint, Next.js build, agent-browser, and axe-core.
 
 ## Phase 8 — Accessibility, performance, and visual QA certification
@@ -1000,5 +1000,27 @@ Self-verification on 2026-09-11 (using named sessions `compfi-phase10` and `comp
 | `agent-browser` newsletter subscription | verified end-to-end: invalid format error feedback, successful subscription, polite live region announcement, idempotent duplicate message, and SQLite `newsletter_subscribers` persistence |
 | `agent-browser` responsive | verified zero horizontal overflow (`scrollWidth <= clientWidth`: true) across 1440, 1024, 768, 390, and 320 px viewports |
 | axe accessibility | 0 axe violations across `OrderConfirmation`, `OrderHistory`, `/checkout`, `SiteFooter`, and `NewsletterForm` |
+
+## Storefront Header Search and Search Dialog Integration
+
+Implemented 2026-09-12 as the completion of the header utility cluster defined in `design/1-Home.png` and `design/2-Shop.png`. Delivers an accessible, real-time client-side search dialog modal across catalog products and editorial articles.
+
+### Scope Delivered:
+- **`lib/search.ts`**: Pure search utility `searchStorefront(query: string)` with case-insensitive token matching and relevance scoring across product names, categories, descriptions, and blog titles, categories, and excerpts. Formats prices using `formatMoney`.
+- **`components/chrome/header-search.tsx`**: Client component composing Base UI `Dialog`, search input with clear action, polite live region (`role="status"`), suggestions/popular searches, and categorized results.
+- **`components/chrome/header-controls.tsx`**: Integrated `HeaderSearch` between User button and `CartDrawer` in desktop/tablet/mobile header, and added an accessible "Search" trigger button in the mobile navigation drawer.
+- **`components/chrome/site-header.tsx`**: Refined header grid and gap spacing (`gap-2 sm:gap-4`) ensuring zero horizontal overflow down to 320px viewports.
+
+### Verification (2026-09-12, named `compfi-search-8dbc2e39d5ed` session):
+| check | result |
+| --- | --- |
+| `npm run test` | passed: 35 files, 192 tests (including `test/search.test.ts` and `test/header-search.test.tsx`) |
+| `npm run lint` | passed: 0 warnings, 0 errors |
+| `npx tsc --noEmit` | passed: 0 errors |
+| `npm run build` | passed: Turbopack prerendered 22/22 routes successfully |
+| `agent-browser` search dialog | verified: opening dialog, popular search chips, live filtering, empty state with recovery link, and Escape dismissal |
+| `agent-browser` responsive | verified zero horizontal overflow (`scrollWidth <= clientWidth`: true) across 1440, 1024, 768, 390, and 320 px viewports |
+| axe accessibility | 0 axe violations reported on search trigger and open dialog modal |
+
 
 

@@ -1,13 +1,14 @@
 "use client"
 
 import * as React from "react"
-import { MenuIcon, UserIcon, XIcon } from "lucide-react"
+import { MenuIcon, SearchIcon, UserIcon, XIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { Show, SignInButton, UserButton } from "@clerk/nextjs"
 
 import { cn } from "cn"
 
 import { CartDrawer } from "@/components/chrome/cart-drawer"
+import { HeaderSearch } from "@/components/chrome/header-search"
 import { IconButton } from "@/components/ui/icon-button"
 import { Link } from "@/components/ui/link"
 
@@ -18,6 +19,7 @@ const mobileAuthItemClasses =
 
 export function HeaderControls({ navigation }: { navigation: readonly NavigationItem[] }) {
   const [menuOpen, setMenuOpen] = React.useState(false)
+  const [searchOpen, setSearchOpen] = React.useState(false)
   const menuButton = React.useRef<HTMLButtonElement>(null)
   const pathname = usePathname()
 
@@ -54,7 +56,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
         </ul>
       </nav>
 
-      <div className="flex items-center justify-end gap-1">
+      <div className="flex items-center justify-end gap-0.5 sm:gap-1">
         <Show when="signed-out">
           <SignInButton mode="modal">
             <IconButton
@@ -81,6 +83,7 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
             />
           </div>
         </Show>
+        <HeaderSearch open={searchOpen} onOpenChange={setSearchOpen} />
         <CartDrawer />
         <IconButton
           ref={menuButton}
@@ -115,6 +118,19 @@ export function HeaderControls({ navigation }: { navigation: readonly Navigation
             </li>
           ))}
           <li className="border-t border-compfi-border pt-2 mt-2">
+            <button
+              type="button"
+              className={mobileAuthItemClasses}
+              onClick={() => {
+                setMenuOpen(false)
+                setSearchOpen(true)
+              }}
+            >
+              <SearchIcon className="h-5 w-5 text-compfi-brand" aria-hidden="true" />
+              <span>Search</span>
+            </button>
+          </li>
+          <li>
             <Show when="signed-out">
               <SignInButton mode="modal">
                 <button

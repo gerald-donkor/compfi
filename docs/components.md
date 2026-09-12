@@ -1,8 +1,28 @@
 # Compfi Component Inventory & Specifications
 
-Status: Phase 10 (100% free stack, local SQLite persistence via Drizzle ORM and @libsql/client, Server Actions, Order Confirmation receipt, and Customer Order History) fully implemented, audited, and certified.
+Status: Phase 10 & Shared Chrome Search Dialog (HeaderSearch) fully implemented, audited, and certified.
 
 This document owns the public component contracts, APIs, states, and accessibility requirements for Compfi primitives and foundation components.
+
+## Storefront Header Search & Search Dialog (Shared Chrome Completion)
+
+- **`HeaderSearch`** (`components/chrome/header-search.tsx`, `data-slot="header-search"`):
+  Client component providing the instant storefront search dialog modal triggered from the header utility cluster and mobile drawer.
+  - **Triggers**:
+    - Desktop/tablet/mobile header: 44×44 CSS px `IconButton` with `SearchIcon`, `variant="ghost"`, and `aria-label="Search Compfi"`.
+    - Mobile navigation drawer: full-width action with `SearchIcon` and `"Search"` label closing the mobile menu and opening the search modal.
+  - **Controlled/Uncontrolled Support**: Accepts optional `open?: boolean` and `onOpenChange?: (open: boolean) => void`.
+  - **Dialog Primitives**: Composes Base UI `Dialog` (`Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogClose`), centered on desktop with responsive top-anchoring on mobile viewports.
+  - **Live Search Filtering**: Multi-term ranking across catalog products (`lib/catalog.ts`) and blog posts (`lib/blog.ts`) via `searchStorefront` in `lib/search.ts` using `useDeferredValue` for non-blocking UI responsiveness.
+  - **Keyboard Navigation**:
+    - ArrowDown / ArrowUp moves through visible result items with automatic scroll-into-view.
+    - Enter key triggers native link selection and modal dismissal.
+    - Escape key closes dialog and restores focus to trigger button.
+  - **States**:
+    - Empty query: Shows "Popular Searches" quick-filter chips ("Sofa", "Chair", "Table", etc.) and room navigation links ("Dining Room", "Living Room", "Bedroom").
+    - Results populated: Displays categorized sections for "Products" (with thumbnails, room badge, and formatted prices) and "Editorial Articles" (with thumbnails, category badge, and publication dates).
+    - Empty results: Renders accessible `Empty` composition with `SearchIcon`, descriptive title, and a recovery link to `/shop`.
+  - **Accessibility**: Polite screen-reader live region (`role="status"`, `aria-live="polite"`, `aria-atomic="true"`) announcing match count, `type="search"`, minimum 44px touch targets, visible focus rings, 0 axe-core violations.
 
 ## Phase 10 Services, Persistence & Order Management Components
 
