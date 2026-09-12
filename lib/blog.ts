@@ -61,8 +61,8 @@ export const blogPosts: readonly BlogPost[] = Object.freeze([
     title: "Going all-in with millennial design",
     category: "Wood",
     author: "Admin",
-    date: "11 Sep 2026",
-    dateTime: "2026-09-11",
+    date: "12 Sep 2026",
+    dateTime: "2026-09-12",
     excerpt:
       "Exploring architectural warm wood tones, organic curves, and practical silhouettes that bridge mid-century craft with contemporary apartment living.",
     image: "/images/home/editorial/quiet-workspace.webp",
@@ -75,8 +75,8 @@ export const blogPosts: readonly BlogPost[] = Object.freeze([
     title: "Exploring new ways of decorating",
     category: "Handmade",
     author: "Admin",
-    date: "11 Sep 2026",
-    dateTime: "2026-09-11",
+    date: "12 Sep 2026",
+    dateTime: "2026-09-12",
     excerpt:
       "A guide to layered textiles, hand-thrown ceramics, and tactile surfaces that introduce quiet personality into open-plan living rooms.",
     image: "/images/home/editorial/softly-grounded.webp",
@@ -89,8 +89,8 @@ export const blogPosts: readonly BlogPost[] = Object.freeze([
     title: "Handmade pieces that took time to make",
     category: "Wood",
     author: "Admin",
-    date: "11 Sep 2026",
-    dateTime: "2026-09-11",
+    date: "12 Sep 2026",
+    dateTime: "2026-09-12",
     excerpt:
       "Appreciating slow joinery, hand-planed edges, and sustainable timber finishes designed to age with dignity across decades of daily use.",
     image: "/images/home/editorial/oak-tables.webp",

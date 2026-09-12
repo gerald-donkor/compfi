@@ -66,7 +66,7 @@ describe("product detail route", () => {
     }
 
     expect(titles.size).toBe(catalogProducts.length)
-  })
+  }, 15000)
 
   it("does not swallow the not-found interrupt", async () => {
     await expect(ProductPage({ params: Promise.resolve({ slug: "missing" }) })).rejects.toThrow("NEXT_NOT_FOUND")

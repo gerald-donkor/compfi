@@ -333,26 +333,27 @@ radius plus tablet sidebar width were tokenized. Final re-review from the
 original `299b3c5` base reported zero Standards findings and zero Spec
 findings. No verified blocking issue remains, and nothing was pushed.
 
-### Date modernization (2026-09-11)
+### Date modernization and synchronization (2026-09-12)
 
 In direct response to the durable ALWAYS rule added on 2026-09-11 ("Always make
-sure the dates used across all the pages are the latest"), all 24 editorial post
-fixtures in `lib/blog.ts` were modernized from legacy 2022 mockup dates to the
-current 2026 calendar, leading with `11 Sep 2026` (`2026-09-11`).
+sure the dates used across all the pages are the latest"), editorial post fixtures
+in `lib/blog.ts` and sitemap metadata in `app/sitemap.ts` were synchronized to the
+latest active calendar date (`12 Sep 2026` / `2026-09-12`).
 
 - **Reference delta**: Replace 2022 template dates from `design/9-Blog.png` with
-  descending 2026 publication dates (`11 Sep 2026` down to `01 Apr 2026`). The
-  mockup reflects its 2022 Figma export date; Compfi is an active 2026 storefront
+  descending 2026 publication dates leading with `12 Sep 2026` down to `01 Apr 2026`.
+  The mockup reflects its 2022 Figma export date; Compfi is an active 2026 storefront
   where stale dates undermine customer trust and contradict the current sitemap
   and footer metadata.
+- **Sitemap synchronization**: `app/sitemap.ts` emits `lastModified` set to
+  `2026-09-12T00:00:00.000Z` for all static storefront routes and catalog products.
 - **Data integrity**: Every `date` string follows `DD MMM 2026` and every
   `dateTime` attribute strictly matches ISO-8601 `YYYY-MM-DD` (`2026-MM-DD`).
-- **Tests**: `test/blog.test.tsx` was expanded with assertions verifying that all
-  24 fixtures have valid 2026 dates and ISO datetimes, and that both the article
-  feed and the "Recent Posts" sidebar render current 2026 dates.
-- **Verification**: All 27 test files (140 tests) passed cleanly. Named
-  `agent-browser` session (`compfi-8dbc2e39d5ed`) verified `/blog` at 1440, 768,
-  and 390px viewports (`scrollWidth === clientWidth`, 0 axe violations, 45 passes).
+- **Tests**: `test/blog.test.tsx` and `test/phase8-audit.test.tsx` assert that
+  editorial fixtures lead with `12 Sep 2026` / `2026-09-12` and sitemap entries
+  emit `2026-09-12T00:00:00.000Z`.
+- **Verification**: All 33 test files (178 tests) pass cleanly. Named `agent-browser`
+  session verified `/blog` and `/sitemap.xml` rendering `12 Sep 2026` / `2026-09-12`.
 
 ## Contact (`/contact`)
 

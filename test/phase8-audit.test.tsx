@@ -72,7 +72,7 @@ describe("Phase 8 - SEO, Metadata, and A11y Audit", () => {
       for (const entry of result) {
         expect(entry.url).toBeDefined()
         expect(entry.lastModified).toBeInstanceOf(Date)
-        expect((entry.lastModified as Date).toISOString()).toBe("2026-09-11T00:00:00.000Z")
+        expect((entry.lastModified as Date).toISOString()).toBe("2026-09-12T00:00:00.000Z")
         expect(["daily", "weekly", "monthly", "yearly"]).toContain(entry.changeFrequency)
         expect(entry.priority).toBeGreaterThanOrEqual(0)
         expect(entry.priority).toBeLessThanOrEqual(1)

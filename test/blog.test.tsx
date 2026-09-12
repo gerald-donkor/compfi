@@ -75,8 +75,8 @@ describe("resolveBlogView", () => {
       expect(post.dateTime).toMatch(/^2026-\d{2}-\d{2}$/)
       expect(new Date(`${post.dateTime}T00:00:00Z`).getUTCFullYear()).toBe(2026)
     })
-    expect(blogPosts[0].date).toBe("11 Sep 2026")
-    expect(blogPosts[0].dateTime).toBe("2026-09-11")
+    expect(blogPosts[0].date).toBe("12 Sep 2026")
+    expect(blogPosts[0].dateTime).toBe("2026-09-12")
   })
 })
 
