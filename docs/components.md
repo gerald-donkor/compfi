@@ -575,6 +575,8 @@ Generated components outside this certified inventory (including accordion, aler
 - **Payment states**: Renders explicit text labels for awaiting payment, paid,
   failed, canceled, and legacy confirmed records. The aggregate count says
   “order records,” so an unpaid record is not described as placed or paid.
+  Date copy is status-aware: paid orders say “Paid on,” legacy confirmed
+  orders say “Placed on,” and unpaid records say “Created on.”
 
 ### CheckoutContent (`components/checkout/checkout-content.tsx`)
 
@@ -583,17 +585,21 @@ Generated components outside this certified inventory (including accordion, aler
 - **Server/Client**: Focused client form; provider initialization remains in a
   Server Action and card entry remains on Flutterwave.
 - **Behavior**: Uses persistent labels, linked validation summaries, `aria-busy`,
-  and a polite status region. It accepts only an HTTPS Flutterwave checkout host,
+  and a polite status region. It accepts only an HTTPS Flutterwave checkout host
+  through the shared `isFlutterwaveCheckoutUrl` validator,
   preserves the cart for validation/configuration/provider failures, and does not
-  render a paid state locally.
+  render a paid state locally. Checkout and contact forms include a visually
+  hidden honeypot field that is rejected server-side before persistence.
 - **Action copy**: `Continue to secure payment` / `Opening secure payment…`.
 
 ### PaymentResult (`components/checkout/payment-result.tsx`)
 
 - **Purpose**: Server-rendered completion surface for paid, pending, canceled,
-  failed, and invalid callback states.
+  failed, and invalid callback states. Callback status text is never trusted;
+  failed/canceled labels come from server-to-server transaction inspection.
 - **Server/Client**: Server component. `ClearPaidCart` is the only client leaf and
-  mounts only for a server-verified paid order.
+  mounts only for a server-verified paid order. Pending, failed, canceled, and
+  invalid states preserve the cart.
 - **Accessibility**: One labeled result heading, icon plus textual status,
   semantic order-reference/total description list, and 44px recovery actions.
 - **Slot**: `data-slot="payment-result"`.

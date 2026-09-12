@@ -213,7 +213,8 @@ export function CheckoutContent() {
           quantity,
           size,
           finish,
-        }))
+        })),
+        { website: String(new FormData(event.currentTarget).get("website") ?? "") }
       )
       if (!result.success) {
         if (result.errors) {
@@ -268,6 +269,14 @@ export function CheckoutContent() {
         onSubmit={handleSubmit}
         onChange={handleChange}
       >
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="absolute -left-[10000px] size-px overflow-hidden"
+        />
         <FieldSet className="checkout-billing">
           <FieldLegend className="type-heading-lg">Billing details</FieldLegend>
           {Object.keys(errors).length ? (

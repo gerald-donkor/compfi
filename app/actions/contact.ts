@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 
 import { db, ensureDbSchema } from "@/db"
 import { contactInquiries } from "@/db/schema"
+import { isLikelyAutomatedSubmission, type PublicSubmissionGuard } from "@/lib/abuse"
 import { contactAcknowledgmentMessage, contactMerchantMessage } from "@/lib/email/messages"
 import { sendTransactionalEmail } from "@/lib/email/resend"
 import { reviewContactDetails, type ContactDetails, type ContactErrors } from "@/lib/contact"
@@ -20,8 +21,12 @@ export type SubmitContactResult =
     }
 
 export async function submitContactInquiryAction(
-  details: ContactDetails
+  details: ContactDetails,
+  submissionGuard?: PublicSubmissionGuard
 ): Promise<SubmitContactResult> {
+  if (isLikelyAutomatedSubmission(submissionGuard)) {
+    return { success: false, message: "We could not process this request. Please try again." }
+  }
   const errors = reviewContactDetails(details)
   if (Object.keys(errors).length > 0) {
     return {

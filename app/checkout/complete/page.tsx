@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>
 
-function single(value: string | string[] | undefined): string {
+function readScalarParam(value: string | string[] | undefined): string {
   return typeof value === "string" ? value : ""
 }
 
@@ -24,27 +24,18 @@ export default async function PaymentCompletePage({
   searchParams: SearchParams
 }) {
   const query = await searchParams
-  const providerStatus = single(query.status)
-  const paymentReference = single(query.tx_ref)
-  const transactionId = single(query.transaction_id)
+  const paymentReference = readScalarParam(query.tx_ref)
+  const transactionId = readScalarParam(query.transaction_id)
   let result: PaymentResultProps = { status: "invalid", order: null }
 
-  if (paymentReference && providerStatus === "successful" && transactionId) {
+  if (paymentReference && transactionId) {
     result = await reconcileFlutterwavePayment({
       transactionId,
       paymentReference,
     })
   } else if (paymentReference) {
     const order = await getOrderByPaymentReference(paymentReference)
-    result = {
-      status:
-        providerStatus === "cancelled"
-          ? "canceled"
-          : providerStatus === "failed"
-            ? "failed"
-            : "pending",
-      order,
-    }
+    result = { status: "pending", order }
   }
 
   return (

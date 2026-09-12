@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto"
 
 import { createPendingOrder, markOrderPaymentState } from "@/db/orders"
 import { type ShippingAddress } from "@/db/schema"
+import { isLikelyAutomatedSubmission, type PublicSubmissionGuard } from "@/lib/abuse"
 import { catalogProducts } from "@/lib/catalog"
 import {
   calculateShippingCents,
@@ -48,8 +49,12 @@ export type PlaceOrderResult =
 
 export async function placeOrderAction(
   details: CheckoutDetails,
-  cartLines: readonly CartLineSubmission[]
+  cartLines: readonly CartLineSubmission[],
+  submissionGuard?: PublicSubmissionGuard
 ): Promise<PlaceOrderResult> {
+  if (isLikelyAutomatedSubmission(submissionGuard)) {
+    return { success: false, message: "We could not process this request. Please try again." }
+  }
   // 1. Validate billing details
   const validationErrors = reviewCheckoutDetails(details)
   if (Object.keys(validationErrors).length > 0) {

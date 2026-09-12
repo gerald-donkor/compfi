@@ -2,11 +2,16 @@ import "server-only"
 
 import { createHmac, timingSafeEqual } from "node:crypto"
 
+export { isFlutterwaveCheckoutUrl } from "./flutterwave-shared"
+import { isFlutterwaveCheckoutUrl } from "./flutterwave-shared"
+
 const FLUTTERWAVE_API = "https://api.flutterwave.com/v3"
-const CHECKOUT_HOST = "checkout.flutterwave.com"
 
 export class PaymentProviderError extends Error {
-  constructor(message = "Secure payment is temporarily unavailable. Please try again.") {
+  constructor(
+    message = "Secure payment is temporarily unavailable. Please try again.",
+    readonly code: "unavailable" | "invalid" = "unavailable"
+  ) {
     super(message)
     this.name = "PaymentProviderError"
   }
@@ -20,6 +25,11 @@ function requireSecret(name: "FLUTTERWAVE_SECRET_KEY" | "FLUTTERWAVE_SECRET_HASH
   return value
 }
 
+export function assertFlutterwaveConfiguration(): void {
+  requireSecret("FLUTTERWAVE_SECRET_KEY")
+  requireSecret("FLUTTERWAVE_SECRET_HASH")
+}
+
 export function usdCentsToDecimal(cents: number): string {
   if (!Number.isSafeInteger(cents) || cents < 0) throw new PaymentProviderError()
   return `${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, "0")}`
@@ -30,15 +40,6 @@ function decimalToCents(value: unknown): number | null {
   if (!match) return null
   const cents = Number(match[1]) * 100 + Number((match[2] ?? "").padEnd(2, "0"))
   return Number.isSafeInteger(cents) ? cents : null
-}
-
-export function isFlutterwaveCheckoutUrl(value: string): boolean {
-  try {
-    const url = new URL(value)
-    return url.protocol === "https:" && url.hostname === CHECKOUT_HOST
-  } catch {
-    return false
-  }
 }
 
 async function readJson(response: Response): Promise<unknown> {
@@ -58,6 +59,7 @@ export async function initializeFlutterwavePayment(
   },
   fetcher: Fetcher = fetch
 ): Promise<{ authorizationUrl: string; paymentReference: string }> {
+  assertFlutterwaveConfiguration()
   const secretKey = requireSecret("FLUTTERWAVE_SECRET_KEY")
   const response = await fetcher(`${FLUTTERWAVE_API}/payments`, {
     method: "POST",
@@ -99,17 +101,28 @@ export type VerifiedFlutterwaveTransaction = {
   paymentReference: string
 }
 
-export async function verifyFlutterwaveTransaction(
+export type InspectedFlutterwaveTransaction = VerifiedFlutterwaveTransaction & {
+  status: "successful" | "failed" | "canceled" | "pending"
+}
+
+function normalizeTransactionStatus(value: string | undefined): InspectedFlutterwaveTransaction["status"] {
+  if (value === "successful") return "successful"
+  if (value === "failed") return "failed"
+  if (value === "cancelled" || value === "canceled") return "canceled"
+  return "pending"
+}
+
+export async function inspectFlutterwaveTransaction(
   input: {
     transactionId: string
     paymentReference: string
     amountCents: number
   },
   fetcher: Fetcher = fetch
-): Promise<VerifiedFlutterwaveTransaction> {
+): Promise<InspectedFlutterwaveTransaction> {
   const secretKey = requireSecret("FLUTTERWAVE_SECRET_KEY")
   if (!/^\d+$/.test(input.transactionId))
-    throw new PaymentProviderError("Payment could not be verified.")
+    throw new PaymentProviderError("Payment could not be verified.", "invalid")
   const response = await fetcher(
     `${FLUTTERWAVE_API}/transactions/${encodeURIComponent(input.transactionId)}/verify`,
     { headers: { Authorization: `Bearer ${secretKey}` }, cache: "no-store" }
@@ -125,19 +138,43 @@ export async function verifyFlutterwaveTransaction(
     }
   }
   const data = payload.data
+  if (!response.ok) {
+    throw new PaymentProviderError(
+      "Payment could not be verified.",
+      response.status >= 500 ? "unavailable" : "invalid"
+    )
+  }
   if (
-    !response.ok ||
     payload.status !== "success" ||
-    data?.status !== "successful" ||
+    !data ||
     data.tx_ref !== input.paymentReference ||
     data.currency !== "USD" ||
     decimalToCents(data.amount) !== input.amountCents
   ) {
-    throw new PaymentProviderError("Payment could not be verified.")
+    throw new PaymentProviderError("Payment could not be verified.", "invalid")
   }
   return {
     transactionId: String(data.id ?? input.transactionId),
     paymentReference: data.tx_ref,
+    status: normalizeTransactionStatus(data.status),
+  }
+}
+
+export async function verifyFlutterwaveTransaction(
+  input: {
+    transactionId: string
+    paymentReference: string
+    amountCents: number
+  },
+  fetcher: Fetcher = fetch
+): Promise<VerifiedFlutterwaveTransaction> {
+  const transaction = await inspectFlutterwaveTransaction(input, fetcher)
+  if (transaction.status !== "successful") {
+    throw new PaymentProviderError("Payment could not be verified.", "invalid")
+  }
+  return {
+    transactionId: transaction.transactionId,
+    paymentReference: transaction.paymentReference,
   }
 }
 

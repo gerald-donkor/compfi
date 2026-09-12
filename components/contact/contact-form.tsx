@@ -93,7 +93,9 @@ export function ContactForm() {
 
     setIsSubmitting(true)
     try {
-      const result = await submitContactInquiryAction(details)
+      const result = await submitContactInquiryAction(details, {
+        website: String(new FormData(event.currentTarget).get("website") ?? ""),
+      })
       if (!result.success) {
         if (result.errors) {
           setErrors(result.errors)
@@ -137,6 +139,14 @@ export function ContactForm() {
       onSubmit={handleSubmit}
       onChange={handleChange}
     >
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[10000px] size-px overflow-hidden"
+      />
       <FieldSet>
         <FieldLegend className="type-heading-lg">Send us a message</FieldLegend>
         <FieldDescription>

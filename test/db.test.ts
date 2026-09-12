@@ -1,10 +1,42 @@
+import { createClient } from "@libsql/client"
 import { describe, expect, it } from "vitest"
 import { ensureDbSchema, db } from "@/db"
+import { ensureDbSchema as initializeSchema } from "@/db/init"
 import { createPendingOrder, getOrderById, markOrderPaid } from "@/db/orders"
 import { orders, orderItems, contactInquiries, processedPaymentEvents } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
 describe("db schema and connection", () => {
+  it("adds production-service columns to a legacy database without replacing rows", async () => {
+    const legacyClient = createClient({ url: ":memory:" })
+    await legacyClient.execute(`CREATE TABLE orders (
+      id TEXT PRIMARY KEY, user_id TEXT, status TEXT NOT NULL DEFAULT 'confirmed',
+      customer_name TEXT NOT NULL, customer_email TEXT NOT NULL, customer_phone TEXT NOT NULL,
+      shipping_address TEXT NOT NULL, order_notes TEXT, subtotal_cents INTEGER NOT NULL,
+      shipping_cents INTEGER NOT NULL DEFAULT 0, total_cents INTEGER NOT NULL, created_at INTEGER NOT NULL
+    );`)
+    await legacyClient.execute(`CREATE TABLE contact_inquiries (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL,
+      message TEXT NOT NULL, created_at INTEGER NOT NULL
+    );`)
+    await legacyClient.execute({
+      sql: `INSERT INTO orders (
+        id, status, customer_name, customer_email, customer_phone, shipping_address,
+        subtotal_cents, shipping_cents, total_cents, created_at
+      ) VALUES (?, 'confirmed', 'Legacy Buyer', 'legacy@example.com', '555-0100', '{}', 100, 0, 100, 1)`,
+      args: ["legacy-order"],
+    })
+
+    await initializeSchema(legacyClient)
+    const columns = await legacyClient.execute("PRAGMA table_info(orders);")
+    expect(columns.rows.map((row) => row.name)).toEqual(
+      expect.arrayContaining(["payment_reference", "payment_transaction_id", "receipt_status"])
+    )
+    expect((await legacyClient.execute("SELECT status FROM orders WHERE id = 'legacy-order'"))
+      .rows[0].status).toBe("confirmed")
+    await legacyClient.close()
+  })
+
   it("initializes schema and inserts/queries an order", async () => {
     await ensureDbSchema()
 
@@ -85,6 +117,7 @@ describe("db schema and connection", () => {
 
   it("transitions a pending order to paid once and ignores a replayed event", async () => {
     const orderId = `test_payment_${Date.now()}`
+    const eventId = `flutterwave:${orderId}`
     await createPendingOrder(
       {
         id: orderId,
@@ -110,23 +143,14 @@ describe("db schema and connection", () => {
       []
     )
 
-    const first = await markOrderPaid({
-      orderId,
-      transactionId: "42",
-      eventId: "flutterwave:test-42",
-    })
-    const replay = await markOrderPaid({
-      orderId,
-      transactionId: "42",
-      eventId: "flutterwave:test-42",
-    })
-    expect(first.transitioned).toBe(true)
-    expect(replay.transitioned).toBe(false)
+    const attempts = await Promise.all([
+      markOrderPaid({ orderId, transactionId: "42", eventId }),
+      markOrderPaid({ orderId, transactionId: "42", eventId }),
+    ])
+    expect(attempts.map((attempt) => attempt.transitioned).sort()).toEqual([false, true])
     expect((await getOrderById(orderId))?.status).toBe("paid")
 
-    await db
-      .delete(processedPaymentEvents)
-      .where(eq(processedPaymentEvents.id, "flutterwave:test-42"))
+    await db.delete(processedPaymentEvents).where(eq(processedPaymentEvents.id, eventId))
     await db.delete(orders).where(eq(orders.id, orderId))
   })
 })

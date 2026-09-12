@@ -10,6 +10,7 @@ import { eq } from "drizzle-orm"
 describe("Server Actions: checkout and contact persistence", () => {
   beforeEach(() => {
     vi.stubEnv("FLUTTERWAVE_SECRET_KEY", "test-secret")
+    vi.stubEnv("FLUTTERWAVE_SECRET_HASH", "test-webhook-secret")
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(
@@ -52,6 +53,23 @@ describe("Server Actions: checkout and contact persistence", () => {
     if (!result.success) {
       expect(result.message).toContain("cart is empty")
     }
+  })
+
+  it("rejects honeypot submissions before persistence or provider calls", async () => {
+    const fetchSpy = vi.mocked(fetch)
+    const result = await placeOrderAction(
+      validDetails,
+      [{ slug: "alder-dining-chair", quantity: 1 }],
+      { website: "https://spam.example" }
+    )
+    expect(result.success).toBe(false)
+    expect(fetchSpy).not.toHaveBeenCalled()
+
+    const contactResult = await submitContactInquiryAction(
+      { name: "Bot", email: "bot@example.com", message: "Spam" },
+      { website: "https://spam.example" }
+    )
+    expect(contactResult.success).toBe(false)
   })
 
   it("rejects invalid billing details", async () => {

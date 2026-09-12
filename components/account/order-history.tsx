@@ -83,6 +83,12 @@ export function OrderHistory({ orders, className, ...props }: OrderHistoryProps)
             day: "numeric",
             year: "numeric",
           }).format(new Date(order.createdAt))
+          const dateLabel =
+            order.status === "paid"
+              ? "Paid on"
+              : order.status === "confirmed"
+                ? "Placed on"
+                : "Created on"
 
           return (
             <li
@@ -97,7 +103,9 @@ export function OrderHistory({ orders, className, ...props }: OrderHistoryProps)
                     </span>
                     <span className="font-semibold text-compfi-ink">{order.id}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Placed on {formattedDate}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {dateLabel} {formattedDate}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <Badge variant="outline" className="text-xs px-2.5 py-0.5">

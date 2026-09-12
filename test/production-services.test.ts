@@ -36,6 +36,15 @@ describe("production service contracts", () => {
       authToken: "token",
       isRemote: true,
     })
+    expect(() => resolveDatabaseConfig({ NODE_ENV: "production" })).toThrow(
+      "Production requires TURSO_DATABASE_URL and TURSO_AUTH_TOKEN"
+    )
+    expect(
+      resolveDatabaseConfig(
+        { NODE_ENV: "production", NEXT_PHASE: "phase-production-build" },
+        "/workspace"
+      ).isRemote
+    ).toBe(false)
   })
 
   it("formats exact USD cents and accepts only Flutterwave's HTTPS checkout host", () => {
@@ -50,6 +59,7 @@ describe("production service contracts", () => {
 
   it("initializes a card-only USD hosted checkout without exposing its secret", async () => {
     vi.stubEnv("FLUTTERWAVE_SECRET_KEY", "server-secret")
+    vi.stubEnv("FLUTTERWAVE_SECRET_HASH", "webhook-secret")
     const fetcher = vi.fn().mockResolvedValue(
       new Response(
         JSON.stringify({
@@ -85,6 +95,24 @@ describe("production service contracts", () => {
       customer: { phonenumber: "555-0100" },
     })
     expect(JSON.stringify(body)).not.toContain("server-secret")
+  })
+
+  it("rejects partial Flutterwave configuration before creating a hosted payment", async () => {
+    vi.stubEnv("FLUTTERWAVE_SECRET_KEY", "server-secret")
+    vi.stubEnv("FLUTTERWAVE_SECRET_HASH", "")
+    const fetcher = vi.fn()
+    await expect(
+      initializeFlutterwavePayment(
+        {
+          orderId: "ORD-123",
+          amountCents: 100,
+          customer: { email: "buyer@example.com", name: "Buyer", phone: "555-0100" },
+          callbackUrl: "https://compfi.com/checkout/complete",
+        },
+        fetcher
+      )
+    ).rejects.toThrow("not configured")
+    expect(fetcher).not.toHaveBeenCalled()
   })
 
   it("requires verified transaction status, reference, currency, and exact amount", async () => {

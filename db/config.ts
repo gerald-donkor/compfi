@@ -19,6 +19,10 @@ export function resolveDatabaseConfig(
 
   if (url && authToken) return { url, authToken, isRemote: true }
 
+  if (env.NODE_ENV === "production" && env.NEXT_PHASE !== "phase-production-build") {
+    throw new Error("Production requires TURSO_DATABASE_URL and TURSO_AUTH_TOKEN.")
+  }
+
   return {
     url: env.DATABASE_URL?.trim() || `file:${path.join(cwd, "data", "compfi.db")}`,
     isRemote: false,

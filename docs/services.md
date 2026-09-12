@@ -34,6 +34,8 @@ server-only.
 
 - Production database: `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`; both are
   required together. Omitting both selects `file:data/compfi.db`.
+  Production runtime fails closed when Turso variables are absent; only the
+  production build step is exempt so secret-free builds stay possible.
 - Payment: `FLUTTERWAVE_SECRET_KEY` and `FLUTTERWAVE_SECRET_HASH`.
 - Email: `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and
   `CONTACT_NOTIFICATION_EMAIL`.
@@ -53,8 +55,13 @@ primary key makes webhook replay idempotent.
 
 `ensureDbSchema` creates fresh tables and adds missing nullable columns to older
 databases without dropping or rewriting existing rows. It also creates the unique
-partial order-reference index. Local SQLite pragmas are best-effort because remote
+partial order-reference index. Schema initialization is tracked per database
+client, and paid transitions retry transient `SQLITE_BUSY` contention. Local SQLite pragmas are best-effort because remote
 libSQL environments may not support every local setting.
+
+Public checkout and contact submissions carry a honeypot guard. A filled guard
+is rejected before persistence or provider calls with a generic customer-safe
+message.
 
 ## Payment lifecycle
 
@@ -69,12 +76,18 @@ libSQL environments may not support every local setting.
    documented `verif-hash` and the newer `flutterwave-signature` HMAC-SHA256
    contract, using timing-safe comparison in both cases. HMAC is calculated over
    the untouched request body. `/checkout/complete` treats all query parameters
-   as untrusted.
+   as untrusted and never trusts provider `status` text: callback and webhook
+   outcomes are determined by a server-to-server transaction inspection.
 5. Both paths call the same reconciliation module. It fetches the transaction
    from Flutterwave and requires successful status plus exact reference, USD
    currency, and amount before the database can transition to `paid`.
+   Provider-verified failed/canceled transactions persist the matching order
+   state; verification errors distinguish invalid transactions from temporary
+   unavailability.
 6. The transition and event record are transactional and replay-safe. Only a
-   server-verified paid completion clears the browser cart.
+   server-verified paid completion clears the browser cart. Receipt delivery is
+   recorded separately and a receipt bookkeeping failure never downgrades a
+   verified paid order.
 
 The completion route is dynamic, excluded from the sitemap, and explicitly
 `noindex, nofollow`. It represents paid, pending, canceled, failed, and invalid
@@ -107,11 +120,15 @@ Newsletter storage remains local/Turso-backed and does not imply broadcast mail.
 
 ## Verification
 
-Automated coverage includes local/remote database configuration, migrations,
-authoritative totals, pending-order persistence, hosted URL allowlisting, exact
-USD conversion, transaction field matching, webhook MAC validation, HTML escaping,
+Automated coverage includes local/remote database configuration, production
+fail-closed behavior, legacy migrations without row replacement, concurrent
+idempotent paid transitions, authoritative totals, pending-order persistence,
+honeypot rejection, hosted URL allowlisting, partial provider-configuration
+rejection, exact USD conversion, transaction field matching, verified
+failed/canceled persistence, invalid-versus-unavailable verification mapping,
+receipt failure without paid downgrade, webhook MAC validation, HTML escaping,
 non-throwing notification failure, checkout redirect intent, cart retention,
-human-readable order states, and axe checks. Exact final command and browser
+completion recovery states with paid-only cart clearing, human-readable order states, and axe checks. Exact final command and browser
 results are recorded in `docs/pages.md` after the implementation review.
 
 ## Provisioning checklist

@@ -998,13 +998,14 @@ Self-verification on 2026-09-12 used the required named
 
 | check | result |
 | --- | --- |
-| `npm run test` | passed: 37 files, 205 tests |
+| `npm run test` | passed: 39 files, 216 tests |
 | `npm run lint` | passed: 0 errors |
 | `npx tsc --noEmit` | passed: 0 errors |
 | `npm run build` | environment-limited: Turbopack's PostCSS worker could not bind its internal port (`Operation not permitted`) |
 | `npm run build -- --webpack` | passed; 23 pages generated and the webhook plus completion routes are dynamic |
 | checkout interaction | fixture product added; valid billing details submitted without provider secrets; actionable configuration error rendered and cart remained at 1 item |
 | completion route | invalid state rendered with checkout/contact recovery; `robots` was `noindex, nofollow`; cart remained at 1 item |
+| review-fix re-verification | provider callback status text is ignored in favor of server verification; verified failed/canceled states persist order state; receipt bookkeeping cannot downgrade verified paid; production without Turso fails closed; honeypot submissions rejected before persistence |
 | responsive visual inspection | checkout inspected at 1440, 1024, 768, 390, and 320 CSS px; completion inspected at 1440 and 320; all measured `scrollWidth === clientWidth` |
 | axe accessibility | 0 violations and 0 incomplete checks on populated checkout and invalid completion state |
 | Web Interface Guidelines | fresh 2026-09-12 rules reviewed against changed UI; brand translation guards and balanced result heading added; no unresolved changed-file finding |

@@ -1,13 +1,12 @@
 import type { Client } from "@libsql/client"
 
-let schemaInitialized = false
-let schemaInitPromise: Promise<void> | null = null
+const schemaInitializations = new WeakMap<object, Promise<void>>()
 
 export async function ensureDbSchema(client: Client) {
-  if (schemaInitialized) return
-  if (schemaInitPromise) return schemaInitPromise
+  const existing = schemaInitializations.get(client)
+  if (existing) return existing
 
-  schemaInitPromise = (async () => {
+  const schemaInitPromise = (async () => {
     try {
       await client.execute("PRAGMA busy_timeout = 5000;")
       await client.execute("PRAGMA journal_mode = WAL;")
@@ -125,13 +124,13 @@ export async function ensureDbSchema(client: Client) {
       );
     `)
 
-    schemaInitialized = true
   })()
+  schemaInitializations.set(client, schemaInitPromise)
 
   try {
     await schemaInitPromise
   } catch (error) {
-    schemaInitPromise = null
+    schemaInitializations.delete(client)
     throw error
   }
 }

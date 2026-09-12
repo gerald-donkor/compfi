@@ -125,6 +125,27 @@ export type MarkOrderPaidResult = {
   transitioned: boolean
 }
 
+function isDatabaseBusy(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "SQLITE_BUSY"
+  )
+}
+
+async function retryBusyTransaction(operation: () => Promise<void>): Promise<void> {
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    try {
+      await operation()
+      return
+    } catch (error) {
+      if (!isDatabaseBusy(error) || attempt === 3) throw error
+      await new Promise((resolve) => setTimeout(resolve, 10 * (attempt + 1)))
+    }
+  }
+}
+
 export async function markOrderPaid(input: {
   orderId: string
   transactionId: string
@@ -135,7 +156,7 @@ export async function markOrderPaid(input: {
   const now = Date.now()
   let transitioned = false
 
-  await db.transaction(async (tx) => {
+  await retryBusyTransaction(() => db.transaction(async (tx) => {
     if (input.eventId) {
       const inserted = await tx
         .insert(processedPaymentEvents)
@@ -161,7 +182,7 @@ export async function markOrderPaid(input: {
       .where(and(eq(orders.id, input.orderId), ne(orders.status, "paid")))
       .returning({ id: orders.id })
     transitioned = updated.length === 1
-  })
+  }))
 
   return { order: await getOrderById(input.orderId), transitioned }
 }
