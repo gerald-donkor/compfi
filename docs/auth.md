@@ -109,6 +109,12 @@ Customer account and authentication routes are excluded from search engine index
   suite passed 39 files / 217 tests. They cover the explicit
   `"/__clerk/(.*)"` matcher while preserving the existing `/account*`
   protection behavior.
+- On September 13, 2026, `npm run lint` and `npx tsc --noEmit` passed, and
+  `npx next build --webpack` completed successfully with 23 routes. The
+  required `npm run build` Turbopack invocation could not complete in this
+  execution host because the host denies a local port bind during CSS
+  processing; it failed identically both inside and outside the sandbox. This
+  is an environment limitation, not a recorded production verification.
 - Production verification is intentionally pending an authorized push and Vercel
   deployment. After deployment, use an isolated named `agent-browser` session
   to confirm `/sign-in` renders Clerk controls, the Clerk JavaScript assets no
